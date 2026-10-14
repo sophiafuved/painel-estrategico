@@ -9,6 +9,8 @@ Publicar: index.html como página do artifact e os outros dois como arquivos de 
 import argparse, os, sys, json, shutil, subprocess, tempfile, datetime, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+PROTEGIDO = False
 PEERS_SHEETS = ['Gráficos - Louças', 'Gráficos - Metais', 'Gráficos Madeira 1', 'Gráficos - Revestimento']
 MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 
@@ -25,10 +27,16 @@ def page_doc(content, title_html):
             '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}</style></head><body>'
             + content + '</body></html>')
 
-def sitebar(active):
+def sitebar(active, sair=None):
+    sair = PROTEGIDO if sair is None else sair
     links = [('index.html', 'Início', 'home'), ('radar.html', 'Radar macro', 'radar'), ('peers.html', 'Peers', 'peers')]
     items = ''.join(f'<a href="{h}" class="{"on" if k == active else ""}"{" aria-current=page" if k == active else ""}>{t}</a>' for h, t, k in links)
+    if sair:
+        items += ('<button type="button" class="pe-sair" onclick="try{for(const st of [localStorage,sessionStorage])'
+                  'for(const k of Object.keys(st))if(k.startsWith(\'painel-chave-\'))st.removeItem(k)}catch(e){}location.reload()">Sair</button>')
     return f'''<style>
+.pe-sair{{font:inherit;color:var(--pe-mut);background:none;border:1px solid #444;border-radius:6px;padding:4px 10px;cursor:pointer;margin-left:6px}}
+.pe-sair:hover{{color:var(--pe-fg)}}
 .pe-bar{{--pe-bg:#111;--pe-fg:#f1f0ed;--pe-mut:#a8a6a1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;background:var(--pe-bg);color:var(--pe-fg);
  margin:0 calc(-1*max(16px,env(safe-area-inset-right,0px))) 0 calc(-1*max(16px,env(safe-area-inset-left,0px)));
  padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font:500 14px "Red Hat Text",system-ui,sans-serif}}
@@ -141,7 +149,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--radar', required=True); ap.add_argument('--peers', required=True); ap.add_argument('--out', required=True)
     ap.add_argument('--deck', help='também gera o PowerPoint de peers neste caminho (.pptx)')
+    ap.add_argument('--senha', default=os.environ.get('PAINEL_SENHA'), help='protege o site com senha (ou variável PAINEL_SENHA). Nunca salve a senha no repositório.')
     a = ap.parse_args()
+    global PROTEGIDO
+    PROTEGIDO = bool(a.senha)
     os.makedirs(a.out, exist_ok=True)
     with tempfile.TemporaryDirectory() as w1, tempfile.TemporaryDirectory() as w2:
         radar_html, radar_ate = build_radar(a.radar, w1)
@@ -152,9 +163,16 @@ def main():
                                 os.path.join(root, 'deck', 'template_dashboard.pptx'), os.path.abspath(a.deck)], capture_output=True, text=True)
             if r.returncode != 0: sys.exit('Falha no PowerPoint:\n' + r.stderr[-3000:])
     built = datetime.datetime.now().strftime('%d/%m/%Y')
-    open(os.path.join(a.out, 'radar.html'), 'w').write(page_doc(radar_html, 'Radar'))
-    open(os.path.join(a.out, 'peers.html'), 'w').write(page_doc(peers_html, 'Peers'))
-    open(os.path.join(a.out, 'index.html'), 'w').write(hub(radar_ate, peers_ate, segs, built))
+    pages = {'radar.html': page_doc(radar_html, 'Radar'), 'peers.html': page_doc(peers_html, 'Peers'),
+             'index.html': hub(radar_ate, peers_ate, segs, built)}
+    if a.senha:
+        from protect import new_salt, derive_key, protect
+        pages = {k: v.replace('</nav></div>', '</nav></div>', 1) for k, v in pages.items()}
+        salt = new_salt(); key = derive_key(a.senha, salt)
+        titles = {'index.html': 'Painel Estratégico', 'radar.html': 'Radar Estratégia', 'peers.html': 'Peers Dexco'}
+        pages = {k: protect(v, key, salt, titles[k], standalone=(k != 'index.html')) for k, v in pages.items()}
+    for k, v in pages.items():
+        open(os.path.join(a.out, k), 'w').write(v)
     print(json.dumps({'radar_ate': radar_ate, 'peers_ate': peers_ate, 'ajustes_peers': nlog, 'out': os.path.abspath(a.out)}, ensure_ascii=False))
 
 if __name__ == '__main__':

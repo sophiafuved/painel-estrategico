@@ -24,6 +24,15 @@ python pipeline/build_site.py \
   --deck Analise_de_Peers_Dashboard.pptx   # opcional: também gera o PowerPoint
 ```
 
+Para proteger o site com senha (necessário se o link for aberto a "qualquer pessoa com o link"),
+passe a senha só na hora de gerar, pela variável `PAINEL_SENHA` ou por `--senha`. **Nunca salve a
+senha no repositório.** O conteúdo de cada página é criptografado (AES-256); sem a senha, o arquivo
+publicado mostra apenas a tela de acesso.
+
+```bash
+PAINEL_SENHA='a senha do time' python pipeline/build_site.py --radar ... --peers ... --out site
+```
+
 Isso recria `site/index.html` (página inicial), `site/radar.html` e `site/peers.html`. Para colocar
 no ar, publique `site/index.html` como página do artifact acima, com `radar.html` e `peers.html`
 como arquivos de apoio (é o que o Claude faz quando você pede para republicar).
@@ -33,6 +42,7 @@ como arquivos de apoio (é o que o Claude faz quando você pede para republicar)
 | Pasta / arquivo | O que é |
 |---|---|
 | `pipeline/build_site.py` | Comando único: lê as duas planilhas e gera o site (e o PowerPoint, com `--deck`). |
+| `pipeline/protect.py` | Proteção com senha: criptografa cada página e coloca a tela de acesso na frente. |
 | `pipeline/radar/` | Extração da Grande Base (`extract.py`, `build_data.py`) e modelo da página do Radar. `static_apresentacao.json` guarda o Brent e o impacto fiscal, que só existem na apresentação Modelo 2. |
 | `pipeline/peers/` | Leitura das abas "Gráficos" de cada negócio (`parse_blocks.py`, `build.py`), tratamento dos dados (`clean.py`) e modelo da página de Peers. |
 | `deck/` | Gerador do PowerPoint (`build_deck.py`) e o template do Offsite. |
