@@ -1,0 +1,71 @@
+<title>Painel Estratégico</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700;900&family=Red+Hat+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Página inicial: duas portas de entrada (Radar macro e Peers), com a data dos dados de cada uma. */
+:root{--bg:#f4f4f2;--panel:#fff;--line:#e1e0dc;--ink:#111;--ink-2:#4d4c48;--ink-3:#7a7974;--acc:#e0661a;--acc-2:#2a78d6;
+ --display:"Red Hat Display",system-ui,sans-serif;--body:"Red Hat Text",system-ui,-apple-system,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141517;--panel:#1c1d20;--line:#33353a;--ink:#f1f0ed;--ink-2:#bdbbb5;--ink-3:#8c8a85;--acc:#e8732a;--acc-2:#4e86da;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141517;--panel:#1c1d20;--line:#33353a;--ink:#f1f0ed;--ink-2:#bdbbb5;--ink-3:#8c8a85;--acc:#e8732a;--acc-2:#4e86da;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1080px;margin:0 auto}
+header{padding-block:44px 28px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font:900 clamp(34px,5.5vw,56px)/1.02 var(--display);letter-spacing:-.02em;margin:8px 0 10px;text-wrap:balance}
+header p{color:var(--ink-2);max-width:62ch;margin:0}
+.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.door{display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;text-decoration:none;color:inherit;min-width:0;transition:border-color .15s}
+.door:hover{border-color:var(--ink-3)}
+.door:focus-visible{outline:2px solid var(--acc-2);outline-offset:3px}
+.door .tag{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.door.radar .tag{color:var(--acc)} .door.peers .tag{color:var(--acc-2)}
+.door h2{font:700 26px/1.15 var(--display);margin:0}
+.door p{margin:0;color:var(--ink-2)}
+.door ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;font:12.5px var(--mono);color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px;margin-top:auto}
+.go{font-weight:600;color:var(--ink)}
+.segs{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.segs span{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);align-self:center;margin-right:4px}
+.segs a{font:600 13px var(--body);color:var(--ink-2);text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px}
+.segs a:hover{color:var(--ink);border-color:var(--ink-3)}
+footer{margin-top:36px;font-size:13px;color:var(--ink-3);max-width:80ch}
+@media (max-width:760px){.doors{grid-template-columns:minmax(0,1fr)}}
+</style>
+<style>
+.pe-bar{--pe-bg:#111;--pe-fg:#f1f0ed;--pe-mut:#a8a6a1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;background:var(--pe-bg);color:var(--pe-fg);
+ margin:0 calc(-1*max(16px,env(safe-area-inset-right,0px))) 0 calc(-1*max(16px,env(safe-area-inset-left,0px)));
+ padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font:500 14px "Red Hat Text",system-ui,sans-serif}
+.pe-bar b{font:800 15px "Red Hat Display",system-ui,sans-serif;letter-spacing:-.01em;margin-right:auto}
+.pe-bar nav{display:flex;gap:4px;flex-wrap:wrap}
+.pe-bar a{color:var(--pe-mut);text-decoration:none;padding:5px 10px;border-radius:6px}
+.pe-bar a:hover{color:var(--pe-fg)}
+.pe-bar a.on{background:var(--pe-fg);color:var(--pe-bg);font-weight:600}
+.pe-bar a:focus-visible{outline:2px solid #4e86da;outline-offset:2px}
+</style><div class="pe-bar"><b>Painel Estratégico Dexco</b><nav aria-label="Seções do painel"><a href="index.html" class="on" aria-current=page>Início</a><a href="radar.html" class="">Radar macro</a><a href="peers.html" class="">Peers</a></nav></div>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Planejamento estratégico · Offsite 2026</div>
+  <h1>Painel Estratégico</h1>
+  <p>Cenário macro do Radar de Estratégia e benchmarking da Dexco contra os peers de cada negócio, num só lugar.</p>
+</header>
+<div class="doors">
+  <a class="door radar" href="radar.html">
+    <span class="tag">Radar macro</span>
+    <h2>Radar Estratégia</h2>
+    <p>Indicadores de conjuntura que alimentam o Radar: global, atividade, juros, renda, crédito, custos da construção, imobiliário e varejo.</p>
+    <ul><li>27 gráficos com filtro de período</li><li>Indicadores-chave com variação em 12 meses</li></ul>
+    <div class="meta"><span>Dados até set/26</span><span>Fonte: Grande Base</span><span class="go">Abrir →</span></div>
+  </a>
+  <a class="door peers" href="peers.html">
+    <span class="tag">Benchmarking</span>
+    <h2>Análise de Peers</h2>
+    <p>Escala, rentabilidade, custos, capital de giro, fluxo de caixa e dados setoriais da Dexco frente aos concorrentes.</p>
+    <ul><li>Louças, Metais, Madeira e Revestimentos</li><li>Escolha das empresas e do período, com Foco Dexco</li></ul>
+    <div class="meta"><span>Demonstrações até 2025</span><span>Fonte: Análise de Competidores</span><span class="go">Abrir →</span></div>
+  </a>
+</div>
+<div class="segs"><span>Ir direto para</span><a href="peers.html#loucas">Louças</a><a href="peers.html#metais">Metais</a><a href="peers.html#madeira">Madeira</a><a href="peers.html#revest">Revestimentos</a></div>
+<footer>Atualizado em 14/10/2026 a partir das planilhas Grande Base e Análise de Competidores. As regras de tratamento dos dados estão descritas no rodapé de cada página.</footer>
+</div>

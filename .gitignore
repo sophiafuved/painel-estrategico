@@ -1,0 +1,7 @@
+# planilhas ficam no SharePoint
+*.xlsx
+*.xlsm
+__pycache__/
+*.pyc
+# arquivos temporários do pipeline
+*.json.tmp

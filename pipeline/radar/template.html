@@ -1,0 +1,390 @@
+<title>Radar Estratégia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: briefing de estratégia — cabeçalho com controle de período, faixa de indicadores, seções temáticas na ordem dos slides, grade de gráficos 2 colunas.
+   Dark-first, herdando o grafite + laranja da apresentação Radar. */
+:root{
+  --bg:#17181b; --panel:#1f2124; --panel-2:#26282c; --line:#34373c; --grid:#2c2f33;
+  --ink:#eeece8; --ink-2:#b9b6b0; --ink-3:#8a8781;
+  --accent:#e8732a; --accent-ink:#f39a5c;
+  --s1:#d9621c; --s2:#4e86da; --s3:#1a9e78; --s4:#8c6fdc; --ref:#8a8781;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#f6f5f3; --panel:#ffffff; --panel-2:#f0eeeb; --line:#e2dfda; --grid:#ebe8e3;
+  --ink:#1b1a18; --ink-2:#55524c; --ink-3:#7d7a73;
+  --accent:#c9561a; --accent-ink:#b34b14;
+  --s1:#e0661a; --s2:#3b6fb8; --s3:#169c78; --s4:#9a6bd0; --ref:#8d8a84; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#f6f5f3; --panel:#ffffff; --panel-2:#f0eeeb; --line:#e2dfda; --grid:#ebe8e3;
+  --ink:#1b1a18; --ink-2:#55524c; --ink-3:#7d7a73;
+  --accent:#c9561a; --accent-ink:#b34b14;
+  --s1:#e0661a; --s2:#3b6fb8; --s3:#169c78; --s4:#9a6bd0; --ref:#8d8a84; color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1280px;margin:0 auto}
+header.top{padding-block:28px 18px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:end;justify-content:space-between;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:var(--display);font-stretch:75%;font-weight:800;font-size:clamp(34px,5vw,54px);line-height:.95;margin:6px 0 0;letter-spacing:-.01em;text-transform:uppercase}
+h1 b{color:var(--accent)}
+.controls{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:500 13px var(--mono);color:var(--ink-2);background:none;border:0;padding:8px 12px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.seg button:focus-visible,.tabbtn:focus-visible,nav a:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+nav.sec{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding-block:10px;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav.sec a{flex:none;font:600 13px var(--body);color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:6px;white-space:nowrap}
+nav.sec a:hover{background:var(--panel-2);color:var(--ink)}
+nav.sec a.on{color:var(--accent-ink);background:var(--panel)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:20px}
+.kpi{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:13px;color:var(--ink-2)}
+.kpi .v{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .d{font:12px var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.kpi .d span{color:var(--ink-2)}
+section{padding-top:40px;scroll-margin-top:56px}
+.sh{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline;margin-bottom:16px}
+.sh .tag{font:500 12px var(--mono);color:var(--accent-ink);letter-spacing:.06em;text-transform:uppercase;grid-row:1}
+.sh h2{font-family:var(--display);font-stretch:80%;font-weight:700;font-size:clamp(20px,2.4vw,27px);line-height:1.12;margin:0;text-wrap:balance;grid-column:1/-1;max-width:62ch}
+.sh h2 em{font-style:normal;color:var(--accent-ink)}
+.sh p{grid-column:1/-1;margin:2px 0 0;color:var(--ink-2);max-width:78ch}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{font:600 16px/1.25 var(--body);margin:0}
+.card .unit{font-size:13px;color:var(--ink-3);margin-top:1px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink-2)}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.legend i.bar{height:10px;border:0;border-radius:2px;width:10px}
+.legend i.dash{border-top-style:dashed}
+.plot{position:relative;height:260px;flex:1 1 auto;min-height:260px}
+.plot.half{flex:none}
+.plot.half{height:150px}
+.panel-lbl{font:500 12px var(--mono);color:var(--ink-3);margin-top:2px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font:12px var(--mono);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.pill b{color:var(--ink);font-weight:500}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font:11.5px var(--mono);color:var(--ink-3);border-top:1px solid var(--grid);padding-top:8px;margin-top:auto}
+.range{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13px;color:var(--ink-2)}
+.range input{font:500 13px var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.range input:focus-visible{outline:2px solid var(--accent-ink);outline-offset:1px}
+.range-msg{font:12px var(--mono);color:var(--accent-ink);min-height:1em}
+.empty{flex:1;display:grid;place-items:center;min-height:120px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-3);font-size:13px;text-align:center;padding:12px}
+.tabbtn{font:inherit;color:var(--accent-ink);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.tbl{overflow-x:auto;max-height:240px;overflow-y:auto}
+.tbl table{border-collapse:collapse;width:100%;font:12px var(--mono);font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{padding:4px 8px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl th{color:var(--ink-3);font-weight:500;position:sticky;top:0;background:var(--panel)}
+.note{font-size:12.5px;color:var(--ink-3)}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);max-width:90ch}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.kpi .v{font-size:25px}.plot{height:230px}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">Grande Base · Radar de Estratégia · 13-out-26</div>
+    <h1>Radar <b>Estratégia</b></h1>
+  </div>
+  <div class="controls">
+    <span class="eyebrow" id="lbl-per">Período dos gráficos</span>
+    <div class="seg" role="group" aria-labelledby="lbl-per" id="per">
+      <button id="p1" data-y="1" aria-pressed="false">12 meses</button>
+      <button id="p3" data-y="3" aria-pressed="false">3 anos</button>
+      <button id="p5" data-y="5" aria-pressed="false">5 anos</button>
+      <button id="p10" data-y="10" aria-pressed="false">10 anos</button>
+      <button id="pall" data-y="0" aria-pressed="true">Tudo</button>
+    </div>
+    <div class="range">
+      <label for="d-from">De</label><input type="month" id="d-from" min="1985-01" max="2034-12">
+      <label for="d-to">Até</label><input type="month" id="d-to" min="1985-01" max="2034-12">
+      <button class="tabbtn" id="d-clear" type="button">Limpar</button>
+    </div>
+    <span class="range-msg" id="d-msg" role="status"></span>
+  </div>
+</header>
+<nav class="sec" id="nav"></nav>
+<div class="kpis" id="kpis"></div>
+<main id="main"></main>
+<footer>
+  Todos os gráficos leem as mesmas faixas usadas pelas abas <b>Gráficos_Radar</b> da Grande Base (referência de célula no rodapé de cada gráfico), exceto o Brent e o impacto fiscal, que vêm dos dados embutidos na apresentação Modelo 2. Gráficos que nos slides usavam dois eixos foram divididos em dois painéis com o mesmo eixo de tempo. Notas: (1) ICE: Indústria, Construção, Serviços e Comércio. (2) Taxa de juros PF, recursos livres. (3) Saldos com atraso acima de 90 dias. NAIRU = 8,0% segundo Itaú.
+</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script type="application/json" id="data">__DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const nf=(d)=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const F={
+  pct:(v,d=1)=>v==null?'–':nf(d).format(v*100)+'%',
+  pp:(v,d=2)=>v==null?'–':nf(d).format(v)+'%',
+  num:(v,d=1)=>v==null?'–':nf(d).format(v),
+  int:(v)=>v==null?'–':nf(0).format(v),
+  brl:(v)=>v==null?'–':'R$ '+nf(0).format(v),
+  bi:(v)=>v==null?'–':'R$ '+nf(1).format(v)+' bi',
+  usd:(v)=>v==null?'–':'US$ '+nf(1).format(v),
+  fx:(v)=>v==null?'–':'R$ '+nf(2).format(v),
+};
+// label kinds: 'YYYY-MM-DD' (mensal/diária), 'YYYY-Tn' (trimestral), texto (anual)
+const kindOf=l=>/^\d{4}-\d{2}-\d{2}$/.test(l)?'d':/^\d{4}-T\d$/.test(l)?'q':'a';
+const yearOf=l=>parseInt(l,10);
+function fmtLabel(l,long){const k=kindOf(l);
+  if(k==='d'){const [y,m,dd]=l.split('-');return (long&&dd!=='01'?(+dd)+'/':'')+MES[+m-1]+'/'+y.slice(2)}
+  if(k==='q'){return l.slice(6)+'T'+l.slice(2,4)}
+  return l}
+function lastDate(s,labels){for(let i=s.length-1;i>=0;i--)if(s[i]!=null)return fmtLabel(labels[i],false);return '–'}
+const S=(i,o={})=>Object.assign({i},o);
+const SECS=[
+ {id:'global',tag:'Global',h:'Acordo preliminar entre Irã e EUA alivia a <em>pressão inflacionária</em>, mas o pano de fundo global se mantém: <em>alta incerteza e volatilidade</em> impactando câmbio e inflação',
+  p:'Protagonismo geopolítico: os conflitos comerciais e militares devem seguir nos holofotes. Globalização 2.0: países buscam alternativas comerciais aos EUA, em um mundo menos globalizado e mais inflacionário.',
+  charts:[
+  {k:'wui',t:'Índice de Incerteza Global (WUI)',u:'Número índice, trimestral',fmt:'int',s:[S(0,{c:'s1'})]},
+  {k:'brent',t:'Petróleo Brent',u:'US$/barril, diário',fmt:'usd',time:false,s:[S(0,{c:'s1'}),S(1,{c:'ref',dash:1}),S(2,{c:'s1',dash:1})]},
+  {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial; share das importações dos EUA',fmt:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'})]},
+  {k:'gpr',t:'Índice de Risco Geopolítico',u:'Número índice',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'})]},
+  {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',fmt:'pct',time:false,wide:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
+ ]},
+ {id:'brasil',tag:'Brasil',h:'Soft landing em 2026 sustentado pelo <em>mercado de trabalho</em> e pelos <em>estímulos fiscais</em>, contrabalanceando a piora do cenário de juros. A conta deve chegar em 2027',
+  p:'O Brasil deve crescer em 2026 apesar da política monetária contracionista. As medidas de estímulo fiscal devem compensar os efeitos da SELIC em patamar restritivo.',
+  charts:[
+  {k:'pib',t:'PIB por componente',u:'Contribuição para o crescimento, p.p. · 2026-27 projeção',fmt:'pct',time:false,stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'}),S(3,{c:'ink',type:'point',label:'PIB total'})]},
+  {k:'fiscal',t:'Impacto das medidas de estímulo fiscal em 2026',u:'R$ bilhões',special:'fiscal'},
+  {k:'neutra',t:'Juros neutros vs SELIC real',u:'% a.a. · RPM 3T26 (projeção até 2028)',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'hiato',t:'Hiato do Produto x IPCA',u:'% (PIB real – PIB potencial); IPCA % a/a',fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'}),{ref:0.03,label:'Centro da meta = 3,0%'}]},
+  {k:'focus_selic_ipca',t:'Projeções Focus: SELIC e IPCA',u:'Mediana das expectativas, % · fim de período',fmt:'pp',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1}),S(2,{c:'s2'}),S(3,{c:'s2',dash:1})]},
+  {k:'focus_cambio',t:'Projeções Focus: câmbio',u:'BRL/USD, fim de período',fmt:'fx',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1})]},
+ ]},
+ {id:'incerteza',tag:'Incerteza',h:'Manutenção da incerteza local e global deve <em>inibir investimentos</em>',
+  p:'A incerteza econômica segue acima do patamar de baixa incerteza (<100). A confiança de empresários e consumidores segue pessimista (<100), refletindo juros altos e o ano eleitoral.',
+  charts:[
+  {k:'iie',t:'Índice de Incerteza Econômica (IIE-Br)',u:'Número índice, base 100',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
+  {k:'conf',t:'Índices de Confiança',u:'Número índice, base 100, com ajuste sazonal',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
+ ]},
+ {id:'renda',tag:'Renda',h:'A renda das famílias permanece em <em>patamar elevado</em> e possibilita soft landing',
+  p:'A massa de renda deve expandir 3,8% em 2026, com desemprego na mínima histórica, aumento real do salário mínimo e reforma do IR. O crescimento deve ser menor que em 2024 e 2025.',
+  charts:[
+  {k:'massa',t:'Massa de renda total (real), por componente',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
+  {k:'desemprego',t:'Taxa de desocupação vs renda média (real)',u:'Painéis separados: % e R$/mês',split:[{s:[S(0,{c:'s2',type:'bar'}),{ref:0.08,label:'NAIRU (8,0%)'}],fmt:'pct',lbl:'Taxa de desocupação, %'},{s:[S(1,{c:'s1'})],fmt:'brl',lbl:'Renda média do trabalho, R$/mês'}]},
+ ]},
+ {id:'credito',tag:'Crédito',h:'Porém, grande parte da renda está <em>comprometida com o serviço da dívida</em>',
+  p:'A elevação do custo do crédito, com endividamento alto, pesa na capacidade de pagamento e reduz a renda disponível para bens duráveis. A queda da poupança também limita a demanda do setor.',
+  charts:[
+  {k:'juros_endiv',t:'Taxa de juros² x endividamento das famílias',u:'% a.a.; % da renda',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'renda_inad',t:'Renda comprometida com dívida¹ x inadimplência³',u:'Painéis separados: % da renda e % do saldo',split:[{s:[S(0,{c:'s2'})],fmt:'pct',lbl:'Renda comprometida com dívida, % da renda'},{s:[S(1,{c:'s1'})],fmt:'pct',lbl:'Inadimplência, % do saldo'}]},
+  {k:'renda_disp',t:'Renda disponível após itens essenciais e dívida',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
+  {k:'poupanca',t:'Taxa de poupança das famílias',u:'% do PIB, acumulado 12 meses',fmt:'pct',s:[S(0,{c:'s1'})]},
+ ]},
+ {id:'incc',tag:'Custos',h:'O INCC deve se manter em <em>patamar elevado</em> em 2026',
+  p:'O INCC deve seguir pressionado (acima do IPCA) pelo conflito no Oriente Médio e pelo mercado de trabalho aquecido, com volatilidade adicional das cadeias de suprimento e do câmbio.',
+  charts:[
+  {k:'incc_comp',t:'INCC: abertura por componente',u:'Contribuição para a variação a/a, p.p.',fmt:'pct',area:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'incc_ipca',t:'INCC x IPCA',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+ ]},
+ {id:'imob',tag:'Imobiliário',h:'Medidas de estímulo buscam mitigar a alta do <em>custo de financiamento</em> e do <em>preço dos imóveis</em>; o <em>segmento popular</em> deve puxar os lançamentos em 2026/27',
+  p:'Faixa 4 do MCMV, novo modelo de crédito imobiliário e ampliação do programa devem aumentar a demanda. O médio/alto padrão deve se beneficiar do novo modelo de crédito.',
+  charts:[
+  {k:'financ',t:'Taxa de financiamento imobiliário x juros longos',u:'% a.a.',fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'})]},
+  {k:'igmi',t:'IGMI-R: variação anual do preço de venda de imóveis',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',dash:1})]},
+  {k:'lanc',t:'Lançamentos imobiliários, por segmento',u:'Unidades, média móvel 12 meses',fmt:'int',s:[S(0,{c:'s2'}),S(1,{c:'s1'})]},
+  {k:'vso',t:'Velocidade de vendas (vendas/oferta), por segmento',u:'%, média móvel 12 meses',fmt:'pct',s:[S(1,{c:'s2'}),S(0,{c:'s1'})]},
+ ]},
+ {id:'varejo',tag:'Varejo',h:'Crescimento moderado do varejo em 2026/27, <em>sustentado por medidas de estímulo</em>',
+  p:'O programa Reforma Casa Brasil e as mudanças no crédito imobiliário devem reverter a desaceleração. Juros altos por mais tempo limitam o crescimento, a partir de um patamar de demanda elevado.',
+  charts:[
+  {k:'varejo_var',t:'Vendas de material de construção no varejo',u:'% a/a, média móvel 3 meses',fmt:'pct',s:[S(0,{c:'s1',type:'bar'})],proj:{k:'varejo_proj',i:0,fmt:'pct',lbl:'Projeção anual'}},
+  {k:'varejo_idx',t:'Vendas no varejo: índice',u:'Número índice, base 100, dessazonalizado',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'})],proj:{k:'varejo_idx_proj',i:1,fmt:'num',lbl:'Projeção mat. construção',i2:0,lbl2:'Projeção ampliado'}},
+ ]},
+];
+// rótulos corretos das projeções (AV = Material de construção, AW = Varejo ampliado)
+D.varejo_idx_proj.series[0].label='Material de Construção';D.varejo_idx_proj.series[1].label='Varejo Ampliado';
+D.varejo_idx.series[1].label='Material de Construção';
+D.fiscal={labels:['Redução IR','Financ. taxistas/apps','MCMV – expansão','Plano Brasil Soberano','Financ. caminhões fase 2','Outros','Despesas totais','Aumento de receita','Impacto líquido'],
+  vals:[31.8,30,20,15,14.5,103.9,215.2,-108.5,106.7],tot:[0,0,0,0,0,0,1,0,1]};
+
+// Filtro de data global: FROM/TO no formato 'YYYY-MM' ('' = sem limite)
+let FROM='',TO='',PRESET=0;
+try{const s=JSON.parse(localStorage.getItem('radar-range')||'{}');FROM=s.from||'';TO=s.to||'';PRESET=+s.preset||0}catch(e){}
+const REF=D.iie.labels[D.iie.labels.length-1].slice(0,7); // último mês observado na base
+const pad=n=>String(n).padStart(2,'0');
+function addMonths(ym,n){let [y,m]=ym.split('-').map(Number);m+=n;y+=Math.floor((m-1)/12);m=((m-1)%12+12)%12+1;return y+'-'+pad(m)}
+function spanOf(l){ // [mês inicial, mês final] coberto pelo rótulo
+  const k=kindOf(l);
+  if(k==='d') return [l.slice(0,7),l.slice(0,7)];
+  if(k==='q'){const y=l.slice(0,4),q=+l.slice(6);return [y+'-'+pad(q*3-2),y+'-'+pad(q*3)]}
+  const m=l.match(/\d{4}/);if(!m)return ['0000-01','9999-12'];return [m[0]+'-01',m[0]+'-12']}
+function inRange(l){const [a,b]=spanOf(l);return (!FROM||b>=FROM)&&(!TO||a<=TO)}
+function filterDS(ds){const idx=[];ds.labels.forEach((l,i)=>{if(inRange(l))idx.push(i)});
+  return {labels:idx.map(i=>ds.labels[i]),series:ds.series.map(s=>Object.assign({},s,{data:idx.map(i=>s.data[i])})),n:idx.length}}
+const charts=[];
+const colorOf=c=>c==='ref'?css('--ref'):c==='ink'?css('--ink'):css('--'+c);
+
+function tickCb(labels){
+  const k=kindOf(labels[0]||'');
+  if(k==='a') return (v,i)=>labels[i];
+  const y0=yearOf(labels[0]),y1=yearOf(labels[labels.length-1]),span=y1-y0+1;
+  const w=window.innerWidth<700?2:1;
+  const step=Math.max(1,Math.ceil(span/(14/w)));
+  if(span<=3&&k==='d'){ // diário/mensal curto: trimestres
+    let prev='';return (v,i)=>{const l=labels[i],m=l.slice(0,7);if(m===prev)return null;prev=m;const mm=+l.slice(5,7);return (mm-1)%(w*3)===0?fmtLabel(m+'-01'):null}}
+  let prevY=(/-(01-01|T1)$/.test(labels[0]))?null:yearOf(labels[0]);
+  return (v,i)=>{const y=yearOf(labels[i]);if(y===prevY)return null;prevY=y;return (y%step===0)?String(y):null};
+}
+const crosshair={id:'xh',afterDatasetsDraw(c){const a=c.tooltip&&c.tooltip.getActiveElements();if(!a||!a.length)return;const x=a[0].element.x,{top,bottom}=c.chartArea,ctx=c.ctx;ctx.save();ctx.strokeStyle=css('--ink-3');ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore()}};
+
+function buildChart(canvas,ds,sers,fmt,opt){
+  ds=filterDS(ds); const labels=ds.labels;
+  const sets=[];
+  sers.forEach(s=>{
+    if(s.ref!=null){sets.push({type:'line',label:s.label,data:labels.map(()=>s.ref),borderColor:colorOf('ref'),borderDash:[4,4],borderWidth:1.5,pointRadius:0,pointHoverRadius:0,order:0,_ref:1});return}
+    const src=ds.series[s.i]; const data=src.data; const col=colorOf(s.c);
+    const type=s.type==='bar'?'bar':'line';
+    const o={type,label:s.label||src.label,data,borderColor:col,backgroundColor:col,order:type==='bar'?2:1,spanGaps:true};
+    if(type==='bar'){Object.assign(o,{borderWidth:0,borderRadius:labels.length>40?0:3,barPercentage:labels.length>40?1:.8,categoryPercentage:labels.length>40?.92:.8,stack:opt.stack?'a':undefined})}
+    else if(s.type==='point'){Object.assign(o,{showLine:false,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:col,pointBorderColor:css('--panel'),pointBorderWidth:2,order:0})}
+    else Object.assign(o,{borderWidth:s.thin?1.25:2,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:col,pointHoverBorderColor:css('--panel'),pointHoverBorderWidth:2,tension:.15,borderDash:s.dash?[5,4]:[],fill:opt.area?(sets.filter(x=>!x._ref).length?'-1':'origin'):false,backgroundColor:opt.area?col+'cc':col,stack:opt.area?'a':undefined});
+    sets.push(o);
+  });
+  const f=F[fmt]; const grid=css('--grid'),ink3=css('--ink-3');
+  const many=labels.length>40;
+  return new Chart(canvas,{data:{labels,datasets:sets},plugins:[crosshair],options:{
+    responsive:true,maintainAspectRatio:false,animation:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel-2'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,boxPadding:4,usePointStyle:false,
+      titleFont:{family:'IBM Plex Mono',size:12},bodyFont:{family:'Source Sans 3',size:13},
+      filter:it=>!it.dataset._ref&&it.raw!=null,
+      callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+f(it.raw)}}},
+    scales:{
+      x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>labels[i]}},
+      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:opt.half?4:6,callback:v=>fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='bi'?nf(0).format(v):fmt==='brl'?nf(0).format(v):fmt==='usd'?nf(0).format(v):fmt==='fx'?nf(2).format(v):nf(0).format(v)}}
+    }}});
+}
+function fiscalChart(canvas){
+  const d=D.fiscal;let acc=0;const bars=d.vals.map((v,i)=>{if(d.tot[i]){acc=v;return [0,v]}const a=acc;acc+=v;return [a,acc]});
+  const cols=d.vals.map((v,i)=>d.tot[i]?css('--s2'):v<0?css('--s3'):css('--s1'));
+  return new Chart(canvas,{type:'bar',data:{labels:d.labels,datasets:[{label:'R$ bi',data:bars,backgroundColor:cols,borderRadius:3,borderSkipped:false,barPercentage:.75}]},options:{
+    responsive:true,maintainAspectRatio:false,animation:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel-2'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,
+      callbacks:{label:it=>' R$ '+nf(1).format(d.vals[it.dataIndex])+' bi'}}},
+    scales:{x:{grid:{display:false},ticks:{color:css('--ink-3'),font:{family:'Source Sans 3',size:10.5},maxRotation:0,autoSkip:false,callback:(v,i)=>{const out=[];let cur='';d.labels[i].split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>9){out.push(cur);cur=w}else cur=cur?cur+' '+w:w});out.push(cur);return out}}},
+      y:{grid:{color:css('--grid')},border:{display:false},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11}}}}},
+    plugins:[{id:'vl',afterDatasetsDraw(c){const ctx=c.ctx;ctx.save();ctx.fillStyle=css('--ink');ctx.font='500 11px "IBM Plex Mono",monospace';ctx.textAlign='center';
+      c.getDatasetMeta(0).data.forEach((b,i)=>{ctx.fillText(nf(0).format(Math.abs(d.vals[i])),b.x,Math.min(b.y,b.base)-5)});ctx.restore()}}]});
+}
+function legendHTML(ds,sers,opt){
+  return sers.map(s=>{
+    if(s.ref!=null) return `<span><i class="dash" style="border-color:var(--ref)"></i>${s.label}</span>`;
+    const lab=s.label||ds.series[s.i].label;
+    const c=s.c==='ref'?'var(--ref)':s.c==='ink'?'var(--ink)':`var(--${s.c})`;
+    if(s.type==='bar'||opt.area) return `<span><i class="bar" style="background:${c}"></i>${lab}</span>`;
+    if(s.type==='point') return `<span><i class="bar" style="background:${c};border-radius:50%"></i>${lab}</span>`;
+    return `<span><i class="${s.dash?'dash':''}" style="border-color:${c}"></i>${lab}</span>`;
+  }).join('');
+}
+function tableHTML(ds,fmt,n=12){
+  const L=ds.labels.length; const idx=[];for(let i=L-1;i>=0&&idx.length<n;i--){if(ds.series.some(s=>s.data[i]!=null))idx.push(i)}
+  const fs=ds.series.map((s,k)=>F[Array.isArray(fmt)?fmt[k]:fmt]||F.num);
+  return `<table><thead><tr><th>Período</th>${ds.series.map(s=>`<th>${s.label}</th>`).join('')}</tr></thead><tbody>${idx.map(i=>`<tr><td>${fmtLabel(ds.labels[i],true)}</td>${ds.series.map((s,k)=>`<td>${fs[k](s.data[i])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+function render(){
+  charts.forEach(c=>c.destroy());charts.length=0;
+  const main=document.getElementById('main');main.innerHTML='';
+  SECS.forEach(sec=>{
+    const el=document.createElement('section');el.id=sec.id;
+    el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2><p>${sec.p}</p></div><div class="grid"></div>`;
+    const g=el.querySelector('.grid');
+    sec.charts.forEach((c,ci)=>{
+      const card=document.createElement('article');card.className='card'+(c.wide?' wide':'');
+      const tid=`t-${c.k}`;
+      if(c.special==='fiscal'){
+        card.innerHTML=`<div><h3>${c.t}</h3><div class="unit">${c.u}</div></div>
+          <div class="legend"><span><i class="bar" style="background:var(--s1)"></i>Despesa</span><span><i class="bar" style="background:var(--s3)"></i>Receita (reduz o impacto)</span><span><i class="bar" style="background:var(--s2)"></i>Total</span></div>
+          <div class="plot"><canvas aria-label="${c.t}" role="img"></canvas></div>
+          <div class="foot"><span>Fonte: XP, jun/26 · dados da apresentação Modelo 2</span></div>`;
+        g.appendChild(card);charts.push(fiscalChart(card.querySelector('canvas')));return;
+      }
+      const ds=D[c.k];
+      const first=c.split?c.split[0].s[0]:c.s[0];
+      const upto=lastDate(ds.series[first.i].data,ds.labels);
+      const refs=[...new Set(ds.series.map(s=>s.ref))].join(' · ');
+      let proj='';
+      if(c.proj){const p=D[c.proj.k];const pf=F[c.proj.fmt];
+        proj=`<div class="pills">${p.labels.map((l,i)=>`<span class="pill">${c.proj.lbl} ${l}: <b>${pf(p.series[c.proj.i].data[i])}</b></span>`).join('')}${c.proj.lbl2?p.labels.map((l,i)=>`<span class="pill">${c.proj.lbl2} ${l}: <b>${pf(p.series[c.proj.i2].data[i])}</b></span>`).join(''):''}</div>`}
+      const fds=filterDS(ds);
+      const plots=!fds.n?`<div class="empty">Sem dados entre ${FROM?fmtLabel(FROM+'-01'):'o início'} e ${TO?fmtLabel(TO+'-01'):'o fim'}.<br>Esta série vai de ${fmtLabel(ds.labels[0])} a ${fmtLabel(ds.labels[ds.labels.length-1])}.</div>`:c.split?c.split.map((p,pi)=>`<div class="panel-lbl">${p.lbl}</div><div class="plot half"><canvas role="img" aria-label="${p.lbl}"></canvas></div>`).join(''):`<div class="plot"><canvas role="img" aria-label="${c.t}"></canvas></div>`;
+      const allS=c.split?c.split.flatMap(p=>p.s):c.s;
+      card.innerHTML=`<div><h3>${c.t}</h3><div class="unit">${c.u}</div></div>
+        ${ds.series.length>1||allS.some(s=>s.ref!=null)?`<div class="legend">${legendHTML(ds,allS,c)}</div>`:''}
+        ${plots}${proj}
+        <div class="tbl" id="${tid}" hidden></div>
+        <div class="foot"><span>Dados até ${upto}</span><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button><span style="flex-basis:100%">${refs}</span></div>`;
+      g.appendChild(card);
+      const cvs=card.querySelectorAll('canvas');
+      if(!fds.n){}
+      else if(c.split) c.split.forEach((p,pi)=>charts.push(buildChart(cvs[pi],ds,p.s,p.fmt,{half:1})));
+      else charts.push(buildChart(cvs[0],ds,c.s,c.fmt,c));
+      const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
+      const tf=c.fmt||c.split.flatMap(p=>p.s.filter(s=>s.ref==null).map(()=>p.fmt));
+      btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=fds.n?tableHTML(fds,tf):'<p class="note">Sem dados no período.</p>';tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
+    });
+    main.appendChild(el);
+  });
+}
+function kpis(){
+  const last=(k,i)=>{const s=D[k].series[i].data,L=D[k].labels;for(let j=s.length-1;j>=0;j--)if(s[j]!=null)return {v:s[j],l:L[j],j};};
+  const back=(k,i,j,n)=>{const s=D[k].series[i].data;for(let x=j-n;x>=0;x--)if(s[x]!=null)return s[x];return null};
+  const items=[
+    {t:'SELIC fim de 2026 (Focus)',k:'focus_selic_ipca',i:0,f:F.pp,n:20,dl:'vs 4 semanas',pp:1},
+    {t:'IPCA 12 meses',k:'incc_ipca',i:1,f:F.pct,n:12,dl:'vs 12m'},
+    {t:'Taxa de desocupação',k:'desemprego',i:0,f:F.pct,n:12,dl:'vs 12m'},
+    {t:'Renda média do trabalho',k:'desemprego',i:1,f:F.brl,n:12,dl:'vs 12m',rel:1},
+    {t:'Endividamento das famílias',k:'juros_endiv',i:1,f:F.pct,n:12,dl:'vs 12m'},
+    {t:'Inadimplência PF',k:'renda_inad',i:1,f:F.pct,n:12,dl:'vs 12m'},
+    {t:'INCC 12 meses',k:'incc_ipca',i:0,f:F.pct,n:12,dl:'vs 12m'},
+    {t:'Incerteza econômica (IIE-Br)',k:'iie',i:0,f:F.num,n:12,dl:'vs 12m',abs:1},
+  ];
+  document.getElementById('kpis').innerHTML=items.map(it=>{
+    const L=last(it.k,it.i);const b=back(it.k,it.i,L.j,it.n);let d='–';
+    if(b!=null){const x=L.v-b;const sg=x>0?'+':x<0?'−':'±';
+      d=it.rel?sg+nf(1).format(Math.abs(x/b*100))+'%':it.abs?sg+nf(1).format(Math.abs(x)):it.pp?sg+nf(2).format(Math.abs(x))+' p.p.':sg+nf(1).format(Math.abs(x*100))+' p.p.'}
+    return `<div class="kpi"><span class="k">${it.t}</span><span class="v">${it.f(L.v)}</span><span class="d"><span>${d}</span> ${it.dl} · ${fmtLabel(L.l,true)}</span></div>`}).join('');
+}
+function nav(){
+  const n=document.getElementById('nav');n.innerHTML=SECS.map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.tag}</a>`).join('');
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){n.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.id===e.target.id))}})},{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('main section').forEach(s=>io.observe(s));
+}
+const $from=document.getElementById('d-from'),$to=document.getElementById('d-to'),$msg=document.getElementById('d-msg');
+function apply(){
+  if(FROM&&TO&&FROM>TO){$msg.textContent='A data inicial é posterior à final. Ajuste "De" ou "Até".';return}
+  $msg.textContent=(FROM||TO)?`Mostrando ${FROM?fmtLabel(FROM+'-01'):'início'} → ${TO?fmtLabel(TO+'-01'):'último dado'}`:'';
+  $from.value=FROM;$to.value=TO;
+  document.querySelectorAll('#per button').forEach(b=>b.setAttribute('aria-pressed',PRESET>=0&&+b.dataset.y===PRESET&&(PRESET>0||(!FROM&&!TO))));
+  try{localStorage.setItem('radar-range',JSON.stringify({from:FROM,to:TO,preset:PRESET}))}catch(e){}
+  render();nav()}
+function setPer(y){PRESET=y;FROM=y?addMonths(REF,-12*y+1):'';TO='';apply()}
+document.querySelectorAll('#per button').forEach(b=>b.onclick=()=>setPer(+b.dataset.y));
+$from.addEventListener('change',()=>{FROM=$from.value;PRESET=-1;apply()});
+$to.addEventListener('change',()=>{TO=$to.value;PRESET=-1;apply()});
+document.getElementById('d-clear').onclick=()=>setPer(0);
+Chart.defaults.font.family='"Source Sans 3",system-ui,sans-serif';
+kpis();apply();
+// redesenha ao trocar o tema
+const rerender=()=>{render();nav()};
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',rerender);
+new MutationObserver(rerender).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+let rt,lw=window.innerWidth;window.addEventListener('resize',()=>{if(Math.abs(window.innerWidth-lw)<40)return;lw=window.innerWidth;clearTimeout(rt);rt=setTimeout(rerender,250)});
+document.fonts&&document.fonts.ready.then(rerender);
+</script>

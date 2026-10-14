@@ -1,0 +1,351 @@
+<title>Peers Dexco</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;900&family=Red+Hat+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: caderno de benchmarking — abas por negócio, painel de filtros, tabela-resumo, seções por tema (escala, rentabilidade, custos, giro, caixa, setorial).
+   Light-first como os decks do Offsite: papel branco, Dexco em tinta preta. */
+:root{
+  --bg:#f4f4f2; --panel:#ffffff; --panel-2:#f0efec; --line:#e1e0dc; --grid:#ecebe7;
+  --ink:#111111; --ink-2:#4d4c48; --ink-3:#7a7974; --mark:#ffe14d; --mark-ink:#111111;
+  --p1:#2a78d6; --p2:#eb6834; --p3:#1baf7a; --p4:#eda100; --p5:#e87ba4; --p6:#008300; --p7:#6250d6; --p8:#e34948; --ctx:#c4c3bd; --ref:#8d8a84;
+  --dex:#111111; --dex-bg:#ecebe7;
+  --display:"Red Hat Display",system-ui,sans-serif; --body:"Red Hat Text",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141517; --panel:#1c1d20; --panel-2:#25272b; --line:#33353a; --grid:#2a2c30;
+  --ink:#f1f0ed; --ink-2:#bdbbb5; --ink-3:#8c8a85; --mark:#e9c92f; --mark-ink:#111111;
+  --p1:#3987e5; --p2:#d95926; --p3:#199e70; --p4:#c98500; --p5:#d55181; --p6:#008300; --p7:#9085e9; --p8:#e66767; --ctx:#4a4c51; --ref:#8c8a85;
+  --dex:#f1f0ed; --dex-bg:#2a2c30; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141517; --panel:#1c1d20; --panel-2:#25272b; --line:#33353a; --grid:#2a2c30;
+  --ink:#f1f0ed; --ink-2:#bdbbb5; --ink-3:#8c8a85; --mark:#e9c92f; --mark-ink:#111111;
+  --p1:#3987e5; --p2:#d95926; --p3:#199e70; --p4:#c98500; --p5:#d55181; --p6:#008300; --p7:#9085e9; --p8:#e66767; --ctx:#4a4c51; --ref:#8c8a85;
+  --dex:#f1f0ed; --dex-bg:#2a2c30; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1280px;margin:0 auto}
+header.top{padding-block:28px 14px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font:900 clamp(34px,5vw,52px)/1 var(--display);margin:8px 0 0;letter-spacing:-.02em}
+h1 span{color:var(--ink-3);font-weight:700}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding-block:10px 0;border-bottom:2px solid var(--ink);scrollbar-width:none}
+.tabs button{flex:none;font:700 16px var(--display);color:var(--ink-3);background:none;border:0;padding:8px 14px 10px;cursor:pointer;border-radius:8px 8px 0 0}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tabs button:hover:not([aria-selected="true"]){color:var(--ink)}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
+.filters{display:grid;grid-template-columns:auto auto auto auto;gap:14px 24px;align-items:end;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f > span{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.f .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+select{font:500 13px var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:500 13px var(--body);color:var(--ink-2);background:var(--panel);border:0;padding:6px 11px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 13px var(--body);color:var(--ink-2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--ctx);flex:none}
+.chip[aria-pressed="true"]{color:var(--ink);border-color:currentColor}
+.chip .cc{font:11px var(--mono);color:var(--ink-3)}
+.chip:disabled{opacity:.45;cursor:not-allowed}
+.hint{font-size:12.5px;color:var(--ink-3)}
+nav.sec{display:flex;gap:4px;overflow-x:auto;padding-block:14px 0;scrollbar-width:none}
+nav.sec a{flex:none;font:600 13px var(--body);color:var(--ink-2);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel)}
+nav.sec a:hover{color:var(--ink);border-color:var(--ink-3)}
+section{padding-top:36px;scroll-margin-top:60px}
+.sh{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.sh h2{font:700 clamp(21px,2.5vw,28px)/1.15 var(--display);margin:0;text-wrap:balance}
+.sh p{margin:0;color:var(--ink-2);max-width:80ch}
+mark{background:none;color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{font:600 16px/1.25 var(--body);margin:0}
+.card .unit{font-size:12.5px;color:var(--ink-3)}
+.read{font:12.5px/1.5 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.read b{color:var(--ink);font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--ink-2)}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:5px}
+.legend i.dex{border-top-width:3px}
+.legend i.dash{border-top-style:dashed}
+.plot{position:relative;height:240px;flex:1 1 auto;min-height:240px}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.focus{flex:none;font:600 12px var(--body);color:var(--ink-2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.focus:hover{border-color:var(--ink-3);color:var(--ink)}
+.focus[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.clip b{font-weight:600;color:var(--ink-2)}
+.tbl table.adj th,.tbl table.adj td{text-align:left;font-family:var(--body);font-size:12.5px}
+.tbl table.adj td.n{text-align:right;font-family:var(--mono)}
+.exl{font-size:12px;color:var(--ink-3);border-left:3px solid var(--line);padding-left:8px}
+.exl b{font-weight:600;color:var(--ink-2)}
+.clip{font-size:12px;color:var(--ink-3);border-left:3px solid var(--ink-3);padding-left:8px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font:11.5px var(--mono);color:var(--ink-3);border-top:1px solid var(--grid);padding-top:8px;margin-top:auto}
+.tabbtn{font:inherit;color:var(--p1);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font:12.5px var(--mono);font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left;font-family:var(--body);font-size:13px;color:var(--ink-2);position:sticky;left:0;background:var(--panel)}
+.tbl thead th{font:600 12.5px var(--body);color:var(--ink);vertical-align:bottom;white-space:normal;min-width:84px}
+.tbl thead th small{display:block;font:400 11px var(--mono);color:var(--ink-3)}
+.tbl .dexc{background:var(--dex-bg);font-weight:500;color:var(--ink)}
+.tbl sup{font-size:9.5px;color:var(--ink-3);margin-left:2px}
+.tbl td.na{color:var(--ink-3)}
+.tbl .rk{font-family:var(--body);font-size:12px;color:var(--ink-2);text-align:left}
+.rank{display:inline-flex;align-items:center;gap:4px}
+.rank b{font-weight:600;color:var(--ink)}
+.resumo{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 0 6px}
+.resumo .tbl{padding:0 6px}
+.resumo .note{padding:8px 16px 4px}
+.note{font-size:12px;color:var(--ink-3)}
+.mini{overflow-x:auto;max-height:240px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);max-width:95ch;display:flex;flex-direction:column;gap:6px}
+.empty{flex:1;display:grid;place-items:center;min-height:120px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-3);font-size:13px;text-align:center;padding:12px}
+  .filters .f.wide{grid-column:1/-1}
+@media (max-width:1000px){.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr 1fr}.filters .f.wide{grid-column:1/-1}}
+@media (max-width:760px){.grid,.grid.three{grid-template-columns:minmax(0,1fr)}.filters{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Offsite 2026 · Análise de Competidores (vSophia)</div>
+  <h1><span>Peers</span> Dexco</h1>
+</header>
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<div class="filters">
+  <div class="f"><span id="l-ano">Ano de referência</span><div class="row"><select id="ano" aria-labelledby="l-ano"></select></div></div>
+  <div class="f"><span>Período dos gráficos</span><div class="row"><label for="de">De</label><select id="de"></select><label for="ate">Até</label><select id="ate"></select></div></div>
+  <div class="f"><span id="l-esc">Peers</span><div class="seg" role="group" aria-labelledby="l-esc" id="escopo">
+    <button data-v="all" aria-pressed="true">Todos</button><button data-v="br" aria-pressed="false">Brasil</button><button data-v="int" aria-pressed="false">Internacionais</button></div></div>
+  <div class="f"><span id="l-foco">Escala dos gráficos</span><div class="seg" role="group" aria-labelledby="l-foco" id="focoAll"><button data-v="0" aria-pressed="true">Menor ao maior valor</button><button data-v="1" aria-pressed="false">Foco Dexco</button></div></div>
+  <div class="f wide"><span>Empresas nos gráficos</span><div class="chips" id="chips"></div></div>
+</div>
+<nav class="sec" id="nav"></nav>
+<main id="main"></main>
+<footer>
+  <span>Fonte: planilha Análise de Competidores (vSophia), abas "Gráficos" de cada negócio. Cada gráfico mostra no rodapé a célula onde começa o bloco. Valores em R$ milhões; empresas estrangeiras convertidas pelo câmbio de cada ano na própria planilha.</span>
+  <span>Tratamento: células zeradas nas séries financeiras foram lidas como "sem dado". Valores com erro de origem e outliers foram retirados dos gráficos; no resumo aparecem como n.s. (não significativo). As escalas vão do menor ao maior valor de cada gráfico; colunas sempre partem do zero.</span>
+</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script type="application/json" id="data">__DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const nf=d=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const F={
+  mi:v=>v==null?'–':(Math.abs(v)>=10000?nf(0).format(v/1000)+' bi':nf(Math.abs(v)>=100?0:1).format(v)),
+  pct:v=>v==null?'–':nf(1).format(v*100)+'%',
+  x:v=>v==null?'–':nf(1).format(v)+'x',
+  d:v=>v==null?'–':nf(0).format(v),
+  brl:v=>v==null?'–':'R$ '+nf(0).format(v),
+};
+const UNIT={mi:'R$ milhões',pct:'%',x:'vezes (x)',d:'dias',brl:'R$'};
+// direção de "melhor" para ranking; null = sem ranking
+const BETTER={rol:1,ebitda:1,ll:1,ci:null,roic:1,me:1,mb:1,ml:1,giro:1,alav:-1,cpv:-1,dga:-1,dv:-1,wk:-1,pmr:-1,pme:-1,pmp:1,varwk:null,capexe:null,outras:null,fcl:1,capexr:null};
+const FLAG={BR:'Brasil',JP:'Japão',ES:'Espanha',US:'EUA',IT:'Itália',CH:'Suíça',DE:'Alemanha',MX:'México'};
+const GROUPS=[
+ {id:'escala',tag:'Escala',h:'Tamanho: receita, resultado e capital empregado',p:'Valores absolutos em R$ milhões, em colunas, com eixo do zero ao maior valor. Use "Foco Dexco" para ajustar o eixo aos valores da Dexco.'},
+ {id:'rent',tag:'Rentabilidade',h:'Retorno, margens, giro e alavancagem',p:'ROIC = NOPAT / capital investido. Giro = receita líquida / capital investido. Alavancagem = dívida líquida / EBITDA.'},
+ {id:'custos',tag:'Custos',h:'Estrutura de custos e despesas sobre a receita',p:'Quanto menor, melhor. CPV caixa exclui depreciação.'},
+ {id:'giro',tag:'Capital de giro',h:'Gestão do capital de giro',p:'Capital de giro / ROL e prazos médios em dias. Mais dias de fornecedores e menos dias de recebíveis e estoque liberam caixa.'},
+ {id:'caixa',tag:'Fluxo de caixa',h:'Conversão de EBITDA em caixa',p:'Como o EBITDA se transforma em fluxo de caixa livre: variação do capital de giro, capex e outras saídas.'},
+ {id:'setor',tag:'Setorial',h:'Mercado, participação e preço',p:'Dados setoriais da planilha. As cores seguem as empresas destacadas; mercado e WACC aparecem tracejados em cinza.'},
+];
+const SUM=['rol','ebitda','me','fcl','giro','ci','alav','roic'];
+// Escalas dos gráficos nas apresentações do Offsite (eixo vertical: mín, máx; bar = gráfico de colunas no slide)
+const AX={
+ loucas:{rol:{max:80000,bar:1},ebitda:{max:8000,bar:1},ll:{min:-700,max:3000,bar:1},ci:{min:0,max:60000,bar:1},me:{min:-.3,max:.7},roic:{max:.5},giro:{max:7},alav:{max:7},mb:{min:0,max:1},ml:{max:.5},cpv:{min:0,max:1},dga:{min:0,max:.6},dv:{min:-.1,max:.5},pmp:{max:250},wk:{max:.5},pmr:{max:100},pme:{max:250},fcl:{max:3},varwk:{min:-2,max:2},capexe:{min:-2,max:2},outras:{min:-2,max:2},capexr:{min:0,max:.15},
+   'Market share – Competitivo':{min:0},'Market share – Médio/Luxo':{min:0},'Preço médio – Competitivo':{min:100,max:300},'Preço médio – Médio/Luxo':{min:500,max:1200}},
+ metais:{rol:{min:0,max:50000,bar:1},ebitda:{min:0,max:10000,bar:1},ll:{min:0,max:10000,bar:1},ci:{min:0,max:20000,bar:1},me:{min:0,max:1},roic:{min:0,max:.6},alav:{min:-5,max:5},giro:{min:0,max:15},mb:{min:0,max:1},ml:{min:-.3,max:.3},cpv:{min:0,max:1},dga:{min:0,max:.5},dv:{min:0,max:.5},fcl:{min:-1.5,max:1.5},varwk:{min:-2,max:2},capexe:{min:-2.5,max:.5},outras:{min:-1.3,max:1.3},pmp:{min:0,max:400},wk:{min:-.1,max:.8},pmr:{max:100},pme:{min:0,max:400},capexr:{min:-.02,max:.15},
+   'Preço médio – Competitivo':{min:100},'Preço médio – Médio/Luxo':{min:300}},
+ madeira:{rol:{min:0,max:7000},roic:{min:0,max:.25},me:{min:0,max:.4},giro:{min:.2,max:1.8},wk:{min:0,max:.4},pmr:{min:0,max:150},pme:{min:0,max:150},pmp:{min:0,max:150},'ROIC: players internacionais vs Dexco':{max:.25}},
+ revest:{rol:{min:0,max:70000,bar:1},ebitda:{min:0,max:12000,bar:1},ll:{min:-1000,max:12000,bar:1},ci:{min:0,max:70000,bar:1},alav:{min:-2,max:6},me:{min:-.1,max:.9},roic:{min:-.1,max:.6},giro:{max:3},dv:{min:-.1,max:.5},dga:{min:0,max:.5},cpv:{min:0,max:1},wk:{min:0,max:1},pmr:{max:200},pme:{max:200},pmp:{max:200},fcl:{min:-1,max:2.2},mb:{min:0,max:1},ml:{min:-.4,max:.4},capexr:{min:-.1,max:.4}},
+};
+const SLOTS=['--p1','--p2','--p3','--p4','--p5','--p6','--p7','--p8'];
+const slotColor=i=>css(SLOTS[i%8]);const slotDash=i=>i>=8?[6,3]:[];
+const slotVar=i=>`var(${SLOTS[i%8]})`;
+
+// ---------- estado ----------
+let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false};
+try{Object.assign(ST,JSON.parse(localStorage.getItem('peers-st2')||'{}'))}catch(e){}
+ST.foco=ST.foco||{};
+const save=()=>{try{localStorage.setItem('peers-st2',JSON.stringify(ST))}catch(e){}};
+const isFoco=k=>{const f=(ST.foco[ST.seg]||{})[k];return f==null?ST.focoAll:f};
+const yr=l=>{const m=String(l).match(/(\d{2})(?!.*\d)/);const y=String(l).match(/20\d\d/);return y?+y[0]:2000+(+(String(l).match(/T(\d\d)/)||[0,0])[1])};
+const yOf=l=>/LTM/.test(l)?2000+(+l.match(/T(\d\d)/)[1]):+String(l).slice(0,4);
+function seg(){return D[ST.seg]}
+function visibleEnts(){const s=seg();return Object.keys(s.ents).filter(k=>{const e=s.ents[k];if(e.dex)return true;if(ST.esc==='br')return e.country==='BR';if(ST.esc==='int')return e.country!=='BR';return true})}
+function hlMap(){ // entity -> slot index (fixo enquanto selecionado)
+  const s=seg(); if(!ST.hl[ST.seg]){ // padrão: 3 maiores peers brasileiros pela receita
+    const r=s.metrics.rol, peers=Object.keys(s.ents).filter(k=>!s.ents[k].dex&&s.ents[k].country==='BR'&&!/^dexco/.test(k));
+    const last=k=>{const v=(r.series[k]||[]).filter(x=>x!=null);return v.length?v[v.length-1]:-1};
+    peers.sort((a,b)=>last(b)-last(a)); const m={};peers.slice(0,3).forEach((k,i)=>m[k]=i);ST.hl[ST.seg]=m}
+  return ST.hl[ST.seg]}
+function colorOfEnt(k){const s=seg();if(s.ents[k]&&s.ents[k].dex)return css('--dex');const m=hlMap();return k in m?slotColor(m[k]):css('--ctx')}
+function allYears(){const s=seg();const set=new Set();Object.values(s.metrics).forEach(m=>m.years.forEach(y=>set.add(y)));s.sector.forEach(b=>b.years.forEach(y=>set.add(y)));return [...set].sort((a,b)=>yOf(a)-yOf(b)||(/LTM/.test(a)?1:-1))}
+function inPeriod(l){const y=yOf(l);return (!ST.de||y>=+ST.de)&&(!ST.ate||y<=+ST.ate)}
+// valor no ano de referência; se faltar, último ano anterior disponível
+function valAt(m,k,ano){const v=m.series[k];if(!v)return {v:null};const ex=(m.excl||{})[k]||{};let best=null;m.years.forEach((y,i)=>{if(/LTM/.test(y)||+y>+ano)return;if(v[i]!=null)best={v:v[i],y};else if(ex[y])best={v:null,y,ns:ex[y]}});return best||{v:null}}
+function median(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2}
+function rankInfo(key,m,ano){
+  const ents=visibleEnts().filter(k=>!/^dexco_/.test(k));const vals=ents.map(k=>({k,...valAt(m,k,ano)})).filter(x=>x.v!=null&&(!x.y||+ano-+x.y<=1));
+  const dex=vals.find(x=>seg().ents[x.k].dex);const peers=vals.filter(x=>!seg().ents[x.k].dex);
+  const med=median(peers.map(x=>x.v));let pos=null;const dir=BETTER[key];
+  if(dex&&dir){const sorted=[...vals].sort((a,b)=>dir*(b.v-a.v));pos=sorted.findIndex(x=>x.k===dex.k)+1}
+  const dexNs=(()=>{const r=valAt(m,'dexco',ano);return r.ns?r:null})();
+  return {dex,med,pos,n:vals.length,dexNs}}
+
+// ---------- gráficos ----------
+const charts=[];
+const crosshair={id:'xh',afterDatasetsDraw(c){const a=c.tooltip&&c.tooltip.getActiveElements();if(!a||!a.length)return;const x=a[0].element.x,{top,bottom}=c.chartArea,ctx=c.ctx;ctx.save();ctx.strokeStyle=css('--ink-3');ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore()}};
+function robustRange(all){ // corta pontos muito fora da faixa (erros de base) para não achatar o gráfico
+  const s=all.filter(v=>v!=null).sort((a,b)=>a-b);if(s.length<6)return null;
+  const q=p=>s[Math.min(s.length-1,Math.max(0,Math.round(p*(s.length-1))))];
+  const lo=q(.05),hi=q(.95),iqr=Math.max(hi-lo,1e-9);const mn=lo-1.2*iqr,mx=hi+1.2*iqr;
+  if(s[0]>=mn&&s[s.length-1]<=mx)return null;return {min:Math.max(s[0],mn),max:Math.min(s[s.length-1],mx)}}
+function niceStep(span){const r=span/5,p=Math.pow(10,Math.floor(Math.log10(r))),m=r/p;return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p}
+function focusRange(sets,bar){ // eixo ajustado à Dexco (tinta preta), com folga
+  const dv=sets.filter(d=>d._dex).flatMap(d=>d.data).filter(v=>v!=null);if(!dv.length)return null;
+  let lo=Math.min(...dv),hi=Math.max(...dv);if(bar||lo>0&&lo<hi*0.35){lo=Math.min(lo,0)}if(hi<0)hi=0;
+  const pad=Math.max((hi-lo)*.45,Math.abs(hi||lo)*.25,1e-6);let mn=lo-(lo<0||lo>0&&!bar?pad:0),mx=hi+pad;
+  const st=niceStep(mx-mn);mn=Math.floor(mn/st)*st;mx=Math.ceil(mx/st)*st;if(lo>=0&&mn<0)mn=0;return {min:mn,max:mx}}
+function dataRange(sets,bar){ // eixo do menor ao maior valor plotado, arredondado
+  const v=sets.flatMap(d=>d.data).filter(x=>x!=null);if(!v.length)return null;
+  let lo=Math.min(...v),hi=Math.max(...v);if(bar){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+  if(hi===lo){hi+=Math.abs(hi)*.1||1;lo-=Math.abs(lo)*.1||1}
+  const st=niceStep(hi-lo);let mn=Math.floor(lo/st)*st,mx=Math.ceil(hi/st)*st;
+  if(!bar&&lo>=0&&mn<0)mn=0;return {min:mn,max:mx}}
+function drawChart(canvas,labels,sets,fmt,opts={}){
+  const f=F[fmt];let rr=null;
+  if(opts.foco)rr=focusRange(sets,opts.bar);
+  else rr=dataRange(sets,opts.bar);
+  const clipped={};
+  if(rr){sets.forEach(d=>{if(d._ref)return;d.data.forEach((v,i)=>{if(v!=null&&((rr.min!=null&&v<rr.min)||(rr.max!=null&&v>rr.max))){(clipped[d.label]=clipped[d.label]||[]).push(labels[i]+': '+f(v))}})})}
+  const c=new Chart(canvas,{type:opts.bar?'bar':'line',data:{labels,datasets:sets},plugins:[crosshair],options:{
+    responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,boxPadding:4,
+      titleFont:{family:'IBM Plex Mono',size:12},bodyFont:{family:'Red Hat Text',size:12.5},
+      itemSort:(a,b)=>(b.raw??-1e18)-(a.raw??-1e18),filter:it=>it.raw!=null,
+      callbacks:{label:it=>' '+it.dataset.label+': '+f(it.raw)+(it.dataset._ctx?' ':''),labelColor:it=>({borderColor:it.dataset.borderColor,backgroundColor:it.dataset.borderColor})}}},
+    scales:{x:{type:'category',grid:{display:false},border:{color:css('--line')},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},maxRotation:0,autoSkip:true,callback:(v,i)=>String(labels[i]).replace(' LTM','')}},
+      y:{type:'linear',beginAtZero:!!opts.bar||(rr&&rr.min==null),min:rr&&rr.min!=null?rr.min:undefined,max:rr&&rr.max!=null?rr.max:undefined,grid:{color:css('--grid'),drawTicks:false},border:{display:false},
+        ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:7,callback:v=>{return fmt==='pct'?nf(Math.abs(v)<.1&&v!==0?1:0).format(v*100)+'%':fmt==='x'?nf(1).format(v)+'x':fmt==='mi'?F.mi(v):nf(0).format(v)}}}}}});
+  charts.push(c);return Object.entries(clipped)}
+function lineSet(label,data,color,o={}){return Object.assign({label,data,borderColor:color,backgroundColor:color,borderWidth:2,pointRadius:0,pointHoverRadius:4,pointHoverBorderColor:css('--panel'),pointHoverBorderWidth:2,tension:0,cubicInterpolationMode:'monotone',spanGaps:true},o)}
+function entSets(m,idx,ents){
+  const s=seg(),hm=hlMap();
+  return ents.filter(k=>m.series[k]).map(k=>{const e=s.ents[k],col=colorOfEnt(k);const data=idx.map(i=>m.series[k][i]);
+    if(e.dex) return lineSet(e.name,data,col,{borderWidth:3,pointRadius:3,pointBackgroundColor:col,order:0,_dex:1});
+    if(/^dexco_/.test(k)) return lineSet(e.name,data,css('--dex'),{borderDash:[5,4],order:0});
+    if(k in hm) return lineSet(e.name,data,col,{order:1,borderDash:slotDash(hm[k])});
+    return null}).filter(Boolean)}
+function asBars(sets){return sets.map(d=>Object.assign({},d,{type:'bar',backgroundColor:d.borderColor,borderWidth:0,borderRadius:2,borderDash:undefined,barPercentage:.92,categoryPercentage:.85,order:d._dex?0:1}))}
+function legendFor(sets){const items=sets.filter(d=>!d._ctx).map(d=>`<span><i class="${d._dex||d.borderWidth>=3?'dex':''} ${d.borderDash&&d.borderDash.length?'dash':''}" style="border-color:${d.borderColor}"></i>${d.label}</span>`);
+  return items.join('')}
+function tableFor(labels,sets,f){return `<table><thead><tr><th>Empresa</th>${labels.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${sets.map(d=>`<tr><td>${d.label}</td>${d.data.map(v=>`<td>${f(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+
+function card(g,o){ // o: title, unit, read, labels, sets, fmt, ref, ax, bar, fkey
+  const el=document.createElement('article');el.className='card';const tid='t'+Math.random().toString(36).slice(2,8);
+  const has=o.labels.length&&o.sets.some(d=>d.data.some(v=>v!=null));
+  const foco=o.fkey?isFoco(o.fkey):false;
+  el.innerHTML=`<div class="ch"><div><h3>${o.title}</h3><div class="unit">${o.unit}</div></div>${o.fkey?`<button class="focus" aria-pressed="${foco}" title="Ajusta o eixo vertical aos valores da Dexco">Foco Dexco</button>`:''}</div>
+    <div class="legend">${legendFor(o.sets)}</div>
+    ${has?`<div class="plot"><canvas role="img" aria-label="${o.title}"></canvas></div>`:`<div class="empty">Sem dados no período e no filtro de peers escolhidos.</div>`}
+    <div class="clip" hidden></div>
+    ${o.excl&&o.excl.length?`<div class="exl">Excluídos do gráfico: ${o.excl.join(' · ')}.</div>`:''}
+    <div class="mini" id="${tid}" hidden></div>
+    <div class="foot" style="justify-content:flex-end"><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button></div>`;
+  g.appendChild(el);
+  if(has){const sets=o.bar?asBars(o.sets):o.sets;const clipped=drawChart(el.querySelector('canvas'),o.labels,sets,o.fmt,{ax:o.ax,bar:o.bar,foco});
+    if(clipped.length){const c=el.querySelector('.clip');c.hidden=false;
+      c.innerHTML=('Fora do eixo ajustado: ')+clipped.map(([n,l])=>l.length>2?`<b>${n}</b> (${l.length} anos)`:`<b>${n}</b> ${l.join(', ')}`).join(' · ')+'. Veja os valores em "Ver tabela".'}}
+  const fb=el.querySelector('.focus');if(fb)fb.onclick=()=>{(ST.foco[ST.seg]=ST.foco[ST.seg]||{})[o.fkey]=!foco;save();renderMain()};
+  const b=el.querySelector('.tabbtn'),t=el.querySelector('.mini');
+  b.onclick=()=>{const open=t.hidden;if(open)t.innerHTML='<div class="tbl">'+tableFor(o.labels,o.sets,F[o.fmt])+'</div>';t.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela'};
+}
+
+// ---------- render ----------
+function renderTabs(){document.getElementById('tabs').innerHTML=Object.entries(D).map(([k,s])=>`<button role="tab" aria-selected="${k===ST.seg}" data-k="${k}">${s.name}</button>`).join('');
+  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ST.seg=b.dataset.k;save();renderAll()})}
+function renderFilters(){
+  const ys=allYears(),plain=ys.filter(y=>!/LTM/.test(y));
+  const yearsNum=[...new Set(ys.map(yOf))].sort();
+  if(!plain.includes(ST.ano))ST.ano=plain.includes('2025')?'2025':plain[plain.length-1];
+  document.getElementById('ano').innerHTML=plain.slice().reverse().map(y=>`<option ${y===ST.ano?'selected':''}>${y}</option>`).join('');
+  const opt=(sel)=>yearsNum.map(y=>`<option value="${y}" ${+sel===y?'selected':''}>${y===2026&&ys.some(l=>/LTM/.test(l))&&!ys.includes('2026')?'1T26 LTM':y}</option>`).join('');
+  if(!ST.de||!yearsNum.includes(+ST.de))ST.de=String(yearsNum[0]);if(!ST.ate||!yearsNum.includes(+ST.ate))ST.ate=String(yearsNum[yearsNum.length-1]);
+  document.getElementById('de').innerHTML=opt(ST.de);document.getElementById('ate').innerHTML=opt(ST.ate);
+  document.querySelectorAll('#escopo button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===ST.esc));
+  document.querySelectorAll('#focoAll button').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='1')===ST.focoAll));
+  const s=seg(),hm=hlMap();const peers=Object.keys(s.ents).filter(k=>!s.ents[k].dex&&!/^dexco_/.test(k));
+  const full=false;
+  document.getElementById('chips').innerHTML=`<span class="chip" style="cursor:default;border-color:var(--ink)"><i style="background:var(--dex)"></i>${s.ents.dexco.name}</span>`+peers.map(k=>{const on=k in hm,e=s.ents[k];return `<button class="chip" data-k="${k}" aria-pressed="${on}" ${!on&&full?'disabled title="Desmarque um peer para escolher outro"':''}><i style="background:${on?slotVar(hm[k]):'var(--ctx)'};${on&&hm[k]>=8?'outline:2px dashed var(--ink-3);outline-offset:1px':''}"></i>${e.name}<span class="cc">${e.country}</span></button>`}).join('');
+  document.querySelectorAll('#chips button').forEach(b=>b.onclick=()=>{const k=b.dataset.k,m=hlMap();if(k in m)delete m[k];else{const used=Object.values(m);let free=0;while(used.includes(free))free++;m[k]=free}save();renderAll()});
+}
+function sumTable(){
+  const s=seg(),ents=visibleEnts().filter(k=>!/^dexco_/.test(k));const ano=ST.ano;
+  // ano da coluna = ano da receita mais recente da empresa; indicadores de outros anos não entram na coluna
+  const colYear=k=>{const r=valAt(s.metrics.rol,k,ano);if(r.y)return r.y;const ys=SUM.map(m=>s.metrics[m]&&valAt(s.metrics[m],k,ano).y).filter(Boolean);return ys.sort().pop()};
+  const head=`<tr><th>${s.name} · R$ milhões</th>${ents.map(k=>{const e=s.ents[k];const y=colYear(k)||'–';return `<th class="${e.dex?'dexc':''}">${e.name}<small>${e.dex?'Dexco':FLAG[e.country]||e.country} · ${y}</small></th>`}).join('')}</tr>`;
+  const rows=SUM.filter(m=>s.metrics[m]).map(m=>{const M=s.metrics[m],f=F[M.fmt];const ri=rankInfo(m,M,ano);
+    return `<tr><td>${M.label}${M.calc?' ¹':''}</td>${ents.map(k=>{const r0=valAt(M,k,ano);const r=r0.y&&r0.y===colYear(k)?r0:{v:null};return `<td class="${s.ents[k].dex?'dexc':''} ${r.v==null?'na':''}" ${r.ns?`title="Excluído (${r.ns.kind}): ${f(r.ns.v)} – ${r.ns.why}"`:''}>${r.ns?'n.s.':f(r.v)}</td>`}).join('')}</tr>`}).join('');
+  return `<div class="tbl"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>
+   <p class="note">Ano de referência ${ano}. O ano abaixo do nome de cada empresa é o da receita mais recente disponível até ${ano}; os demais indicadores são do mesmo ano (– quando a empresa não tem o dado naquele ano). A alavancagem da Dexco é sempre a consolidada.${s.metrics.ebitda&&s.metrics.ebitda.calc?' (1) EBITDA calculado como receita × margem EBITDA (a aba de Madeira não traz o valor absoluto).':''}</p>`}
+function renderMain(){
+  charts.forEach(c=>c.destroy());charts.length=0;
+  const s=seg(),main=document.getElementById('main');main.innerHTML='';
+  const ents=visibleEnts();const ano=ST.ano;
+  // resumo
+  const rs=document.createElement('section');rs.id='resumo';
+  const r1=rankInfo('roic',s.metrics.roic,ano),r2=rankInfo('me',s.metrics.me,ano),r3=rankInfo('rol',s.metrics.rol,ano);
+  rs.innerHTML=`<div class="sh"><h2>Peers ${s.name}: resumo ${ano}</h2><p>${s.ents.dexco.name}: <mark>receita de R$ ${F.mi(r3.dex&&r3.dex.v)} mi</mark> (mediana dos peers R$ ${F.mi(r3.med)} mi), margem EBITDA ${F.pct(r2.dex&&r2.dex.v)} (mediana dos peers ${F.pct(r2.med)}) e <mark>ROIC ${F.pct(r1.dex&&r1.dex.v)}</mark> (mediana ${F.pct(r1.med)}).</p></div><div class="resumo">${sumTable()}</div>`;
+  main.appendChild(rs);
+  GROUPS.forEach(G=>{
+    const sec=document.createElement('section');sec.id=G.id;
+    sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div><div class="grid ${G.id==='rent'||G.id==='caixa'?'three':''}"></div>`;
+    const g=sec.querySelector('.grid');let n=0;
+    if(G.id==='setor'){
+      s.sector.forEach(b=>{const idx=b.years.map((y,i)=>i).filter(i=>inPeriod(b.years[i]));const labels=idx.map(i=>b.years[i]);
+        const hm=hlMap();const matchEnt=nm=>Object.keys(s.ents).find(k=>{const a=s.ents[k].name.toLowerCase(),c=nm.toLowerCase();return c.startsWith(a)||a.startsWith(c)});const anyMatch=b.series.some(x=>!x.dex&&!x.ref&&matchEnt(x.name));const used=new Set(anyMatch?Object.values(hm):[]);let free=[0,1,2,3,4,5,6,7].filter(i=>!used.has(i));const occ=/ocupa/i.test(b.title);
+        const sets=b.series.map(x=>{const data=idx.map(i=>x.vals[i]);const nm=x.name;
+          if(occ){const prod=/MDP/.test(nm)?'--p2':'--p1';return lineSet(nm,data,css(prod),{borderDash:x.ref?[5,4]:[],borderWidth:x.ref?2:3})}
+          if(x.ref)return lineSet(nm,data,css('--ref'),{borderDash:[5,4],_ref:0});
+          if(x.dex)return lineSet(nm,data,css('--dex'),{borderWidth:3,pointRadius:3,pointBackgroundColor:css('--dex'),order:0,_dex:1});
+          if(/^outros/i.test(nm))return lineSet(nm,data,css('--ref'),{borderWidth:1.5,borderDash:[2,3]});
+          const key=matchEnt(nm);
+          if(key&&key in hm)return lineSet(nm,data,slotColor(hm[key]),{borderDash:slotDash(hm[key])});
+          if(key)return null;
+          if(!key&&free.length)return lineSet(nm,data,slotColor(free.shift()));
+          return lineSet(nm,data,css('--ctx'),{borderWidth:1.5})}).filter(Boolean);
+        card(g,{title:b.title,unit:b.unit,labels,sets,fmt:b.fmt,ref:b.ref,ax:(AX[ST.seg]||{})[b.title]});n++});
+      if(!n)return;main.appendChild(sec);return}
+    Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id).forEach(([k,m])=>{
+      const idx=m.years.map((y,i)=>i).filter(i=>inPeriod(m.years[i]));const labels=idx.map(i=>m.years[i]);
+      const sets=entSets(m,idx,ents);
+      const ax=(AX[ST.seg]||{})[k];
+      const ri=rankInfo(k,m,ano);const f=F[m.fmt];
+      const read=ri.dexNs?`${s.ents.dexco.name} ${ri.dexNs.y}: <b>n.s.</b> (valor de ${f(ri.dexNs.ns.v)} excluído como ${ri.dexNs.ns.kind}) · mediana peers: <b>${f(ri.med)}</b>`:ri.dex?`${s.ents.dexco.name} ${ri.dex.y}: <b>${f(ri.dex.v)}</b> · mediana peers: <b>${f(ri.med)}</b>`:`${s.ents.dexco.name}: sem dado até ${ano}`;
+      const exl=[];Object.entries(m.excl||{}).forEach(([ek,ys])=>{if(!ents.includes(ek))return;const it=Object.entries(ys).filter(([y])=>inPeriod(y));if(!it.length)return;const kinds=[...new Set(it.map(([,o])=>o.kind))].join('/');exl.push(it.length>2?`<b>${s.ents[ek].name}</b> ${it.length} anos (${kinds})`:`<b>${s.ents[ek].name}</b> `+it.map(([y,o])=>`${y}: ${f(o.v)}`).join(', ')+` (${kinds})`)});
+      card(g,{title:m.label,unit:UNIT[m.fmt]+(m.calc?' · calculado (ROL × margem EBITDA)':'')+(m.dexCons?' · Dexco: alavancagem consolidada':''),read,labels,sets,fmt:m.fmt,ref:m.ref,ax,bar:ax&&ax.bar,fkey:k,excl:exl});n++});
+    if(n)main.appendChild(sec)});
+  document.getElementById('nav').innerHTML=[['resumo','Resumo'],...GROUPS.filter(G=>document.getElementById(G.id)).map(G=>[G.id,G.tag])].map(([i,t])=>`<a href="#${i}">${t}</a>`).join('');
+}
+function renderAll(){renderTabs();renderFilters();renderMain();save()}
+document.getElementById('ano').onchange=e=>{ST.ano=e.target.value;renderAll()};
+document.getElementById('de').onchange=e=>{ST.de=e.target.value;if(+ST.de>+ST.ate)ST.ate=ST.de;renderAll()};
+document.getElementById('ate').onchange=e=>{ST.ate=e.target.value;if(+ST.ate<+ST.de)ST.de=ST.ate;renderAll()};
+document.querySelectorAll('#escopo button').forEach(b=>b.onclick=()=>{ST.esc=b.dataset.v;renderAll()});
+document.querySelectorAll('#focoAll button').forEach(b=>b.onclick=()=>{ST.focoAll=b.dataset.v==='1';ST.foco[ST.seg]={};renderAll()});
+Chart.defaults.font.family='"Red Hat Text",system-ui,sans-serif';
+renderAll();
+const rer=()=>renderMain();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>renderAll());
+new MutationObserver(()=>renderAll()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+let rt,lw=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-lw)<40)return;lw=innerWidth;clearTimeout(rt);rt=setTimeout(rer,250)});
+document.fonts&&document.fonts.ready.then(rer);
+</script>
