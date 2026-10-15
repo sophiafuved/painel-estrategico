@@ -1,0 +1,14 @@
+[
+  {"padrao": "produ[cç][aã]o f[ií]sica.*insumos", "sec": "varejo", "titulo": "Produção de insumos típicos da construção (ICC)"},
+  {"padrao": "varejo.*material de constru", "sec": "varejo", "titulo": "Vendas do varejo: material de construção"},
+  {"padrao": "varejo.*ampliado", "sec": "varejo", "titulo": "Vendas do varejo: índice ampliado"},
+  {"padrao": "varejo.*restrito", "sec": "varejo", "titulo": "Vendas do varejo: índice restrito"},
+  {"padrao": "massa salarial", "sec": "renda", "titulo": "Massa salarial habitual"},
+  {"padrao": "atraso", "sec": "credito", "titulo": "Atraso PF de 15 a 90 dias (% do saldo)"},
+  {"padrao": "comprometimento", "sec": "credito", "titulo": "Comprometimento de renda com dívidas bancárias"},
+  {"padrao": "taxa de juros.*financiamento", "sec": "imob", "titulo": "Taxa de juros do financiamento imobiliário PF"},
+  {"padrao": "^financiamento imobili", "sec": "imob", "titulo": "Financiamento imobiliário"},
+  {"padrao": "m[eé]dio e alto", "sec": "imob", "titulo": "Lançamentos: médio e alto padrão"},
+  {"padrao": "minha casa", "sec": "imob", "titulo": "Lançamentos: Minha Casa Minha Vida"},
+  {"padrao": "^lan[cç]amentos de im[oó]veis", "sec": "imob", "titulo": "Lançamentos de imóveis (total)"}
+]

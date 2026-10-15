@@ -121,6 +121,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
       <button class="tabbtn" id="d-clear" type="button">Limpar</button>
     </div>
     <span class="range-msg" id="d-msg" role="status"></span>
+    <div id="proj-ctl" hidden style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="eyebrow" id="lbl-proj">Projeções Tendências</span>
+      <div class="seg" role="group" aria-labelledby="lbl-proj" id="projseg"><button data-v="1" aria-pressed="true">Mostrar</button><button data-v="0" aria-pressed="false">Ocultar</button></div></div>
   </div>
 </header>
 <nav class="sec" id="nav"></nav>
@@ -360,18 +362,56 @@ function render(){
       const tf=c.fmt2?ds.series.map((_,k)=>(allS.find(s=>s.i===k&&s.ref==null)||{}).ax===2?c.fmt2:c.fmt):c.fmt||c.split.flatMap(p=>p.s.filter(s=>s.ref==null).map(()=>p.fmt));
       btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=fds.n?tableHTML(fds,tf):'<p class="note">Sem dados no período.</p>';tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
     });
+    projCard(sec,g);
     main.appendChild(el);
   });
   const mk=document.createElement('section');mk.id='monte';
   mk.innerHTML=`<div class="sh"><span class="tag">Comparar</span><h2>Monte seu gráfico</h2></div><div class="grid"><article class="card full" id="mk-card"></article></div>`;
   main.appendChild(mk);renderCustom();
 }
+// ---------- Projeções da consultoria (D.tend): um cartão por tópico, realizado x projeção ----------
+let SHOWP=true,PSEL={};
+try{SHOWP=localStorage.getItem('radar-proj')!=='0';PSEL=JSON.parse(localStorage.getItem('radar-proj-sel')||'{}')}catch(e){}
+const TEND=D.tend||null;
+if(TEND)TEND.itens.forEach(x=>{D['tend_'+x.id]={labels:x.labels,series:[{label:x.titulo+' (Tendências)',data:x.data,ref:x.cel}]}});
+function projCard(sec,g){
+  if(!TEND||!SHOWP)return;
+  const its=TEND.itens.filter(x=>x.sec===sec.id);if(!its.length)return;
+  const it=its.find(x=>x.id===PSEL[sec.id])||its[0];
+  const des=TEND.desde,nivel=it.tipo==='nivel';
+  // série realizada e projetada; na linha (nível) a projeção parte do último realizado para ligar os trechos
+  const real=it.data.map((v,i)=>+it.labels[i]<des?v:null);
+  const proj=it.data.map((v,i)=>+it.labels[i]>=des||(nivel&&+it.labels[i]===des-1)?v:null);
+  const ds={labels:it.labels,series:[{label:'Realizado',data:real},{label:'Projeção '+TEND.fonte,data:proj}]};
+  const sers=nivel?[S(0,{c:'s2'}),S(1,{c:'s1',dash:1})]:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1',type:'bar'})];
+  const opt={stack:!nivel};
+  const fds=filterDS(ds);const tid='t-'+it.id;
+  const pills=it.labels.map((l,i)=>+l>=des&&it.data[i]!=null&&inRange(l)?`<span class="pill">${l}p: <b>${F.pct(it.data[i])}</b></span>`:'').join('');
+  const card=document.createElement('article');card.className='card';
+  card.innerHTML=`<div><h3>${it.titulo}</h3><div class="unit">${nivel?'% · média anual':'Var. % a/a'} · ${TEND.fonte}${TEND.edicao?', edição '+TEND.edicao:''} · projeção a partir de ${des}</div></div>
+    ${its.length>1?`<div class="mk"><label>Indicador <select aria-label="Indicador projetado">${its.map(x=>`<option value="${x.id}" ${x.id===it.id?'selected':''}>${x.titulo}</option>`).join('')}</select></label></div>`:''}
+    <div class="legend">${legendHTML(ds,sers,opt)}</div>
+    ${fds.n?`<div class="plot"><canvas role="img" aria-label="${it.titulo}: realizado e projeção"></canvas></div>`:`<div class="empty">Sem dados no período escolhido.</div>`}
+    ${pills?`<div class="pills">${pills}</div>`:''}
+    <div class="tbl" id="${tid}" hidden></div>
+    <div class="foot"><span>Projeções ${TEND.fonte} · ${TEND.arquivo}</span><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button></div>`;
+  g.appendChild(card);
+  if(fds.n){const ch=buildChart(card.querySelector('canvas'),ds,sers,'pct',opt);charts.push(ch);wireLegend(card,ch)}
+  const s=card.querySelector('select');if(s)s.onchange=e=>{PSEL[sec.id]=e.target.value;try{localStorage.setItem('radar-proj-sel',JSON.stringify(PSEL))}catch(er){}rerender();document.getElementById(sec.id).scrollIntoView({block:'start'})};
+  const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
+  btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=`<table><thead><tr><th>Ano</th><th>${it.titulo}</th><th></th></tr></thead><tbody>${it.labels.map((l,i)=>[l,i]).reverse().filter(([l])=>inRange(l)).map(([l,i])=>`<tr><td>${l}</td><td>${F.pct(it.data[i])}</td><td>${+l>=des?'projeção':'realizado'}</td></tr>`).join('')}</tbody></table>`;tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
+}
+if(TEND){const c=document.getElementById('proj-ctl');c.hidden=false;
+  const sync=()=>c.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='1')===SHOWP));sync();
+  c.querySelectorAll('button').forEach(b=>b.onclick=()=>{SHOWP=b.dataset.v==='1';try{localStorage.setItem('radar-proj',SHOWP?'1':'0')}catch(e){}sync();rerender()})}
+else document.getElementById('proj-ctl').remove();
 // ---------- Monte seu gráfico: até 3 séries de qualquer tópico, em nível, variação em 12 meses ou base 100 ----------
 const CAT=[];
 SECS.forEach(sec=>sec.charts.forEach(c=>{if(c.special)return;const ds=D[c.k];
   const ss=c.split?c.split.flatMap(p=>p.s.map(s=>Object.assign({},s,{_fmt:p.fmt}))):c.s;
   ss.forEach(s=>{if(s.ref!=null||CAT.some(x=>x.k===c.k&&x.i===s.i))return;const label=s.label||ds.series[s.i].label;
     CAT.push({id:c.k+':'+s.i,k:c.k,i:s.i,sec:sec.tag,label,chart:c.t,fmt:s._fmt||(s.ax===2?c.fmt2:c.fmt)})})}));
+if(TEND)TEND.itens.forEach(x=>CAT.push({id:'tend_'+x.id+':0',k:'tend_'+x.id,i:0,sec:'Projeções '+TEND.fonte,label:x.titulo,chart:x.titulo,fmt:'pct'}));
 let MK={a:'desemprego:0',b:'renda_inad:1',c:'',mode:'nivel'};
 try{Object.assign(MK,JSON.parse(localStorage.getItem('radar-monte')||'{}'))}catch(e){}
 let mkChart=null;

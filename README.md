@@ -22,6 +22,7 @@ python pipeline/build_site.py \
   --radar "Grande Base.xlsx" \
   --peers "Analise de Competidores.xlsx" \
   --out site \
+  --proj "102026_Dexco.xlsx" \             # opcional: projeções da Tendências no Radar
   --deck Analise_de_Peers_Dashboard.pptx   # opcional: também gera o PowerPoint
 ```
 
@@ -109,6 +110,14 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
 - **Madeira**: EBITDA calculado como receita × margem EBITDA (a aba não traz o valor absoluto).
 - **Metais**: nos blocos "Mkt Competitivo/Médio/Luxo", a participação é calculada como empresa ÷ total do segmento (as primeiras linhas desses blocos estão em R$ milhões).
+
+## Projeções da consultoria (Radar)
+
+Opcional: passe o arquivo da Tendências com `--proj "102026_Dexco.xlsx"`. Cada indicador vai para o
+tópico do Radar definido em `pipeline/radar/projecoes_map.json` e aparece num cartão com realizado
+e projeção (botão Mostrar/Ocultar no topo). A projeção começa no ano da edição indicada no nome do
+arquivo (102026 = out/2026 → projeção a partir de 2026); para mudar, use `--proj-desde 2027`.
+Indicadores novos que não estão no mapa aparecem em `projecoes.sem_topico` no resumo do comando.
 
 ## Recursos interativos
 

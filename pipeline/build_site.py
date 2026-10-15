@@ -2,6 +2,7 @@
 
 Uso:
   python build_site.py --radar "Grande Base.xlsx" --peers "Analise de Competidores.xlsx" --out ../site [--deck ../Analise_de_Peers.pptx]
+                      [--proj "102026_Dexco.xlsx" [--proj-desde 2026]]   # projeções da consultoria no Radar
 
 Saída (pasta --out): index.html (página inicial), radar.html, peers.html.
 Publicar: index.html como página do artifact e os outros dois como arquivos de apoio.
@@ -48,7 +49,7 @@ def sitebar(active, sair=None):
 .pe-bar a:focus-visible{{outline:2px solid #4e86da;outline-offset:2px}}
 </style><div class="pe-bar"><b>Painel Estratégico Dexco</b><nav aria-label="Seções do painel">{items}</nav></div>'''
 
-def build_radar(xlsx, work):
+def build_radar(xlsx, work, proj=None):
     run('radar/extract.py', work, os.path.abspath(xlsx))
     run('radar/build_data.py', work)
     data = open(os.path.join(work, 'data.json')).read()
@@ -60,6 +61,9 @@ def build_radar(xlsx, work):
     t = t.replace('<title>Radar Estratégia</title>', '<title>Radar Estratégia</title>' + sitebar('radar'), 1)
     D = json.loads(data)
     last = D['iie']['labels'][-1]
+    if proj:  # projeções da consultoria entram como D.tend
+        D['tend'] = proj
+        data = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
     return t.replace('__DATA__', data.replace('</', '<\\/')), f"{MES[int(last[5:7])-1]}/{last[2:4]}"
 
 def build_peers(xlsx, work):
@@ -148,6 +152,8 @@ footer{{margin-top:36px;font-size:13px;color:var(--ink-3);max-width:80ch}}
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--radar', required=True); ap.add_argument('--peers', required=True); ap.add_argument('--out', required=True)
+    ap.add_argument('--proj', help='planilha de projeções da consultoria (ex.: Tendências) para o Radar')
+    ap.add_argument('--proj-desde', type=int, help='primeiro ano tratado como projeção (padrão: ano da edição no nome do arquivo)')
     ap.add_argument('--deck', help='também gera o PowerPoint de peers neste caminho (.pptx)')
     ap.add_argument('--senha', default=os.environ.get('PAINEL_SENHA'), help='protege o site com senha (ou variável PAINEL_SENHA). Nunca salve a senha no repositório.')
     a = ap.parse_args()
@@ -155,7 +161,11 @@ def main():
     PROTEGIDO = bool(a.senha)
     os.makedirs(a.out, exist_ok=True)
     with tempfile.TemporaryDirectory() as w1, tempfile.TemporaryDirectory() as w2:
-        radar_html, radar_ate = build_radar(a.radar, w1)
+        proj, sem_topico = (None, [])
+        if a.proj:
+            from radar.projecoes import ler
+            proj, sem_topico = ler(a.proj, a.proj_desde)
+        radar_html, radar_ate = build_radar(a.radar, w1, proj)
         peers_html, peers_ate, segs, nlog = build_peers(a.peers, w2)
         if a.deck:
             root = os.path.dirname(HERE)
@@ -173,7 +183,11 @@ def main():
         pages = {k: protect(v, key, salt, titles[k], standalone=(k != 'index.html')) for k, v in pages.items()}
     for k, v in pages.items():
         open(os.path.join(a.out, k), 'w').write(v)
-    print(json.dumps({'radar_ate': radar_ate, 'peers_ate': peers_ate, 'ajustes_peers': nlog, 'out': os.path.abspath(a.out)}, ensure_ascii=False))
+    res = {'radar_ate': radar_ate, 'peers_ate': peers_ate, 'ajustes_peers': nlog, 'out': os.path.abspath(a.out)}
+    if proj:
+        res['projecoes'] = {'arquivo': proj['arquivo'], 'edicao': proj['edicao'], 'projecao_desde': proj['desde'],
+                            'indicadores': len(proj['itens']), 'sem_topico': sem_topico}
+    print(json.dumps(res, ensure_ascii=False))
 
 if __name__ == '__main__':
     main()

@@ -14,6 +14,10 @@ podem variar; identifique cada uma pelo conteúdo:
 - **Análise de Competidores**: tem as abas `Gráficos - Louças`, `Gráficos - Metais`,
   `Gráficos Madeira 1`, `Gráficos - Revestimento`.
 
+- **Projeções da consultoria (opcional, só Radar)**: planilha da Tendências (ex.: `102026_Dexco.xlsx`,
+  edição MMAAAA no nome), com a primeira linha "Índices" + anos e um indicador por linha. Se houver
+  mais de uma edição, use a mais recente (pergunte em caso de dúvida).
+
 Se houver mais de uma versão de alguma planilha, pergunte qual usar. Nunca edite as planilhas.
 
 ## Como gerar o painel
@@ -30,6 +34,11 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   bloco movido, faixa de células diferente). Explique ao usuário o que mudou e proponha o ajuste
   no script; não invente dados nem pule a etapa.
 - `--deck` só quando pedirem o PowerPoint.
+- Projeções: acrescente `--proj "<arquivo da Tendências>.xlsx"` quando o arquivo estiver na pasta.
+  A projeção começa no ano da edição (nome do arquivo); para mudar, use `--proj-desde AAAA`. O resumo
+  em JSON traz `projecoes.sem_topico`: indicadores novos que não estão em
+  `pipeline/radar/projecoes_map.json`. Pergunte ao usuário em qual tópico do Radar entram e
+  acrescente a regra no mapa.
 
 ## Senha
 
@@ -73,6 +82,10 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   no ano) nos gráficos de índices; não aparece nos de valores absolutos (R$). Matriz de
   posicionamento no início (eixos escolhidos pelo usuário, tamanho da bolha escolhido pelo usuário, receita por padrão; linhas na mediana dos
   peers; "Crescimento da receita" é calculado a partir da receita).
+- Radar: projeções da consultoria aparecem em um cartão por tópico (realizado em azul, projeção em
+  laranja; colunas para variação % a/a, linha tracejada para taxas em nível), com botão
+  Mostrar/Ocultar no topo; também entram no "Monte seu gráfico". Indicadores com "%" no nome são
+  taxas em nível; os demais, variação % a/a. Células sem formato de % estão em % (5,7 = 5,7%).
 - Radar: seção "Monte seu gráfico" (até 3 séries, em nível, variação em 12 meses ou base 100).
 - Legendas clicáveis: clicar esconde/mostra a série.
 - Radar: Brent e impacto fiscal vêm de `pipeline/radar/static_apresentacao.json` (dados da
