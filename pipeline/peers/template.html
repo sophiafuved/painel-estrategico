@@ -309,7 +309,7 @@ function renderMain(){
       s.sector.forEach(b=>{const idx=b.years.map((y,i)=>i).filter(i=>inPeriod(b.years[i]));const labels=idx.map(i=>b.years[i]);
         const hm=hlMap();const matchEnt=nm=>Object.keys(s.ents).find(k=>{const a=s.ents[k].name.toLowerCase(),c=nm.toLowerCase();return c.startsWith(a)||a.startsWith(c)});const anyMatch=b.series.some(x=>!x.dex&&!x.ref&&matchEnt(x.name));const used=new Set(anyMatch?Object.values(hm):[]);let free=[0,1,2,3,4,5,6,7].filter(i=>!used.has(i));const occ=/ocupa/i.test(b.title);
         const sets=b.series.map(x=>{const data=idx.map(i=>x.vals[i]);const nm=x.name;
-          if(occ){const prod=/MDP/.test(nm)?'--p2':'--p1';return lineSet(nm,data,css(prod),{borderDash:x.ref?[5,4]:[],borderWidth:x.ref?2:3})}
+          if(occ){const prod=/MDP/.test(nm)?'--p2':'--p1';return lineSet(nm,data,css(prod),{borderDash:x.ref?[5,4]:[],borderWidth:x.ref?2:3,_dex:x.ref?0:1})}
           if(x.ref)return lineSet(nm,data,css('--ref'),{borderDash:[5,4],_ref:0});
           if(x.dex)return lineSet(nm,data,css('--dex'),{borderWidth:3,pointRadius:3,pointBackgroundColor:css('--dex'),order:0,_dex:1});
           if(/^outros/i.test(nm))return lineSet(nm,data,css('--ref'),{borderWidth:1.5,borderDash:[2,3]});
@@ -318,7 +318,7 @@ function renderMain(){
           if(key)return null;
           if(!key&&free.length)return lineSet(nm,data,slotColor(free.shift()));
           return lineSet(nm,data,css('--ctx'),{borderWidth:1.5})}).filter(Boolean);
-        card(g,{title:b.title,unit:b.unit,labels,sets,fmt:b.fmt,ref:b.ref,ax:(AX[ST.seg]||{})[b.title]});n++});
+        card(g,{title:b.title,unit:b.unit,labels,sets,fmt:b.fmt,ref:b.ref,ax:(AX[ST.seg]||{})[b.title],fkey:sets.some(d=>d._dex)?'setor:'+b.title:null});n++});
       if(!n)return;main.appendChild(sec);return}
     Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id).forEach(([k,m])=>{
       const idx=m.years.map((y,i)=>i).filter(i=>inPeriod(m.years[i]));const labels=idx.map(i=>m.years[i]);
