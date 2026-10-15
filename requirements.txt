@@ -1,3 +1,4 @@
 openpyxl>=3.1
 lxml>=4.9
 python-pptx>=0.6.21
+cryptography>=41

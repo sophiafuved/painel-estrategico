@@ -37,6 +37,54 @@ Isso recria `site/index.html` (página inicial), `site/radar.html` e `site/peers
 no ar, publique `site/index.html` como página do artifact acima, com `radar.html` e `peers.html`
 como arquivos de apoio (é o que o Claude faz quando você pede para republicar).
 
+## Primeira vez rodando (passo a passo no Windows)
+
+1. **Instale o Python** (versão 3.10 ou mais nova) em https://www.python.org/downloads/. Na
+   instalação, marque **"Add python.exe to PATH"**.
+2. **Baixe o projeto**: na página do repositório no GitHub, clique em **Code → Download ZIP** e
+   descompacte numa pasta (ex.: `Documentos\painel-estrategico`). Quem tiver o Git instalado pode
+   usar `git clone` no lugar.
+3. **Copie as duas planilhas** do SharePoint para essa mesma pasta, com os nomes
+   `Grande Base.xlsx` e `Analise de Competidores.xlsx`.
+4. **Abra o terminal na pasta**: no Explorador de Arquivos, clique na barra de endereço, digite
+   `powershell` e tecle Enter.
+5. **Instale as dependências** (só na primeira vez):
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+
+6. **Gere o site e o PowerPoint** (troque a senha pela senha do time):
+
+   ```powershell
+   python pipeline/build_site.py --radar "Grande Base.xlsx" --peers "Analise de Competidores.xlsx" --out site --deck Analise_de_Peers_Dashboard.pptx --senha "a senha do time"
+   ```
+
+   Sem `--senha`, o site sai sem proteção (use só para conferir no próprio computador).
+7. **Confira**: abra `site\index.html` no navegador (Chrome ou Edge). Precisa de internet para
+   carregar a biblioteca dos gráficos.
+
+Se aparecer `Falha em ...` com uma mensagem de erro, normalmente é porque a estrutura de alguma
+planilha mudou (aba renomeada, bloco movido de lugar). O gerador lê blocos em posições e nomes
+específicos; veja "Onde o gerador procura os dados" abaixo.
+
+### Onde o gerador procura os dados
+
+- **Grande Base**: as faixas de células usadas por cada gráfico estão em `pipeline/radar/extract.py`
+  (ex.: `Dados_Tendências!N155:N328`). Se uma série crescer para novas linhas, ajuste a faixa ali.
+- **Análise de Competidores**: os blocos das abas `Gráficos - Louças`, `Gráficos - Metais`,
+  `Gráficos Madeira 1` e `Gráficos - Revestimento`, reconhecidos pelo título do bloco (ex.: "ROIC",
+  "Margem EBITDA") seguido dos anos. Novas colunas de ano e novas empresas no fim de um bloco são
+  lidas automaticamente.
+
+### O que não está no repositório
+
+- **As planilhas** (ficam no SharePoint).
+- **A senha do site** (é passada só na hora de gerar e deve ser combinada com o time).
+- **O link publicado** pertence à conta de quem o criou. Outra pessoa consegue gerar os arquivos,
+  mas para republicar **no mesmo link** precisa ter acesso de edição ao artifact (menu **Share**)
+  ou pedir à dona do link.
+
 ## Estrutura
 
 | Pasta / arquivo | O que é |
