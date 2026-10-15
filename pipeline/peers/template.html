@@ -335,7 +335,12 @@ function renderAll(){renderTabs();renderFilters();renderMain();save()}
 document.getElementById('ano').onchange=e=>{ST.ano=e.target.value;renderAll()};
 document.getElementById('de').onchange=e=>{ST.de=e.target.value;if(+ST.de>+ST.ate)ST.ate=ST.de;renderAll()};
 document.getElementById('ate').onchange=e=>{ST.ate=e.target.value;if(+ST.ate<+ST.de)ST.de=ST.ate;renderAll()};
-document.querySelectorAll('#escopo button').forEach(b=>b.onclick=()=>{ST.esc=b.dataset.v;renderAll()});
+// Todos / Brasil / Internacionais: seleciona automaticamente todas as empresas do grupo, em todos os negócios (maiores receitas primeiro)
+function selectScope(v){Object.keys(D).forEach(sk=>{const s=D[sk],r=s.metrics.rol;
+  const last=k=>{const x=((r&&r.series[k])||[]).filter(y=>y!=null);return x.length?x[x.length-1]:-1};
+  const ks=Object.keys(s.ents).filter(k=>!s.ents[k].dex&&!/^dexco_/.test(k)&&(v==='all'||(v==='br')===(s.ents[k].country==='BR'))).sort((a,b)=>last(b)-last(a));
+  const m={};ks.forEach((k,i)=>m[k]=i);ST.hl[sk]=m})}
+document.querySelectorAll('#escopo button').forEach(b=>b.onclick=()=>{ST.esc=b.dataset.v;selectScope(ST.esc);renderAll()});
 document.querySelectorAll('#focoAll button').forEach(b=>b.onclick=()=>{ST.focoAll=b.dataset.v==='1';ST.foco[ST.seg]={};renderAll()});
 Chart.defaults.font.family='"Red Hat Text",system-ui,sans-serif';
 renderAll();
