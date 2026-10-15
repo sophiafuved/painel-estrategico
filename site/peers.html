@@ -172,7 +172,7 @@ const UNIT={mi:'R$ milhões',pct:'%',x:'vezes (x)',d:'dias',brl:'R$'};
 const BETTER={rol:1,ebitda:1,ll:1,ci:null,roic:1,me:1,mb:1,ml:1,giro:1,alav:-1,cpv:-1,dga:-1,dv:-1,wk:-1,pmr:-1,pme:-1,pmp:1,varwk:null,capexe:null,outras:null,fcl:1,capexr:null};
 const FLAG={BR:'Brasil',JP:'Japão',ES:'Espanha',US:'EUA',IT:'Itália',CH:'Suíça',DE:'Alemanha',MX:'México'};
 const GROUPS=[
- {id:'matriz',tag:'Matriz',h:'Matriz de posicionamento',p:'Escolha os indicadores dos dois eixos. Cada bolha é uma empresa, do tamanho da receita; as linhas tracejadas marcam a mediana dos peers.'},
+ {id:'matriz',tag:'Matriz',h:'Matriz de posicionamento',p:'Escolha os indicadores dos dois eixos e o do tamanho da bolha (receita, por padrão). Cada bolha é uma empresa; as linhas tracejadas marcam a mediana dos peers.'},
  {id:'escala',tag:'Escala',h:'Tamanho: receita, resultado e capital empregado',p:'Valores absolutos em R$ milhões, em colunas, com eixo do zero ao maior valor. Use "Foco Dexco" para ajustar o eixo aos valores da Dexco.'},
  {id:'rent',tag:'Rentabilidade',h:'Retorno, margens, giro e alavancagem',p:'ROIC = NOPAT / capital investido. Giro = receita líquida / capital investido. Alavancagem = dívida líquida / EBITDA.'},
  {id:'custos',tag:'Custos',h:'Estrutura de custos e despesas sobre a receita',p:'Quanto menor, melhor. CPV caixa exclui depreciação.'},
@@ -194,7 +194,7 @@ const slotColor=i=>css(SLOTS[i%8]);const slotDash=i=>i>=8?[6,3]:[];
 const slotVar=i=>`var(${SLOTS[i%8]})`;
 
 // ---------- estado ----------
-let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false,band:true,mx:'giro',my:'me'};
+let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false,band:true,mx:'giro',my:'me',ms:'rol'};
 try{Object.assign(ST,JSON.parse(localStorage.getItem('peers-st2')||'{}'))}catch(e){}
 ST.foco=ST.foco||{};
 const save=()=>{try{localStorage.setItem('peers-st2',JSON.stringify(ST))}catch(e){}};
@@ -350,19 +350,20 @@ function mxVal(k,e){const s=seg(),ano=ST.ano;
 function renderMatriz(g){
   const s=seg(),opts=mxOptions(),has=k=>opts.some(o=>o.k===k);
   if(!has(ST.mx))ST.mx=has('giro')?'giro':opts[0].k;if(!has(ST.my))ST.my=has('me')?'me':opts[1].k;
-  const OX=opts.find(o=>o.k===ST.mx),OY=opts.find(o=>o.k===ST.my);
-  const sel=(id,v)=>`<select id="${id}">${GROUPS.filter(G=>G.id!=='matriz'&&G.id!=='setor').map(G=>`<optgroup label="${G.tag}">${opts.filter(o=>o.grp===G.id).map(o=>`<option value="${o.k}" ${o.k===v?'selected':''}>${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
+  if(ST.ms!=='none'&&!has(ST.ms))ST.ms=has('rol')?'rol':'none';
+  const OX=opts.find(o=>o.k===ST.mx),OY=opts.find(o=>o.k===ST.my),OS=ST.ms==='none'?null:opts.find(o=>o.k===ST.ms),fs=OS?F[OS.fmt]:null;
+  const sel=(id,v,none)=>`<select id="${id}">${none?`<option value="none" ${v==='none'?'selected':''}>Igual para todas</option>`:''}${GROUPS.filter(G=>G.id!=='matriz'&&G.id!=='setor').map(G=>`<optgroup label="${G.tag}">${opts.filter(o=>o.grp===G.id).map(o=>`<option value="${o.k}" ${o.k===v?'selected':''}>${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
   const ents=visibleEnts().filter(k=>!/^dexco_/.test(k)),hm=hlMap();
   const pts=[],miss=[];
   ents.forEach(k=>{const x=mxVal(ST.mx,k),y=mxVal(ST.my,k);if(!x||!y){miss.push(s.ents[k].name);return}
-    const r=mxVal('rol',k);pts.push({k,name:s.ents[k].name,x:x.v,y:y.v,rol:r&&r.v,yr:[...new Set([x.y,y.y])].join('/')})});
-  const maxR=Math.max(...pts.map(p=>p.rol||0),1);
+    const z=OS?mxVal(ST.ms,k):null;pts.push({k,name:s.ents[k].name,x:x.v,y:y.v,z:z&&z.v,yr:[...new Set([x.y,y.y])].join('/')})});
+  const maxZ=Math.max(...pts.map(p=>p.z||0),0);
   const sets=pts.map(p=>{const e=s.ents[p.k];const col=e.dex?css('--dex'):p.k in hm?slotColor(hm[p.k]):css('--ctx');
-    return {label:p.name,data:[{x:p.x,y:p.y,r:p.rol>0?6+20*Math.sqrt(p.rol/maxR):6}],backgroundColor:hexA(col,e.dex?.9:.72),borderColor:col,borderWidth:e.dex?2:1,_dex:e.dex,_p:p,order:e.dex?0:1}});
+    return {label:p.name,data:[{x:p.x,y:p.y,r:!OS?9:p.z>0&&maxZ>0?6+20*Math.sqrt(p.z/maxZ):5}],backgroundColor:hexA(col,e.dex?.9:.72),borderColor:col,borderWidth:e.dex?2:1,borderDash:OS&&!(p.z>0)?[3,2]:[],_dex:e.dex,_p:p,order:e.dex?0:1}});
   const peerVals=a=>pts.filter(p=>!s.ents[p.k].dex).map(p=>p[a]);const mX=median(peerVals('x')),mY=median(peerVals('y'));
   const el=document.createElement('article');el.className='card full';const tid='tmx';
-  el.innerHTML=`<div class="ch"><div><h3>${OY.label} × ${OX.label}</h3><div class="unit">Ano ${ST.ano} (ou o anterior, quando a empresa ainda não tem o dado) · bolha = receita líquida${[ST.mx,ST.my].includes('cresc')?' · crescimento em R$: nas estrangeiras inclui o efeito do câmbio':''}</div></div></div>
-    <div class="mx"><label>Eixo vertical ${sel('mx-y',ST.my)}</label><label>Eixo horizontal ${sel('mx-x',ST.mx)}</label><button class="focus" id="mx-swap" type="button">Inverter eixos</button></div>
+  el.innerHTML=`<div class="ch"><div><h3>${OY.label} × ${OX.label}</h3><div class="unit">Ano ${ST.ano} (ou o anterior, quando a empresa ainda não tem o dado) · ${OS?'tamanho da bolha = '+OS.label+(pts.some(p=>OS&&!(p.z>0))?' (sem dado ou ≤ 0: bolha mínima, contorno tracejado)':''):'bolhas do mesmo tamanho'}${[ST.mx,ST.my].includes('cresc')?' · crescimento em R$: nas estrangeiras inclui o efeito do câmbio':''}</div></div></div>
+    <div class="mx"><label>Eixo vertical ${sel('mx-y',ST.my)}</label><label>Eixo horizontal ${sel('mx-x',ST.mx)}</label><label>Tamanho da bolha ${sel('mx-s',ST.ms,1)}</label><button class="focus" id="mx-swap" type="button">Inverter eixos</button></div>
     <div class="legend">${sets.map((d,i)=>`<button class="lg" data-i="${i}" aria-pressed="true" title="Clique para esconder ou mostrar"><i class="dot" style="background:${d.borderColor}"></i>${d.label}</button>`).join('')}</div>
     ${pts.length?`<div class="plot"><canvas role="img" aria-label="Matriz de posicionamento"></canvas></div>`:`<div class="empty">Sem empresas com os dois indicadores em ${ST.ano}.</div>`}
     ${miss.length?`<div class="exl">Sem dado (ou n.s.) em ${ST.ano}: ${miss.join(', ')}.</div>`:''}
@@ -384,15 +385,16 @@ function renderMatriz(g){
     const c=new Chart(el.querySelector('canvas'),{type:'bubble',data:{datasets:sets},plugins:[deco],options:{responsive:true,maintainAspectRatio:false,animation:false,
       layout:{padding:{right:40}},
       plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,
-        callbacks:{title:it=>it[0].dataset.label+' · '+it[0].dataset._p.yr,label:it=>{const p=it.dataset._p;return [` ${OY.label}: ${fy(p.y)}`,` ${OX.label}: ${fx(p.x)}`,` Receita: R$ ${F.mi(p.rol)} mi`]}}}},
+        callbacks:{title:it=>it[0].dataset.label+' · '+it[0].dataset._p.yr,label:it=>{const p=it.dataset._p;return [` ${OY.label}: ${fy(p.y)}`,` ${OX.label}: ${fx(p.x)}`,...(OS?[` ${OS.label}: ${fs(p.z)}`]:[])]}}}},
       scales:{x:{type:'linear',min:rx.min,max:rx.max,title:{display:true,text:OX.label,color:css('--ink-2')},grid:{color:css('--grid')},border:{color:css('--line')},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:tickOf(OX.fmt)}},
               y:{type:'linear',min:ry.min,max:ry.max,title:{display:true,text:OY.label,color:css('--ink-2')},grid:{color:css('--grid')},border:{display:false},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:tickOf(OY.fmt)}}}}});
     charts.push(c);wireLegend(el,c)}
   el.querySelector('#mx-x').onchange=e=>{ST.mx=e.target.value;save();renderMain()};
   el.querySelector('#mx-y').onchange=e=>{ST.my=e.target.value;save();renderMain()};
+  el.querySelector('#mx-s').onchange=e=>{ST.ms=e.target.value;save();renderMain()};
   el.querySelector('#mx-swap').onclick=()=>{[ST.mx,ST.my]=[ST.my,ST.mx];save();renderMain()};
   const b=el.querySelector('.tabbtn'),t=el.querySelector('.mini');
-  b.onclick=()=>{const open=t.hidden;if(open)t.innerHTML=`<div class="tbl"><table><thead><tr><th>Empresa</th><th>Ano</th><th>${OY.label}</th><th>${OX.label}</th><th>Receita (R$ mi)</th></tr></thead><tbody>${pts.map(p=>`<tr><td>${p.name}</td><td>${p.yr}</td><td>${fy(p.y)}</td><td>${fx(p.x)}</td><td>${F.mi(p.rol)}</td></tr>`).join('')}<tr><td>Mediana dos peers</td><td></td><td>${fy(mY)}</td><td>${fx(mX)}</td><td></td></tr></tbody></table></div>`;t.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela'};
+  b.onclick=()=>{const open=t.hidden;if(open)t.innerHTML=`<div class="tbl"><table><thead><tr><th>Empresa</th><th>Ano</th><th>${OY.label}</th><th>${OX.label}</th>${OS?`<th>${OS.label}</th>`:''}</tr></thead><tbody>${pts.map(p=>`<tr><td>${p.name}</td><td>${p.yr}</td><td>${fy(p.y)}</td><td>${fx(p.x)}</td>${OS?`<td>${fs(p.z)}</td>`:''}</tr>`).join('')}<tr><td>Mediana dos peers</td><td></td><td>${fy(mY)}</td><td>${fx(mX)}</td>${OS?'<td></td>':''}</tr></tbody></table></div>`;t.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela'};
 }
 function renderMain(){
   charts.forEach(c=>c.destroy());charts.length=0;

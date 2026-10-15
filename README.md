@@ -112,7 +112,7 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 
 ## Recursos interativos
 
-- **Peers**: faixa dos peers (1º–3º quartil e mediana, sem a Dexco) nos gráficos de índices; matriz de posicionamento com eixos à escolha; botões Todos/Brasil/Internacionais selecionam todas as empresas do grupo.
+- **Peers**: faixa dos peers (1º–3º quartil e mediana, sem a Dexco) nos gráficos de índices; matriz de posicionamento com eixos e tamanho da bolha à escolha; botões Todos/Brasil/Internacionais selecionam todas as empresas do grupo.
 - **Radar**: "Monte seu gráfico" para comparar até 3 séries de qualquer tópico, em nível, variação em 12 meses ou base 100.
 - Nos dois painéis, clicar na legenda esconde ou mostra a série.
 
