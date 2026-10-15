@@ -4,7 +4,8 @@ Gera o site do time de estratégia, que junta o **Radar macro** (planilha *Grand
 **Análise de Peers** (planilha *Análise de Competidores*), e o PowerPoint de peers no template
 do Offsite.
 
-- Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (privado; o acesso do time é liberado pelo menu **Share** da página)
+- Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (versão da conta pessoal da Sophia; quando o time publicar pela conta de trabalho, substitua este link pelo novo)
+- Usando com o Claude: conecte esta pasta ao Claude e peça, por exemplo, "gere e publique o painel". As instruções que o Claude segue estão no `CLAUDE.md`.
 
 ## Como atualizar
 
