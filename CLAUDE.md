@@ -56,14 +56,19 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   médios negativos.
 - Outliers retirados: |DL/EBITDA| > 10x; índices sobre EBITDA > 500% em módulo; prazos > 365 dias;
   giro > 6x; margens e ROIC < −50%; capex > 50% da receita. Na tabela-resumo aparecem como **n.s.**
-- Tabela-resumo: cada coluna usa o ano da receita mais recente da empresa; indicadores de outros
-  anos aparecem como "–".
+- Tabelas-resumo: uma no início de cada tópico (não há resumo geral no topo); cada coluna usa o
+  ano da receita mais recente da empresa; indicadores de outros anos aparecem como "–".
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
 - Madeira: EBITDA = receita × margem EBITDA (a aba não traz o valor absoluto).
 - Metais: nos blocos "Mkt Competitivo/Médio/Luxo", participação = empresa ÷ total do segmento (as
   primeiras linhas desses blocos estão em R$ milhões).
 - Escalas dos gráficos vão do menor ao maior valor; colunas começam no zero; botão "Foco Dexco"
   ajusta o eixo à Dexco.
+- Sem textos de comentário/análise nos painéis: os títulos dos tópicos são neutros. Comentários
+  só entram quando o painel vira apresentação.
+- Radar: cada tópico abre com um resumo dos seus indicadores (último dado observado, sem
+  projeções, e variação em 12 meses / 4 trimestres / 4 semanas no Focus). Os gráficos que na
+  apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir.").
 - Radar: Brent e impacto fiscal vêm de `pipeline/radar/static_apresentacao.json` (dados da
   apresentação, não da Grande Base).
 

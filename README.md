@@ -105,10 +105,16 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 - **Células zeradas** nas séries financeiras são lidas como "sem dado".
 - **Erros de origem** são retirados: lucro líquido igual à receita (e as margens de 100% que vêm disso) e prazos médios negativos.
 - **Outliers** são retirados: |dívida líquida/EBITDA| > 10x; índices sobre EBITDA acima de 500% em módulo; prazos acima de 365 dias; giro acima de 6x; margens e ROIC abaixo de −50%; capex acima de 50% da receita.
-- Na tabela-resumo, valores retirados aparecem como **n.s.**; cada coluna usa o ano da receita mais recente da empresa.
+- Cada tópico abre com a sua tabela-resumo (não há resumo geral no topo). Valores retirados aparecem como **n.s.**; cada coluna usa o ano da receita mais recente da empresa.
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
 - **Madeira**: EBITDA calculado como receita × margem EBITDA (a aba não traz o valor absoluto).
 - **Metais**: nos blocos "Mkt Competitivo/Médio/Luxo", a participação é calculada como empresa ÷ total do segmento (as primeiras linhas desses blocos estão em R$ milhões).
+
+## Formato do Radar
+
+- Sem textos de comentário: os títulos dos tópicos são neutros; comentários entram só na apresentação.
+- Cada tópico abre com um resumo dos seus indicadores (último dado observado, sem projeções).
+- Gráficos que têm dois eixos na apresentação mantêm os dois eixos; a legenda indica "esq." ou "dir.".
 
 ## Decisões em aberto (próxima fase)
 

@@ -1,4 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}</style></head><body><title>Radar Estratégia</title><style>
+.pe-sair{font:inherit;color:var(--pe-mut);background:none;border:1px solid #444;border-radius:6px;padding:4px 10px;cursor:pointer;margin-left:6px}
+.pe-sair:hover{color:var(--pe-fg)}
 .pe-bar{--pe-bg:#111;--pe-fg:#f1f0ed;--pe-mut:#a8a6a1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;background:var(--pe-bg);color:var(--pe-fg);
  margin:0 calc(-1*max(16px,env(safe-area-inset-right,0px))) 0 calc(-1*max(16px,env(safe-area-inset-left,0px)));
  padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font:500 14px "Red Hat Text",system-ui,sans-serif}
@@ -54,7 +56,7 @@ nav.sec{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:va
 nav.sec a{flex:none;font:600 13px var(--body);color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:6px;white-space:nowrap}
 nav.sec a:hover{background:var(--panel-2);color:var(--ink)}
 nav.sec a.on{color:var(--accent-ink);background:var(--panel)}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .kpi{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .kpi .k{font-size:13px;color:var(--ink-2)}
 .kpi .v{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
@@ -96,7 +98,9 @@ section{padding-top:40px;scroll-margin-top:56px}
 .tbl th{color:var(--ink-3);font-weight:500;position:sticky;top:0;background:var(--panel)}
 .note{font-size:12.5px;color:var(--ink-3)}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);max-width:90ch}
-@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.legend small{font-size:11.5px;color:var(--ink-3)}
 @media (max-width:420px){.kpi .v{font-size:25px}.plot{height:230px}}
 </style>
 
@@ -124,10 +128,9 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   </div>
 </header>
 <nav class="sec" id="nav"></nav>
-<div class="kpis" id="kpis"></div>
 <main id="main"></main>
 <footer>
-  Todos os gráficos leem as mesmas faixas usadas pelas abas <b>Gráficos_Radar</b> da Grande Base (referência de célula no rodapé de cada gráfico), exceto o Brent e o impacto fiscal, que vêm dos dados embutidos na apresentação Modelo 2. Gráficos que nos slides usavam dois eixos foram divididos em dois painéis com o mesmo eixo de tempo. Notas: (1) ICE: Indústria, Construção, Serviços e Comércio. (2) Taxa de juros PF, recursos livres. (3) Saldos com atraso acima de 90 dias. NAIRU = 8,0% segundo Itaú.
+  Todos os gráficos leem as mesmas faixas usadas pelas abas <b>Gráficos_Radar</b> da Grande Base (referência de célula no rodapé de cada gráfico), exceto o Brent e o impacto fiscal, que vêm dos dados embutidos na apresentação Modelo 2. Gráficos com dois eixos seguem a apresentação: a legenda indica se cada série usa o eixo da esquerda (esq.) ou da direita (dir.). O resumo de cada tópico mostra o último dado observado (sem projeções). Notas: (1) ICE: Indústria, Construção, Serviços e Comércio. (2) Taxa de juros PF, recursos livres. (3) Saldos com atraso acima de 90 dias. NAIRU = 8,0% segundo Itaú.
 </footer>
 </div>
 
@@ -157,62 +160,64 @@ function fmtLabel(l,long){const k=kindOf(l);
   return l}
 function lastDate(s,labels){for(let i=s.length-1;i>=0;i--)if(s[i]!=null)return fmtLabel(labels[i],false);return '–'}
 const S=(i,o={})=>Object.assign({i},o);
+// resumo do tópico: título, série (chave, índice), formato, comparação ({m:meses} ou {d:dias}), variação relativa (%)
+const K=(t,k,i,f,back,rel)=>({t,k,i,f,back,rel});
 const SECS=[
- {id:'global',tag:'Global',h:'Acordo preliminar entre Irã e EUA alivia a <em>pressão inflacionária</em>, mas o pano de fundo global se mantém: <em>alta incerteza e volatilidade</em> impactando câmbio e inflação',
-  p:'Protagonismo geopolítico: os conflitos comerciais e militares devem seguir nos holofotes. Globalização 2.0: países buscam alternativas comerciais aos EUA, em um mundo menos globalizado e mais inflacionário.',
+ {id:'global',tag:'Global',h:'Cenário global',
+  sum:[K('Incerteza global (WUI)','wui',0,'int',{m:12}),K('Risco geopolítico (mm12m)','gpr',1,'num',{m:12}),K('Petróleo Brent','brent',0,'usd',{m:12},1)],
   charts:[
   {k:'wui',t:'Índice de Incerteza Global (WUI)',u:'Número índice, trimestral',fmt:'int',s:[S(0,{c:'s1'})]},
   {k:'brent',t:'Petróleo Brent',u:'US$/barril, diário',fmt:'usd',time:false,s:[S(0,{c:'s1'}),S(1,{c:'ref',dash:1}),S(2,{c:'s1',dash:1})]},
-  {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial; share das importações dos EUA',fmt:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'})]},
+  {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial (esq.); share das importações dos EUA (dir.)',fmt:'pct',fmt2:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'}),S(1,{c:'s2',ax:2})]},
   {k:'gpr',t:'Índice de Risco Geopolítico',u:'Número índice',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'})]},
   {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',fmt:'pct',time:false,wide:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
  ]},
- {id:'brasil',tag:'Brasil',h:'Soft landing em 2026 sustentado pelo <em>mercado de trabalho</em> e pelos <em>estímulos fiscais</em>, contrabalanceando a piora do cenário de juros. A conta deve chegar em 2027',
-  p:'O Brasil deve crescer em 2026 apesar da política monetária contracionista. As medidas de estímulo fiscal devem compensar os efeitos da SELIC em patamar restritivo.',
+ {id:'brasil',tag:'Brasil',h:'Atividade, juros e expectativas',
+  sum:[K('SELIC fim de 2026 (Focus)','focus_selic_ipca',0,'pp',{d:28}),K('IPCA 2026 (Focus)','focus_selic_ipca',2,'pp',{d:28}),K('Câmbio fim de 2026 (Focus)','focus_cambio',0,'fx',{d:28}),K('SELIC real (ex-ante)','neutra',1,'pct',{m:12}),K('Hiato do produto','hiato',0,'pct',{m:12})],
   charts:[
   {k:'pib',t:'PIB por componente',u:'Contribuição para o crescimento, p.p. · 2026-27 projeção',fmt:'pct',time:false,stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'}),S(3,{c:'ink',type:'point',label:'PIB total'})]},
   {k:'fiscal',t:'Impacto das medidas de estímulo fiscal em 2026',u:'R$ bilhões',special:'fiscal'},
   {k:'neutra',t:'Juros neutros vs SELIC real',u:'% a.a. · RPM 3T26 (projeção até 2028)',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
-  {k:'hiato',t:'Hiato do Produto x IPCA',u:'% (PIB real – PIB potencial); IPCA % a/a',fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'}),{ref:0.03,label:'Centro da meta = 3,0%'}]},
+  {k:'hiato',t:'Hiato do Produto x IPCA',u:'Hiato, % do PIB potencial (esq.); IPCA, % a/a (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1',ax:2}),{ref:0.03,ax:2,label:'Centro da meta = 3,0%'}]},
   {k:'focus_selic_ipca',t:'Projeções Focus: SELIC e IPCA',u:'Mediana das expectativas, % · fim de período',fmt:'pp',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1}),S(2,{c:'s2'}),S(3,{c:'s2',dash:1})]},
   {k:'focus_cambio',t:'Projeções Focus: câmbio',u:'BRL/USD, fim de período',fmt:'fx',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1})]},
  ]},
- {id:'incerteza',tag:'Incerteza',h:'Manutenção da incerteza local e global deve <em>inibir investimentos</em>',
-  p:'A incerteza econômica segue acima do patamar de baixa incerteza (<100). A confiança de empresários e consumidores segue pessimista (<100), refletindo juros altos e o ano eleitoral.',
+ {id:'incerteza',tag:'Incerteza',h:'Incerteza e confiança',
+  sum:[K('Incerteza econômica (IIE-Br)','iie',0,'num',{m:12}),K('Confiança do empresário','conf',0,'num',{m:12}),K('Confiança do consumidor','conf',1,'num',{m:12})],
   charts:[
   {k:'iie',t:'Índice de Incerteza Econômica (IIE-Br)',u:'Número índice, base 100',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
   {k:'conf',t:'Índices de Confiança',u:'Número índice, base 100, com ajuste sazonal',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
  ]},
- {id:'renda',tag:'Renda',h:'A renda das famílias permanece em <em>patamar elevado</em> e possibilita soft landing',
-  p:'A massa de renda deve expandir 3,8% em 2026, com desemprego na mínima histórica, aumento real do salário mínimo e reforma do IR. O crescimento deve ser menor que em 2024 e 2025.',
+ {id:'renda',tag:'Renda',h:'Renda e mercado de trabalho',
+  sum:[K('Taxa de desocupação','desemprego',0,'pct',{m:12}),K('Renda média do trabalho (real)','desemprego',1,'brl',{m:12},1),K('Massa de renda do trabalho','massa',0,'bi',{m:12},1)],
   charts:[
   {k:'massa',t:'Massa de renda total (real), por componente',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
-  {k:'desemprego',t:'Taxa de desocupação vs renda média (real)',u:'Painéis separados: % e R$/mês',split:[{s:[S(0,{c:'s2',type:'bar'}),{ref:0.08,label:'NAIRU (8,0%)'}],fmt:'pct',lbl:'Taxa de desocupação, %'},{s:[S(1,{c:'s1'})],fmt:'brl',lbl:'Renda média do trabalho, R$/mês'}]},
+  {k:'desemprego',t:'Taxa de desocupação vs renda média (real)',u:'Desocupação, % (esq.); renda média do trabalho, R$/mês (dir.)',fmt:'pct',fmt2:'brl',s:[S(0,{c:'s2',type:'bar'}),{ref:0.08,label:'NAIRU (8,0%)'},S(1,{c:'s1',ax:2})]},
  ]},
- {id:'credito',tag:'Crédito',h:'Porém, grande parte da renda está <em>comprometida com o serviço da dívida</em>',
-  p:'A elevação do custo do crédito, com endividamento alto, pesa na capacidade de pagamento e reduz a renda disponível para bens duráveis. A queda da poupança também limita a demanda do setor.',
+ {id:'credito',tag:'Crédito',h:'Crédito e endividamento das famílias',
+  sum:[K('Taxa de juros PF²','juros_endiv',0,'pct',{m:12}),K('Endividamento das famílias','juros_endiv',1,'pct',{m:12}),K('Renda comprometida com dívida¹','renda_inad',0,'pct',{m:12}),K('Inadimplência PF³','renda_inad',1,'pct',{m:12}),K('Taxa de poupança das famílias','poupanca',0,'pct',{m:12})],
   charts:[
-  {k:'juros_endiv',t:'Taxa de juros² x endividamento das famílias',u:'% a.a.; % da renda',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
-  {k:'renda_inad',t:'Renda comprometida com dívida¹ x inadimplência³',u:'Painéis separados: % da renda e % do saldo',split:[{s:[S(0,{c:'s2'})],fmt:'pct',lbl:'Renda comprometida com dívida, % da renda'},{s:[S(1,{c:'s1'})],fmt:'pct',lbl:'Inadimplência, % do saldo'}]},
+  {k:'juros_endiv',t:'Taxa de juros² x endividamento das famílias',u:'Juros, % a.a. (esq.); endividamento, % da renda (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',ax:2})]},
+  {k:'renda_inad',t:'Renda comprometida com dívida¹ x inadimplência³',u:'Renda comprometida, % da renda (esq.); inadimplência, % do saldo (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
   {k:'renda_disp',t:'Renda disponível após itens essenciais e dívida',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
   {k:'poupanca',t:'Taxa de poupança das famílias',u:'% do PIB, acumulado 12 meses',fmt:'pct',s:[S(0,{c:'s1'})]},
  ]},
- {id:'incc',tag:'Custos',h:'O INCC deve se manter em <em>patamar elevado</em> em 2026',
-  p:'O INCC deve seguir pressionado (acima do IPCA) pelo conflito no Oriente Médio e pelo mercado de trabalho aquecido, com volatilidade adicional das cadeias de suprimento e do câmbio.',
+ {id:'incc',tag:'Custos',h:'Custos da construção',
+  sum:[K('INCC 12 meses','incc_ipca',0,'pct',{m:12}),K('IPCA 12 meses','incc_ipca',1,'pct',{m:12}),K('INCC: contribuição de materiais','incc_comp',0,'pct',{m:12}),K('INCC: contribuição de mão de obra','incc_comp',1,'pct',{m:12})],
   charts:[
   {k:'incc_comp',t:'INCC: abertura por componente',u:'Contribuição para a variação a/a, p.p.',fmt:'pct',area:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
   {k:'incc_ipca',t:'INCC x IPCA',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
  ]},
- {id:'imob',tag:'Imobiliário',h:'Medidas de estímulo buscam mitigar a alta do <em>custo de financiamento</em> e do <em>preço dos imóveis</em>; o <em>segmento popular</em> deve puxar os lançamentos em 2026/27',
-  p:'Faixa 4 do MCMV, novo modelo de crédito imobiliário e ampliação do programa devem aumentar a demanda. O médio/alto padrão deve se beneficiar do novo modelo de crédito.',
+ {id:'imob',tag:'Imobiliário',h:'Mercado imobiliário',
+  sum:[K('Taxa de financiamento imobiliário','financ',1,'pct',{m:12}),K('Juros longos (10 anos)','financ',0,'pct',{m:12}),K('IGMI-R nominal','igmi',0,'pct',{m:12}),K('Lançamentos MCMV (mm12m)','lanc',0,'int',{m:12},1),K('Lançamentos médio/alto (mm12m)','lanc',1,'int',{m:12},1)],
   charts:[
   {k:'financ',t:'Taxa de financiamento imobiliário x juros longos',u:'% a.a.',fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'})]},
   {k:'igmi',t:'IGMI-R: variação anual do preço de venda de imóveis',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',dash:1})]},
-  {k:'lanc',t:'Lançamentos imobiliários, por segmento',u:'Unidades, média móvel 12 meses',fmt:'int',s:[S(0,{c:'s2'}),S(1,{c:'s1'})]},
+  {k:'lanc',t:'Lançamentos imobiliários, por segmento',u:'Unidades, média móvel 12 meses · MCMV (esq.); médio/alto padrão (dir.)',fmt:'int',fmt2:'int',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
   {k:'vso',t:'Velocidade de vendas (vendas/oferta), por segmento',u:'%, média móvel 12 meses',fmt:'pct',s:[S(1,{c:'s2'}),S(0,{c:'s1'})]},
  ]},
- {id:'varejo',tag:'Varejo',h:'Crescimento moderado do varejo em 2026/27, <em>sustentado por medidas de estímulo</em>',
-  p:'O programa Reforma Casa Brasil e as mudanças no crédito imobiliário devem reverter a desaceleração. Juros altos por mais tempo limitam o crescimento, a partir de um patamar de demanda elevado.',
+ {id:'varejo',tag:'Varejo',h:'Varejo de material de construção',
+  sum:[K('Vendas de mat. de construção (a/a, mm3m)','varejo_var',0,'pct',{m:12}),K('Índice de mat. de construção','varejo_idx',1,'num',{m:12},1),K('Índice do varejo ampliado','varejo_idx',0,'num',{m:12},1)],
   charts:[
   {k:'varejo_var',t:'Vendas de material de construção no varejo',u:'% a/a, média móvel 3 meses',fmt:'pct',s:[S(0,{c:'s1',type:'bar'})],proj:{k:'varejo_proj',i:0,fmt:'pct',lbl:'Projeção anual'}},
   {k:'varejo_idx',t:'Vendas no varejo: índice',u:'Número índice, base 100, dessazonalizado',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'})],proj:{k:'varejo_idx_proj',i:1,fmt:'num',lbl:'Projeção mat. construção',i2:0,lbl2:'Projeção ampliado'}},
@@ -254,14 +259,15 @@ function tickCb(labels){
 }
 const crosshair={id:'xh',afterDatasetsDraw(c){const a=c.tooltip&&c.tooltip.getActiveElements();if(!a||!a.length)return;const x=a[0].element.x,{top,bottom}=c.chartArea,ctx=c.ctx;ctx.save();ctx.strokeStyle=css('--ink-3');ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore()}};
 
+const axisTick=fmt=>v=>fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='fx'?nf(2).format(v):nf(0).format(v);
 function buildChart(canvas,ds,sers,fmt,opt){
   ds=filterDS(ds); const labels=ds.labels;
   const sets=[];
   sers.forEach(s=>{
-    if(s.ref!=null){sets.push({type:'line',label:s.label,data:labels.map(()=>s.ref),borderColor:colorOf('ref'),borderDash:[4,4],borderWidth:1.5,pointRadius:0,pointHoverRadius:0,order:0,_ref:1});return}
+    if(s.ref!=null){sets.push({type:'line',label:s.label,data:labels.map(()=>s.ref),borderColor:colorOf('ref'),borderDash:[4,4],borderWidth:1.5,pointRadius:0,pointHoverRadius:0,order:0,_ref:1,yAxisID:s.ax===2?'y2':'y'});return}
     const src=ds.series[s.i]; const data=src.data; const col=colorOf(s.c);
     const type=s.type==='bar'?'bar':'line';
-    const o={type,label:s.label||src.label,data,borderColor:col,backgroundColor:col,order:type==='bar'?2:1,spanGaps:true};
+    const o={type,label:s.label||src.label,data,borderColor:col,backgroundColor:col,order:type==='bar'?2:1,spanGaps:true,yAxisID:s.ax===2?'y2':'y',_f:F[s.ax===2?opt.fmt2:fmt]};
     if(type==='bar'){Object.assign(o,{borderWidth:0,borderRadius:labels.length>40?0:3,barPercentage:labels.length>40?1:.8,categoryPercentage:labels.length>40?.92:.8,stack:opt.stack?'a':undefined})}
     else if(s.type==='point'){Object.assign(o,{showLine:false,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:col,pointBorderColor:css('--panel'),pointBorderWidth:2,order:0})}
     else Object.assign(o,{borderWidth:s.thin?1.25:2,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:col,pointHoverBorderColor:css('--panel'),pointHoverBorderWidth:2,tension:.15,borderDash:s.dash?[5,4]:[],fill:opt.area?(sets.filter(x=>!x._ref).length?'-1':'origin'):false,backgroundColor:opt.area?col+'cc':col,stack:opt.area?'a':undefined});
@@ -275,10 +281,11 @@ function buildChart(canvas,ds,sers,fmt,opt){
     plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel-2'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,boxPadding:4,usePointStyle:false,
       titleFont:{family:'IBM Plex Mono',size:12},bodyFont:{family:'Source Sans 3',size:13},
       filter:it=>!it.dataset._ref&&it.raw!=null,
-      callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+f(it.raw)}}},
+      callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+(it.dataset._f||f)(it.raw)}}},
     scales:{
       x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>labels[i]}},
-      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:opt.half?4:6,callback:v=>fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='bi'?nf(0).format(v):fmt==='brl'?nf(0).format(v):fmt==='usd'?nf(0).format(v):fmt==='fx'?nf(2).format(v):nf(0).format(v)}}
+      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:opt.half?4:6,callback:axisTick(fmt)}},
+      ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:6,callback:axisTick(opt.fmt2)}}}:{})
     }}});
 }
 function fiscalChart(canvas){
@@ -295,8 +302,9 @@ function fiscalChart(canvas){
 }
 function legendHTML(ds,sers,opt){
   return sers.map(s=>{
-    if(s.ref!=null) return `<span><i class="dash" style="border-color:var(--ref)"></i>${s.label}</span>`;
-    const lab=s.label||ds.series[s.i].label;
+    const dir=opt.fmt2?(s.ax===2?' <small>(dir.)</small>':' <small>(esq.)</small>'):'';
+    if(s.ref!=null) return `<span><i class="dash" style="border-color:var(--ref)"></i>${s.label}${dir}</span>`;
+    const lab=(s.label||ds.series[s.i].label)+dir;
     const c=s.c==='ref'?'var(--ref)':s.c==='ink'?'var(--ink)':`var(--${s.c})`;
     if(s.type==='bar'||opt.area) return `<span><i class="bar" style="background:${c}"></i>${lab}</span>`;
     if(s.type==='point') return `<span><i class="bar" style="background:${c};border-radius:50%"></i>${lab}</span>`;
@@ -313,7 +321,7 @@ function render(){
   const main=document.getElementById('main');main.innerHTML='';
   SECS.forEach(sec=>{
     const el=document.createElement('section');el.id=sec.id;
-    el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2><p>${sec.p}</p></div><div class="grid"></div>`;
+    el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2></div>${sumHTML(sec.sum)}<div class="grid"></div>`;
     const g=el.querySelector('.grid');
     sec.charts.forEach((c,ci)=>{
       const card=document.createElement('article');card.className='card'+(c.wide?' wide':'');
@@ -346,30 +354,29 @@ function render(){
       else if(c.split) c.split.forEach((p,pi)=>charts.push(buildChart(cvs[pi],ds,p.s,p.fmt,{half:1})));
       else charts.push(buildChart(cvs[0],ds,c.s,c.fmt,c));
       const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
-      const tf=c.fmt||c.split.flatMap(p=>p.s.filter(s=>s.ref==null).map(()=>p.fmt));
+      const tf=c.fmt2?ds.series.map((_,k)=>(allS.find(s=>s.i===k&&s.ref==null)||{}).ax===2?c.fmt2:c.fmt):c.fmt||c.split.flatMap(p=>p.s.filter(s=>s.ref==null).map(()=>p.fmt));
       btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=fds.n?tableHTML(fds,tf):'<p class="note">Sem dados no período.</p>';tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
     });
     main.appendChild(el);
   });
 }
-function kpis(){
-  const last=(k,i)=>{const s=D[k].series[i].data,L=D[k].labels;for(let j=s.length-1;j>=0;j--)if(s[j]!=null)return {v:s[j],l:L[j],j};};
-  const back=(k,i,j,n)=>{const s=D[k].series[i].data;for(let x=j-n;x>=0;x--)if(s[x]!=null)return s[x];return null};
-  const items=[
-    {t:'SELIC fim de 2026 (Focus)',k:'focus_selic_ipca',i:0,f:F.pp,n:20,dl:'vs 4 semanas',pp:1},
-    {t:'IPCA 12 meses',k:'incc_ipca',i:1,f:F.pct,n:12,dl:'vs 12m'},
-    {t:'Taxa de desocupação',k:'desemprego',i:0,f:F.pct,n:12,dl:'vs 12m'},
-    {t:'Renda média do trabalho',k:'desemprego',i:1,f:F.brl,n:12,dl:'vs 12m',rel:1},
-    {t:'Endividamento das famílias',k:'juros_endiv',i:1,f:F.pct,n:12,dl:'vs 12m'},
-    {t:'Inadimplência PF',k:'renda_inad',i:1,f:F.pct,n:12,dl:'vs 12m'},
-    {t:'INCC 12 meses',k:'incc_ipca',i:0,f:F.pct,n:12,dl:'vs 12m'},
-    {t:'Incerteza econômica (IIE-Br)',k:'iie',i:0,f:F.num,n:12,dl:'vs 12m',abs:1},
-  ];
-  document.getElementById('kpis').innerHTML=items.map(it=>{
-    const L=last(it.k,it.i);const b=back(it.k,it.i,L.j,it.n);let d='–';
-    if(b!=null){const x=L.v-b;const sg=x>0?'+':x<0?'−':'±';
-      d=it.rel?sg+nf(1).format(Math.abs(x/b*100))+'%':it.abs?sg+nf(1).format(Math.abs(x)):it.pp?sg+nf(2).format(Math.abs(x))+' p.p.':sg+nf(1).format(Math.abs(x*100))+' p.p.'}
-    return `<div class="kpi"><span class="k">${it.t}</span><span class="v">${it.f(L.v)}</span><span class="d"><span>${d}</span> ${it.dl} · ${fmtLabel(L.l,true)}</span></div>`}).join('');
+// Resumo de cada tópico: último dado observado (sem projeções) e a variação no período de comparação
+const NOW=(()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)})();
+function sumHTML(items){
+  if(!items||!items.length)return '';
+  return `<div class="kpis">${items.map(it=>{
+    const ds=D[it.k],s=ds.series[it.i].data,L=ds.labels,f=F[it.f];
+    let j=-1;for(let x=s.length-1;x>=0;x--)if(s[x]!=null&&spanOf(L[x])[1]<=NOW){j=x;break}
+    if(j<0)return '';
+    let tgt,cmp;
+    if(it.back.d){const dt=new Date(L[j]);dt.setDate(dt.getDate()-it.back.d);tgt=dt.toISOString().slice(0,10);cmp=x=>L[x]<=tgt}
+    else{tgt=addMonths(spanOf(L[j])[1],-it.back.m);cmp=x=>spanOf(L[x])[1]<=tgt}
+    let b=null;for(let x=j-1;x>=0;x--)if(s[x]!=null&&cmp(x)){b=s[x];break}
+    let d='–';
+    if(b!=null){const x=s[j]-b,sg=x>0?'+':x<0?'−':'±',ax=Math.abs(x);
+      d=it.rel?sg+nf(1).format(Math.abs(x/b*100))+'%':it.f==='pct'?sg+nf(1).format(ax*100)+' p.p.':it.f==='pp'?sg+nf(2).format(ax)+' p.p.':it.f==='fx'?sg+nf(2).format(ax):it.f==='int'?sg+nf(0).format(ax):sg+nf(1).format(ax)}
+    const dl=it.back.d?'vs 4 semanas':kindOf(L[j])==='q'?'vs 4 tri':'vs 12m';
+    return `<div class="kpi"><span class="k">${it.t}</span><span class="v">${f(s[j])}</span><span class="d"><span>${d}</span> ${dl} · ${fmtLabel(L[j],true)}</span></div>`}).join('')}</div>`;
 }
 function nav(){
   const n=document.getElementById('nav');n.innerHTML=SECS.map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.tag}</a>`).join('');
@@ -390,7 +397,7 @@ $from.addEventListener('change',()=>{FROM=$from.value;PRESET=-1;apply()});
 $to.addEventListener('change',()=>{TO=$to.value;PRESET=-1;apply()});
 document.getElementById('d-clear').onclick=()=>setPer(0);
 Chart.defaults.font.family='"Source Sans 3",system-ui,sans-serif';
-kpis();apply();
+apply();
 // redesenha ao trocar o tema
 const rerender=()=>{render();nav()};
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',rerender);

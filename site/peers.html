@@ -1,4 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}</style></head><body><title>Peers Dexco</title><style>
+.pe-sair{font:inherit;color:var(--pe-mut);background:none;border:1px solid #444;border-radius:6px;padding:4px 10px;cursor:pointer;margin-left:6px}
+.pe-sair:hover{color:var(--pe-fg)}
 .pe-bar{--pe-bg:#111;--pe-fg:#f1f0ed;--pe-mut:#a8a6a1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;background:var(--pe-bg);color:var(--pe-fg);
  margin:0 calc(-1*max(16px,env(safe-area-inset-right,0px))) 0 calc(-1*max(16px,env(safe-area-inset-left,0px)));
  padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font:500 14px "Red Hat Text",system-ui,sans-serif}
@@ -106,7 +108,7 @@ mark{background:none;color:var(--ink);font-weight:600}
 .tbl .rk{font-family:var(--body);font-size:12px;color:var(--ink-2);text-align:left}
 .rank{display:inline-flex;align-items:center;gap:4px}
 .rank b{font-weight:600;color:var(--ink)}
-.resumo{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 0 6px}
+.resumo{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 0 6px;margin-bottom:16px}
 .resumo .tbl{padding:0 6px}
 .resumo .note{padding:8px 16px 4px}
 .note{font-size:12px;color:var(--ink-3)}
@@ -137,7 +139,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <main id="main"></main>
 <footer>
   <span>Fonte: planilha Análise de Competidores (vSophia), abas "Gráficos" de cada negócio. Cada gráfico mostra no rodapé a célula onde começa o bloco. Valores em R$ milhões; empresas estrangeiras convertidas pelo câmbio de cada ano na própria planilha.</span>
-  <span>Tratamento: células zeradas nas séries financeiras foram lidas como "sem dado". Valores com erro de origem e outliers foram retirados dos gráficos; no resumo aparecem como n.s. (não significativo). As escalas vão do menor ao maior valor de cada gráfico; colunas sempre partem do zero.</span>
+  <span>Tratamento: células zeradas nas séries financeiras foram lidas como "sem dado". Valores com erro de origem e outliers foram retirados dos gráficos; nas tabelas-resumo aparecem como n.s. (não significativo). As escalas vão do menor ao maior valor de cada gráfico; colunas sempre partem do zero.</span>
 </footer>
 </div>
 
@@ -166,7 +168,6 @@ const GROUPS=[
  {id:'caixa',tag:'Fluxo de caixa',h:'Conversão de EBITDA em caixa',p:'Como o EBITDA se transforma em fluxo de caixa livre: variação do capital de giro, capex e outras saídas.'},
  {id:'setor',tag:'Setorial',h:'Mercado, participação e preço',p:'Dados setoriais da planilha. As cores seguem as empresas destacadas; mercado e WACC aparecem tracejados em cinza.'},
 ];
-const SUM=['rol','ebitda','me','fcl','giro','ci','alav','roic'];
 // Escalas dos gráficos nas apresentações do Offsite (eixo vertical: mín, máx; bar = gráfico de colunas no slide)
 const AX={
  loucas:{rol:{max:80000,bar:1},ebitda:{max:8000,bar:1},ll:{min:-700,max:3000,bar:1},ci:{min:0,max:60000,bar:1},me:{min:-.3,max:.7},roic:{max:.5},giro:{max:7},alav:{max:7},mb:{min:0,max:1},ml:{max:.5},cpv:{min:0,max:1},dga:{min:0,max:.6},dv:{min:-.1,max:.5},pmp:{max:250},wk:{max:.5},pmr:{max:100},pme:{max:250},fcl:{max:3},varwk:{min:-2,max:2},capexe:{min:-2,max:2},outras:{min:-2,max:2},capexr:{min:0,max:.15},
@@ -297,27 +298,24 @@ function renderFilters(){
   document.getElementById('chips').innerHTML=`<span class="chip" style="cursor:default;border-color:var(--ink)"><i style="background:var(--dex)"></i>${s.ents.dexco.name}</span>`+peers.map(k=>{const on=k in hm,e=s.ents[k];return `<button class="chip" data-k="${k}" aria-pressed="${on}" ${!on&&full?'disabled title="Desmarque um peer para escolher outro"':''}><i style="background:${on?slotVar(hm[k]):'var(--ctx)'};${on&&hm[k]>=8?'outline:2px dashed var(--ink-3);outline-offset:1px':''}"></i>${e.name}<span class="cc">${e.country}</span></button>`}).join('');
   document.querySelectorAll('#chips button').forEach(b=>b.onclick=()=>{const k=b.dataset.k,m=hlMap();if(k in m)delete m[k];else{const used=Object.values(m);let free=0;while(used.includes(free))free++;m[k]=free}save();renderAll()});
 }
-function sumTable(){
+function sumTable(keys){
   const s=seg(),ents=visibleEnts().filter(k=>!/^dexco_/.test(k));const ano=ST.ano;
   // ano da coluna = ano da receita mais recente da empresa; indicadores de outros anos não entram na coluna
-  const colYear=k=>{const r=valAt(s.metrics.rol,k,ano);if(r.y)return r.y;const ys=SUM.map(m=>s.metrics[m]&&valAt(s.metrics[m],k,ano).y).filter(Boolean);return ys.sort().pop()};
+  const colYear=k=>{const r=valAt(s.metrics.rol,k,ano);if(r.y)return r.y;const ys=Object.keys(s.metrics).map(m=>valAt(s.metrics[m],k,ano).y).filter(Boolean);return ys.sort().pop()};
   const head=`<tr><th>${s.name} · R$ milhões</th>${ents.map(k=>{const e=s.ents[k];const y=colYear(k)||'–';return `<th class="${e.dex?'dexc':''}">${e.name}<small>${e.dex?'Dexco':FLAG[e.country]||e.country} · ${y}</small></th>`}).join('')}</tr>`;
-  const rows=SUM.filter(m=>s.metrics[m]).map(m=>{const M=s.metrics[m],f=F[M.fmt];const ri=rankInfo(m,M,ano);
+  const rows=keys.filter(m=>s.metrics[m]).map(m=>{const M=s.metrics[m],f=F[M.fmt];const ri=rankInfo(m,M,ano);
     return `<tr><td>${M.label}${M.calc?' ¹':''}</td>${ents.map(k=>{const r0=valAt(M,k,ano);const r=r0.y&&r0.y===colYear(k)?r0:{v:null};return `<td class="${s.ents[k].dex?'dexc':''} ${r.v==null?'na':''}" ${r.ns?`title="Excluído (${r.ns.kind}): ${f(r.ns.v)} – ${r.ns.why}"`:''}>${r.ns?'n.s.':f(r.v)}</td>`}).join('')}</tr>`}).join('');
+  const calc=keys.some(m=>s.metrics[m]&&s.metrics[m].calc);
   return `<div class="tbl"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>
-   <p class="note">Ano de referência ${ano}. O ano abaixo do nome de cada empresa é o da receita mais recente disponível até ${ano}; os demais indicadores são do mesmo ano (– quando a empresa não tem o dado naquele ano). A alavancagem da Dexco é sempre a consolidada.${s.metrics.ebitda&&s.metrics.ebitda.calc?' (1) EBITDA calculado como receita × margem EBITDA (a aba de Madeira não traz o valor absoluto).':''}</p>`}
+   <p class="note">Resumo ${ano}: o ano abaixo do nome de cada empresa é o da receita mais recente disponível até ${ano}; os indicadores são do mesmo ano (– quando a empresa não tem o dado naquele ano).${keys.includes('alav')?' A alavancagem da Dexco é sempre a consolidada.':''}${calc?' (1) EBITDA calculado como receita × margem EBITDA (a aba de Madeira não traz o valor absoluto).':''}</p>`}
 function renderMain(){
   charts.forEach(c=>c.destroy());charts.length=0;
   const s=seg(),main=document.getElementById('main');main.innerHTML='';
   const ents=visibleEnts();const ano=ST.ano;
-  // resumo
-  const rs=document.createElement('section');rs.id='resumo';
-  const r1=rankInfo('roic',s.metrics.roic,ano),r2=rankInfo('me',s.metrics.me,ano),r3=rankInfo('rol',s.metrics.rol,ano);
-  rs.innerHTML=`<div class="sh"><h2>Peers ${s.name}: resumo ${ano}</h2><p>${s.ents.dexco.name}: <mark>receita de R$ ${F.mi(r3.dex&&r3.dex.v)} mi</mark> (mediana dos peers R$ ${F.mi(r3.med)} mi), margem EBITDA ${F.pct(r2.dex&&r2.dex.v)} (mediana dos peers ${F.pct(r2.med)}) e <mark>ROIC ${F.pct(r1.dex&&r1.dex.v)}</mark> (mediana ${F.pct(r1.med)}).</p></div><div class="resumo">${sumTable()}</div>`;
-  main.appendChild(rs);
   GROUPS.forEach(G=>{
     const sec=document.createElement('section');sec.id=G.id;
-    sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div><div class="grid ${G.id==='rent'||G.id==='caixa'?'three':''}"></div>`;
+    const keys=Object.keys(s.metrics).filter(k=>s.metrics[k].grp===G.id);
+    sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div>${keys.length?`<div class="resumo">${sumTable(keys)}</div>`:''}<div class="grid ${G.id==='rent'||G.id==='caixa'?'three':''}"></div>`;
     const g=sec.querySelector('.grid');let n=0;
     if(G.id==='setor'){
       s.sector.forEach(b=>{const idx=b.years.map((y,i)=>i).filter(i=>inPeriod(b.years[i]));const labels=idx.map(i=>b.years[i]);
@@ -343,7 +341,7 @@ function renderMain(){
       const exl=[];Object.entries(m.excl||{}).forEach(([ek,ys])=>{if(!ents.includes(ek))return;const it=Object.entries(ys).filter(([y])=>inPeriod(y));if(!it.length)return;const kinds=[...new Set(it.map(([,o])=>o.kind))].join('/');exl.push(it.length>2?`<b>${s.ents[ek].name}</b> ${it.length} anos (${kinds})`:`<b>${s.ents[ek].name}</b> `+it.map(([y,o])=>`${y}: ${f(o.v)}`).join(', ')+` (${kinds})`)});
       card(g,{title:m.label,unit:UNIT[m.fmt]+(m.calc?' · calculado (ROL × margem EBITDA)':'')+(m.dexCons?' · Dexco: alavancagem consolidada':''),read,labels,sets,fmt:m.fmt,ref:m.ref,ax,bar:ax&&ax.bar,fkey:k,excl:exl});n++});
     if(n)main.appendChild(sec)});
-  document.getElementById('nav').innerHTML=[['resumo','Resumo'],...GROUPS.filter(G=>document.getElementById(G.id)).map(G=>[G.id,G.tag])].map(([i,t])=>`<a href="#${i}">${t}</a>`).join('');
+  document.getElementById('nav').innerHTML=[...GROUPS.filter(G=>document.getElementById(G.id)).map(G=>[G.id,G.tag])].map(([i,t])=>`<a href="#${i}">${t}</a>`).join('');
 }
 function renderAll(){renderTabs();renderFilters();renderMain();save()}
 document.getElementById('ano').onchange=e=>{ST.ano=e.target.value;renderAll()};
