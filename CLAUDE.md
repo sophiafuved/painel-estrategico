@@ -69,6 +69,12 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
 - Radar: cada tópico abre com um resumo dos seus indicadores (último dado observado, sem
   projeções, e variação em 12 meses / 4 trimestres / 4 semanas no Focus). Os gráficos que na
   apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir.").
+- Peers: faixa dos peers (1º–3º quartil e mediana dos peers do filtro, sem a Dexco, com 3+ valores
+  no ano) nos gráficos de índices; não aparece nos de valores absolutos (R$). Matriz de
+  posicionamento no início (eixos escolhidos pelo usuário, bolha = receita, linhas na mediana dos
+  peers; "Crescimento da receita" é calculado a partir da receita).
+- Radar: seção "Monte seu gráfico" (até 3 séries, em nível, variação em 12 meses ou base 100).
+- Legendas clicáveis: clicar esconde/mostra a série.
 - Radar: Brent e impacto fiscal vêm de `pipeline/radar/static_apresentacao.json` (dados da
   apresentação, não da Grande Base).
 

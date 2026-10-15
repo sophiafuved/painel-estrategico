@@ -36,7 +36,7 @@ h1 span{color:var(--ink-3);font-weight:700}
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .tabs button:hover:not([aria-selected="true"]){color:var(--ink)}
 button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
-.filters{display:grid;grid-template-columns:auto auto auto auto;gap:14px 24px;align-items:end;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.filters{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}
 .f > span{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .f .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
@@ -68,6 +68,16 @@ mark{background:none;color:var(--ink);font-weight:600}
 .read b{color:var(--ink);font-weight:500}
 .legend{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px 12px;font-size:12.5px;color:var(--ink-2);min-height:42px}
 .card .foot{margin-top:auto}
+.legend .lg{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.legend .lg[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
+.legend .lg:hover{color:var(--ink)}
+.legend i.band{height:10px;width:14px;border:0;border-radius:2px;background:var(--band)}
+.legend i.dot{width:10px;height:10px;border:0;border-radius:50%}
+.card.full{grid-column:1/-1}
+.card.full .plot{height:440px}
+.mx{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:13px;color:var(--ink-2)}
+.mx label{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;max-width:100%}
+.mx select{max-width:100%;min-width:0}
 .legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:5px}
 .legend i.dex{border-top-width:3px}
 .legend i.dash{border-top-style:dashed}
@@ -103,9 +113,8 @@ mark{background:none;color:var(--ink);font-weight:600}
 .mini{overflow-x:auto;max-height:240px}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);max-width:95ch;display:flex;flex-direction:column;gap:6px}
 .empty{flex:1;display:grid;place-items:center;min-height:120px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-3);font-size:13px;text-align:center;padding:12px}
-  .filters .f.wide{grid-column:1/-1}
-@media (max-width:1000px){.filters{grid-template-columns:1fr 1fr}.filters .f.wide{grid-column:1/-1}}
-@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}.filters{grid-template-columns:minmax(0,1fr)}}
+  .filters .f.wide{flex-basis:100%}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
@@ -121,13 +130,15 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   <div class="f"><span id="l-esc">Peers</span><div class="seg" role="group" aria-labelledby="l-esc" id="escopo">
     <button data-v="all" aria-pressed="true">Todos</button><button data-v="br" aria-pressed="false">Brasil</button><button data-v="int" aria-pressed="false">Internacionais</button></div></div>
   <div class="f"><span id="l-foco">Escala dos gráficos</span><div class="seg" role="group" aria-labelledby="l-foco" id="focoAll"><button data-v="0" aria-pressed="true">Menor ao maior valor</button><button data-v="1" aria-pressed="false">Foco Dexco</button></div></div>
+  <div class="f"><span id="l-band">Faixa dos peers</span><div class="seg" role="group" aria-labelledby="l-band" id="band"><button data-v="1" aria-pressed="true">Mostrar</button><button data-v="0" aria-pressed="false">Ocultar</button></div></div>
   <div class="f wide"><span>Empresas nos gráficos</span><div class="chips" id="chips"></div></div>
 </div>
 <nav class="sec" id="nav"></nav>
 <main id="main"></main>
 <footer>
   <span>Fonte: planilha Análise de Competidores (vSophia), abas "Gráficos" de cada negócio. Cada gráfico mostra no rodapé a célula onde começa o bloco. Valores em R$ milhões; empresas estrangeiras convertidas pelo câmbio de cada ano na própria planilha.</span>
-  <span>Tratamento: células zeradas nas séries financeiras foram lidas como "sem dado". Valores com erro de origem e outliers foram retirados dos gráficos; nas tabelas-resumo aparecem como n.s. (não significativo). As escalas vão do menor ao maior valor de cada gráfico; colunas sempre partem do zero.</span>
+  <span>Tratamento: células zeradas nas séries financeiras foram lidas como "sem dado". Valores com erro de origem e outliers foram retirados dos gráficos (e da faixa dos peers); nas tabelas-resumo aparecem como n.s. (não significativo). As escalas vão do menor ao maior valor de cada gráfico; colunas sempre partem do zero.</span>
+  <span>Faixa dos peers: área cinza entre o 1º e o 3º quartil e linha tracejada da mediana dos peers que estão no filtro (Todos/Brasil/Internacionais), sem a Dexco, em cada ano com pelo menos 3 valores; não aparece nos gráficos de valores absolutos (R$ milhões), em que a mediana oscila conforme as empresas que reportam em cada ano. Clique em um item da legenda para esconder ou mostrar a série.</span>
 </footer>
 </div>
 
@@ -149,6 +160,7 @@ const UNIT={mi:'R$ milhões',pct:'%',x:'vezes (x)',d:'dias',brl:'R$'};
 const BETTER={rol:1,ebitda:1,ll:1,ci:null,roic:1,me:1,mb:1,ml:1,giro:1,alav:-1,cpv:-1,dga:-1,dv:-1,wk:-1,pmr:-1,pme:-1,pmp:1,varwk:null,capexe:null,outras:null,fcl:1,capexr:null};
 const FLAG={BR:'Brasil',JP:'Japão',ES:'Espanha',US:'EUA',IT:'Itália',CH:'Suíça',DE:'Alemanha',MX:'México'};
 const GROUPS=[
+ {id:'matriz',tag:'Matriz',h:'Matriz de posicionamento',p:'Escolha os indicadores dos dois eixos. Cada bolha é uma empresa, do tamanho da receita; as linhas tracejadas marcam a mediana dos peers.'},
  {id:'escala',tag:'Escala',h:'Tamanho: receita, resultado e capital empregado',p:'Valores absolutos em R$ milhões, em colunas, com eixo do zero ao maior valor. Use "Foco Dexco" para ajustar o eixo aos valores da Dexco.'},
  {id:'rent',tag:'Rentabilidade',h:'Retorno, margens, giro e alavancagem',p:'ROIC = NOPAT / capital investido. Giro = receita líquida / capital investido. Alavancagem = dívida líquida / EBITDA.'},
  {id:'custos',tag:'Custos',h:'Estrutura de custos e despesas sobre a receita',p:'Quanto menor, melhor. CPV caixa exclui depreciação.'},
@@ -170,7 +182,7 @@ const slotColor=i=>css(SLOTS[i%8]);const slotDash=i=>i>=8?[6,3]:[];
 const slotVar=i=>`var(${SLOTS[i%8]})`;
 
 // ---------- estado ----------
-let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false};
+let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false,band:true,mx:'giro',my:'me'};
 try{Object.assign(ST,JSON.parse(localStorage.getItem('peers-st2')||'{}'))}catch(e){}
 ST.foco=ST.foco||{};
 const save=()=>{try{localStorage.setItem('peers-st2',JSON.stringify(ST))}catch(e){}};
@@ -224,7 +236,7 @@ function drawChart(canvas,labels,sets,fmt,opts={}){
   if(opts.foco)rr=focusRange(sets,opts.bar);
   else rr=dataRange(sets,opts.bar);
   const clipped={};
-  if(rr){sets.forEach(d=>{if(d._ref)return;d.data.forEach((v,i)=>{if(v!=null&&((rr.min!=null&&v<rr.min)||(rr.max!=null&&v>rr.max))){(clipped[d.label]=clipped[d.label]||[]).push(labels[i]+': '+f(v))}})})}
+  if(rr){sets.forEach(d=>{if(d._ref||d._band)return;d.data.forEach((v,i)=>{if(v!=null&&((rr.min!=null&&v<rr.min)||(rr.max!=null&&v>rr.max))){(clipped[d.label]=clipped[d.label]||[]).push(labels[i]+': '+f(v))}})})}
   const c=new Chart(canvas,{type:opts.bar?'bar':'line',data:{labels,datasets:sets},plugins:[crosshair],options:{
     responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
     plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,boxPadding:4,
@@ -243,9 +255,28 @@ function entSets(m,idx,ents){
     if(/^dexco_/.test(k)) return lineSet(e.name,data,css('--dex'),{borderDash:[5,4],order:0});
     if(k in hm) return lineSet(e.name,data,col,{order:1,borderDash:slotDash(hm[k])});
     return null}).filter(Boolean)}
-function asBars(sets){return sets.map(d=>Object.assign({},d,{type:'bar',backgroundColor:d.borderColor,borderWidth:0,borderRadius:2,borderDash:undefined,barPercentage:.92,categoryPercentage:.85,order:d._dex?0:1}))}
-function legendFor(sets){const items=sets.filter(d=>!d._ctx).map(d=>`<span><i class="${d._dex||d.borderWidth>=3?'dex':''} ${d.borderDash&&d.borderDash.length?'dash':''}" style="border-color:${d.borderColor}"></i>${d.label}</span>`);
+const hexA=(h,a)=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
+// Faixa dos peers: 1º–3º quartil e mediana dos peers visíveis (sem a Dexco), em cada ano com 3 ou mais valores
+function bandSets(m,idx,bar){
+  if(!ST.band||m.fmt==='mi')return []; // valores absolutos (R$): a mediana muda muito com quem reporta em cada ano
+  const s=seg(),peers=visibleEnts().filter(k=>!s.ents[k].dex&&!/^dexco_/.test(k)&&m.series[k]);
+  const q=(a,p)=>{const v=[...a].sort((x,y)=>x-y),pos=(v.length-1)*p,lo=Math.floor(pos),hi=Math.ceil(pos);return v[lo]+(v[hi]-v[lo])*(pos-lo)};
+  const cols=idx.map(i=>peers.map(k=>m.series[k][i]).filter(v=>v!=null));
+  const at=p=>cols.map(c=>c.length>=3?q(c,p):null);
+  const med=at(.5);if(!med.some(v=>v!=null))return [];
+  const medSet=lineSet('Mediana dos peers',med,css('--ref'),{type:'line',borderDash:[6,4],borderWidth:2,order:2,_band:1});
+  const fill=hexA(css('--ctx'),.38);
+  return [lineSet('Peers: 1º quartil',at(.25),fill,{type:'line',borderWidth:0,pointHoverRadius:0,order:3,_band:2}),
+          lineSet('Peers: 3º quartil',at(.75),fill,{type:'line',borderWidth:0,pointHoverRadius:0,order:3,fill:'-1',backgroundColor:fill,_band:2}),medSet]}
+function asBars(sets){return sets.map(d=>d._band?d:Object.assign({},d,{type:'bar',backgroundColor:d.borderColor,borderWidth:0,borderRadius:2,borderDash:undefined,barPercentage:.92,categoryPercentage:.85,order:d._dex?0:1}))}
+// Legenda: cada item é um botão que esconde/mostra a série (data-i = índices dos datasets)
+function legendFor(sets){const items=[];let q=[];
+  sets.forEach((d,i)=>{if(d._ctx)return;
+    if(d._band===2){q.push(i);if(q.length===2)items.push(`<button class="lg" data-i="${q.join(',')}" aria-pressed="true" title="Clique para esconder ou mostrar"><i class="band" style="--band:${d.backgroundColor}"></i>Faixa dos peers (1º–3º quartil)</button>`);return}
+    items.push(`<button class="lg" data-i="${i}" aria-pressed="true" title="Clique para esconder ou mostrar"><i class="${d._dex||d.borderWidth>=3?'dex':''} ${d.borderDash&&d.borderDash.length?'dash':''}" style="border-color:${d.borderColor}"></i>${d.label}</button>`)});
   return items.join('')}
+function wireLegend(el,ch){el.querySelectorAll('.legend .lg').forEach(b=>b.onclick=()=>{const vis=b.getAttribute('aria-pressed')!=='true';
+  b.dataset.i.split(',').forEach(i=>ch.setDatasetVisibility(+i,vis));b.setAttribute('aria-pressed',vis);ch.update()})}
 function tableFor(labels,sets,f){return `<table><thead><tr><th>Empresa</th>${labels.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${sets.map(d=>`<tr><td>${d.label}</td>${d.data.map(v=>`<td>${f(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
 
 function card(g,o){ // o: title, unit, read, labels, sets, fmt, ref, ax, bar, fkey
@@ -260,7 +291,7 @@ function card(g,o){ // o: title, unit, read, labels, sets, fmt, ref, ax, bar, fk
     <div class="mini" id="${tid}" hidden></div>
     <div class="foot" style="justify-content:flex-end"><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button></div>`;
   g.appendChild(el);
-  if(has){const sets=o.bar?asBars(o.sets):o.sets;const clipped=drawChart(el.querySelector('canvas'),o.labels,sets,o.fmt,{ax:o.ax,bar:o.bar,foco});
+  if(has){const sets=o.bar?asBars(o.sets):o.sets;const clipped=drawChart(el.querySelector('canvas'),o.labels,sets,o.fmt,{ax:o.ax,bar:o.bar,foco});wireLegend(el,charts[charts.length-1]);
     if(clipped.length){const c=el.querySelector('.clip');c.hidden=false;
       c.innerHTML=('Fora do eixo ajustado: ')+clipped.map(([n,l])=>l.length>2?`<b>${n}</b> (${l.length} anos)`:`<b>${n}</b> ${l.join(', ')}`).join(' · ')+'. Veja os valores em "Ver tabela".'}}
   const fb=el.querySelector('.focus');if(fb)fb.onclick=()=>{(ST.foco[ST.seg]=ST.foco[ST.seg]||{})[o.fkey]=!foco;save();renderMain()};
@@ -281,6 +312,7 @@ function renderFilters(){
   document.getElementById('de').innerHTML=opt(ST.de);document.getElementById('ate').innerHTML=opt(ST.ate);
   document.querySelectorAll('#escopo button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===ST.esc));
   document.querySelectorAll('#focoAll button').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='1')===ST.focoAll));
+  document.querySelectorAll('#band button').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='1')===ST.band));
   const s=seg(),hm=hlMap();const peers=Object.keys(s.ents).filter(k=>!s.ents[k].dex&&!/^dexco_/.test(k));
   const full=false;
   document.getElementById('chips').innerHTML=`<span class="chip" style="cursor:default;border-color:var(--ink)"><i style="background:var(--dex)"></i>${s.ents.dexco.name}</span>`+peers.map(k=>{const on=k in hm,e=s.ents[k];return `<button class="chip" data-k="${k}" aria-pressed="${on}" ${!on&&full?'disabled title="Desmarque um peer para escolher outro"':''}><i style="background:${on?slotVar(hm[k]):'var(--ctx)'};${on&&hm[k]>=8?'outline:2px dashed var(--ink-3);outline-offset:1px':''}"></i>${e.name}<span class="cc">${e.country}</span></button>`}).join('');
@@ -296,6 +328,60 @@ function sumTable(keys){
   const calc=keys.some(m=>s.metrics[m]&&s.metrics[m].calc);
   return `<div class="tbl"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>
    <p class="note">Resumo ${ano}: o ano abaixo do nome de cada empresa é o da receita mais recente disponível até ${ano}; os indicadores são do mesmo ano (– quando a empresa não tem o dado naquele ano).${keys.includes('alav')?' A alavancagem da Dexco é sempre a consolidada.':''}${calc?' (1) EBITDA calculado como receita × margem EBITDA (a aba de Madeira não traz o valor absoluto).':''}</p>`}
+// ---------- matriz de posicionamento ----------
+const tickOf=fmt=>v=>fmt==='pct'?nf(Math.abs(v)<.1&&v!==0?1:0).format(v*100)+'%':fmt==='x'?nf(1).format(v)+'x':fmt==='mi'?F.mi(v):nf(0).format(v);
+function mxOptions(){const s=seg();const o=Object.entries(s.metrics).map(([k,m])=>({k,label:m.label,fmt:m.fmt,grp:m.grp}));
+  if(s.metrics.rol)o.splice(1,0,{k:'cresc',label:'Crescimento da receita (a/a)',fmt:'pct',grp:'escala'});return o}
+function mxVal(k,e){const s=seg(),ano=ST.ano;
+  if(k==='cresc'){const r=s.metrics.rol;const a=valAt(r,e,ano);if(a.v==null||+ano-+a.y>1)return null;const i=r.years.indexOf(String(+a.y-1));const b=i>=0&&r.series[e]?r.series[e][i]:null;return b>0?{v:a.v/b-1,y:a.y}:null}
+  const m=s.metrics[k];if(!m)return null;const a=valAt(m,e,ano);return a.v!=null&&+ano-+a.y<=1?{v:a.v,y:a.y}:null}
+function renderMatriz(g){
+  const s=seg(),opts=mxOptions(),has=k=>opts.some(o=>o.k===k);
+  if(!has(ST.mx))ST.mx=has('giro')?'giro':opts[0].k;if(!has(ST.my))ST.my=has('me')?'me':opts[1].k;
+  const OX=opts.find(o=>o.k===ST.mx),OY=opts.find(o=>o.k===ST.my);
+  const sel=(id,v)=>`<select id="${id}">${GROUPS.filter(G=>G.id!=='matriz'&&G.id!=='setor').map(G=>`<optgroup label="${G.tag}">${opts.filter(o=>o.grp===G.id).map(o=>`<option value="${o.k}" ${o.k===v?'selected':''}>${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
+  const ents=visibleEnts().filter(k=>!/^dexco_/.test(k)),hm=hlMap();
+  const pts=[],miss=[];
+  ents.forEach(k=>{const x=mxVal(ST.mx,k),y=mxVal(ST.my,k);if(!x||!y){miss.push(s.ents[k].name);return}
+    const r=mxVal('rol',k);pts.push({k,name:s.ents[k].name,x:x.v,y:y.v,rol:r&&r.v,yr:[...new Set([x.y,y.y])].join('/')})});
+  const maxR=Math.max(...pts.map(p=>p.rol||0),1);
+  const sets=pts.map(p=>{const e=s.ents[p.k];const col=e.dex?css('--dex'):p.k in hm?slotColor(hm[p.k]):css('--ctx');
+    return {label:p.name,data:[{x:p.x,y:p.y,r:p.rol>0?6+20*Math.sqrt(p.rol/maxR):6}],backgroundColor:hexA(col,e.dex?.9:.72),borderColor:col,borderWidth:e.dex?2:1,_dex:e.dex,_p:p,order:e.dex?0:1}});
+  const peerVals=a=>pts.filter(p=>!s.ents[p.k].dex).map(p=>p[a]);const mX=median(peerVals('x')),mY=median(peerVals('y'));
+  const el=document.createElement('article');el.className='card full';const tid='tmx';
+  el.innerHTML=`<div class="ch"><div><h3>${OY.label} × ${OX.label}</h3><div class="unit">Ano ${ST.ano} (ou o anterior, quando a empresa ainda não tem o dado) · bolha = receita líquida${[ST.mx,ST.my].includes('cresc')?' · crescimento em R$: nas estrangeiras inclui o efeito do câmbio':''}</div></div></div>
+    <div class="mx"><label>Eixo vertical ${sel('mx-y',ST.my)}</label><label>Eixo horizontal ${sel('mx-x',ST.mx)}</label><button class="focus" id="mx-swap" type="button">Inverter eixos</button></div>
+    <div class="legend">${sets.map((d,i)=>`<button class="lg" data-i="${i}" aria-pressed="true" title="Clique para esconder ou mostrar"><i class="dot" style="background:${d.borderColor}"></i>${d.label}</button>`).join('')}</div>
+    ${pts.length?`<div class="plot"><canvas role="img" aria-label="Matriz de posicionamento"></canvas></div>`:`<div class="empty">Sem empresas com os dois indicadores em ${ST.ano}.</div>`}
+    ${miss.length?`<div class="exl">Sem dado (ou n.s.) em ${ST.ano}: ${miss.join(', ')}.</div>`:''}
+    <div class="mini" id="${tid}" hidden></div>
+    <div class="foot" style="justify-content:flex-end"><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button></div>`;
+  g.appendChild(el);
+  const fx=F[OX.fmt],fy=F[OY.fmt];
+  const rng=(a,fmt)=>{let lo=Math.min(...a),hi=Math.max(...a);if(hi===lo){hi+=Math.abs(hi)*.1||1;lo-=Math.abs(lo)*.1||1}const pad=(hi-lo)*.12;lo-=pad;hi+=pad;const st=niceStep(hi-lo);return {min:Math.floor(lo/st)*st,max:Math.ceil(hi/st)*st}};
+  if(pts.length){
+    const rx=rng(pts.map(p=>p.x)),ry=rng(pts.map(p=>p.y));
+    const deco={id:'mxdeco',afterDatasetsDraw(c){const {ctx,chartArea:A,scales:{x,y}}=c;ctx.save();ctx.strokeStyle=css('--ref');ctx.setLineDash([5,4]);ctx.lineWidth=1.2;
+      if(mX!=null){const px=x.getPixelForValue(mX);ctx.beginPath();ctx.moveTo(px,A.top);ctx.lineTo(px,A.bottom);ctx.stroke()}
+      if(mY!=null){const py=y.getPixelForValue(mY);ctx.beginPath();ctx.moveTo(A.left,py);ctx.lineTo(A.right,py);ctx.stroke()}
+      ctx.setLineDash([]);ctx.font='500 11px "Red Hat Text",system-ui';ctx.fillStyle=css('--ink-3');
+      if(mX!=null)ctx.fillText('mediana peers',x.getPixelForValue(mX)+4,A.top+12);
+      c.data.datasets.forEach((d,i)=>{if(!c.isDatasetVisible(i))return;const el=c.getDatasetMeta(i).data[0];if(!el)return;
+        ctx.fillStyle=d._dex?css('--ink'):css('--ink-2');ctx.font=(d._dex?'700 ':'500 ')+'12px "Red Hat Text",system-ui';ctx.fillText(d.label,el.x+(el.options.radius||6)+4,el.y+4)});
+      ctx.restore()}};
+    const c=new Chart(el.querySelector('canvas'),{type:'bubble',data:{datasets:sets},plugins:[deco],options:{responsive:true,maintainAspectRatio:false,animation:false,
+      layout:{padding:{right:40}},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,
+        callbacks:{title:it=>it[0].dataset.label+' · '+it[0].dataset._p.yr,label:it=>{const p=it.dataset._p;return [` ${OY.label}: ${fy(p.y)}`,` ${OX.label}: ${fx(p.x)}`,` Receita: R$ ${F.mi(p.rol)} mi`]}}}},
+      scales:{x:{type:'linear',min:rx.min,max:rx.max,title:{display:true,text:OX.label,color:css('--ink-2')},grid:{color:css('--grid')},border:{color:css('--line')},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:tickOf(OX.fmt)}},
+              y:{type:'linear',min:ry.min,max:ry.max,title:{display:true,text:OY.label,color:css('--ink-2')},grid:{color:css('--grid')},border:{display:false},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:tickOf(OY.fmt)}}}}});
+    charts.push(c);wireLegend(el,c)}
+  el.querySelector('#mx-x').onchange=e=>{ST.mx=e.target.value;save();renderMain()};
+  el.querySelector('#mx-y').onchange=e=>{ST.my=e.target.value;save();renderMain()};
+  el.querySelector('#mx-swap').onclick=()=>{[ST.mx,ST.my]=[ST.my,ST.mx];save();renderMain()};
+  const b=el.querySelector('.tabbtn'),t=el.querySelector('.mini');
+  b.onclick=()=>{const open=t.hidden;if(open)t.innerHTML=`<div class="tbl"><table><thead><tr><th>Empresa</th><th>Ano</th><th>${OY.label}</th><th>${OX.label}</th><th>Receita (R$ mi)</th></tr></thead><tbody>${pts.map(p=>`<tr><td>${p.name}</td><td>${p.yr}</td><td>${fy(p.y)}</td><td>${fx(p.x)}</td><td>${F.mi(p.rol)}</td></tr>`).join('')}<tr><td>Mediana dos peers</td><td></td><td>${fy(mY)}</td><td>${fx(mX)}</td><td></td></tr></tbody></table></div>`;t.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela'};
+}
 function renderMain(){
   charts.forEach(c=>c.destroy());charts.length=0;
   const s=seg(),main=document.getElementById('main');main.innerHTML='';
@@ -305,6 +391,7 @@ function renderMain(){
     const keys=Object.keys(s.metrics).filter(k=>s.metrics[k].grp===G.id);
     sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div>${keys.length?`<div class="resumo">${sumTable(keys)}</div>`:''}<div class="grid"></div>`;
     const g=sec.querySelector('.grid');let n=0;
+    if(G.id==='matriz'){renderMatriz(g);main.appendChild(sec);return}
     if(G.id==='setor'){
       s.sector.forEach(b=>{const idx=b.years.map((y,i)=>i).filter(i=>inPeriod(b.years[i]));const labels=idx.map(i=>b.years[i]);
         const hm=hlMap();const matchEnt=nm=>Object.keys(s.ents).find(k=>{const a=s.ents[k].name.toLowerCase(),c=nm.toLowerCase();return c.startsWith(a)||a.startsWith(c)});const anyMatch=b.series.some(x=>!x.dex&&!x.ref&&matchEnt(x.name));const used=new Set(anyMatch?Object.values(hm):[]);let free=[0,1,2,3,4,5,6,7].filter(i=>!used.has(i));const occ=/ocupa/i.test(b.title);
@@ -322,8 +409,8 @@ function renderMain(){
       if(!n)return;main.appendChild(sec);return}
     Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id).forEach(([k,m])=>{
       const idx=m.years.map((y,i)=>i).filter(i=>inPeriod(m.years[i]));const labels=idx.map(i=>m.years[i]);
-      const sets=entSets(m,idx,ents);
       const ax=(AX[ST.seg]||{})[k];
+      const sets=[...entSets(m,idx,ents),...bandSets(m,idx,ax&&ax.bar)];
       const ri=rankInfo(k,m,ano);const f=F[m.fmt];
       const read=ri.dexNs?`${s.ents.dexco.name} ${ri.dexNs.y}: <b>n.s.</b> (valor de ${f(ri.dexNs.ns.v)} excluído como ${ri.dexNs.ns.kind}) · mediana peers: <b>${f(ri.med)}</b>`:ri.dex?`${s.ents.dexco.name} ${ri.dex.y}: <b>${f(ri.dex.v)}</b> · mediana peers: <b>${f(ri.med)}</b>`:`${s.ents.dexco.name}: sem dado até ${ano}`;
       const exl=[];Object.entries(m.excl||{}).forEach(([ek,ys])=>{if(!ents.includes(ek))return;const it=Object.entries(ys).filter(([y])=>inPeriod(y));if(!it.length)return;const kinds=[...new Set(it.map(([,o])=>o.kind))].join('/');exl.push(it.length>2?`<b>${s.ents[ek].name}</b> ${it.length} anos (${kinds})`:`<b>${s.ents[ek].name}</b> `+it.map(([y,o])=>`${y}: ${f(o.v)}`).join(', ')+` (${kinds})`)});
@@ -341,6 +428,7 @@ function selectScope(v){Object.keys(D).forEach(sk=>{const s=D[sk],r=s.metrics.ro
   const ks=Object.keys(s.ents).filter(k=>!s.ents[k].dex&&!/^dexco_/.test(k)&&(v==='all'||(v==='br')===(s.ents[k].country==='BR'))).sort((a,b)=>last(b)-last(a));
   const m={};ks.forEach((k,i)=>m[k]=i);ST.hl[sk]=m})}
 document.querySelectorAll('#escopo button').forEach(b=>b.onclick=()=>{ST.esc=b.dataset.v;selectScope(ST.esc);renderAll()});
+document.querySelectorAll('#band button').forEach(b=>b.onclick=()=>{ST.band=b.dataset.v==='1';renderAll()});
 document.querySelectorAll('#focoAll button').forEach(b=>b.onclick=()=>{ST.focoAll=b.dataset.v==='1';ST.foco[ST.seg]={};renderAll()});
 Chart.defaults.font.family='"Red Hat Text",system-ui,sans-serif';
 renderAll();

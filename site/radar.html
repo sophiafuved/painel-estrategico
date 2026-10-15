@@ -76,6 +76,15 @@ section{padding-top:40px;scroll-margin-top:56px}
 .legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
 .legend i.bar{height:10px;border:0;border-radius:2px;width:10px}
 .legend i.dash{border-top-style:dashed}
+.legend .lg{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.legend .lg[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
+.legend .lg:hover{color:var(--ink)}
+.card.full{grid-column:1/-1}
+.card.full .plot{height:380px}
+.mk{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:13px;color:var(--ink-2)}
+.mk label{display:flex;align-items:center;gap:6px;min-width:0}
+.mk select{font:500 13px var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:min(340px,80vw)}
+.mk select:focus-visible{outline:2px solid var(--accent-ink);outline-offset:1px}
 .plot{position:relative;height:280px;flex:none}
 .plot.half{flex:none}
 .plot.half{height:150px}
@@ -129,7 +138,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <nav class="sec" id="nav"></nav>
 <main id="main"></main>
 <footer>
-  Todos os gráficos leem as mesmas faixas usadas pelas abas <b>Gráficos_Radar</b> da Grande Base (referência de célula no rodapé de cada gráfico), exceto o Brent e o impacto fiscal, que vêm dos dados embutidos na apresentação Modelo 2. Gráficos com dois eixos seguem a apresentação: a legenda indica se cada série usa o eixo da esquerda (esq.) ou da direita (dir.). O resumo de cada tópico mostra o último dado observado (sem projeções). Notas: (1) ICE: Indústria, Construção, Serviços e Comércio. (2) Taxa de juros PF, recursos livres. (3) Saldos com atraso acima de 90 dias. NAIRU = 8,0% segundo Itaú.
+  Todos os gráficos leem as mesmas faixas usadas pelas abas <b>Gráficos_Radar</b> da Grande Base (referência de célula no rodapé de cada gráfico), exceto o Brent e o impacto fiscal, que vêm dos dados embutidos na apresentação Modelo 2. Gráficos com dois eixos seguem a apresentação: a legenda indica se cada série usa o eixo da esquerda (esq.) ou da direita (dir.). O resumo de cada tópico mostra o último dado observado (sem projeções). Clique em um item da legenda para esconder ou mostrar a série. Notas: (1) ICE: Indústria, Construção, Serviços e Comércio. (2) Taxa de juros PF, recursos livres. (3) Saldos com atraso acima de 90 dias. NAIRU = 8,0% segundo Itaú.
 </footer>
 </div>
 
@@ -149,6 +158,8 @@ const F={
   bi:(v)=>v==null?'–':'R$ '+nf(1).format(v)+' bi',
   usd:(v)=>v==null?'–':'US$ '+nf(1).format(v),
   fx:(v)=>v==null?'–':'R$ '+nf(2).format(v),
+  ppd:(v)=>v==null?'–':nf(1).format(v*100)+' p.p.', // diferença de taxas em decimal
+  ppx:(v)=>v==null?'–':nf(2).format(v)+' p.p.',     // diferença de taxas já em %
 };
 // label kinds: 'YYYY-MM-DD' (mensal/diária), 'YYYY-Tn' (trimestral), texto (anual)
 const kindOf=l=>/^\d{4}-\d{2}-\d{2}$/.test(l)?'d':/^\d{4}-T\d$/.test(l)?'q':'a';
@@ -258,7 +269,7 @@ function tickCb(labels){
 }
 const crosshair={id:'xh',afterDatasetsDraw(c){const a=c.tooltip&&c.tooltip.getActiveElements();if(!a||!a.length)return;const x=a[0].element.x,{top,bottom}=c.chartArea,ctx=c.ctx;ctx.save();ctx.strokeStyle=css('--ink-3');ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore()}};
 
-const axisTick=fmt=>v=>fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='fx'?nf(2).format(v):nf(0).format(v);
+const axisTick=fmt=>v=>fmt==='ppd'?nf(1).format(v*100):fmt==='ppx'?nf(1).format(v):fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='fx'?nf(2).format(v):nf(0).format(v);
 function buildChart(canvas,ds,sers,fmt,opt){
   ds=filterDS(ds); const labels=ds.labels;
   const sets=[];
@@ -282,7 +293,7 @@ function buildChart(canvas,ds,sers,fmt,opt){
       filter:it=>!it.dataset._ref&&it.raw!=null,
       callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+(it.dataset._f||f)(it.raw)}}},
     scales:{
-      x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>labels[i]}},
+      x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>fmtLabel(labels[i])}},
       y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:opt.half?4:6,callback:axisTick(fmt)}},
       ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:6,callback:axisTick(opt.fmt2)}}}:{})
     }}});
@@ -300,16 +311,21 @@ function fiscalChart(canvas){
       c.getDatasetMeta(0).data.forEach((b,i)=>{ctx.fillText(nf(0).format(Math.abs(d.vals[i])),b.x,Math.min(b.y,b.base)-5)});ctx.restore()}}]});
 }
 function legendHTML(ds,sers,opt){
-  return sers.map(s=>{
+  return sers.map((s,si)=>{
     const dir=opt.fmt2?(s.ax===2?' <small>(dir.)</small>':' <small>(esq.)</small>'):'';
-    if(s.ref!=null) return `<span><i class="dash" style="border-color:var(--ref)"></i>${s.label}${dir}</span>`;
-    const lab=(s.label||ds.series[s.i].label)+dir;
-    const c=s.c==='ref'?'var(--ref)':s.c==='ink'?'var(--ink)':`var(--${s.c})`;
-    if(s.type==='bar'||opt.area) return `<span><i class="bar" style="background:${c}"></i>${lab}</span>`;
-    if(s.type==='point') return `<span><i class="bar" style="background:${c};border-radius:50%"></i>${lab}</span>`;
-    return `<span><i class="${s.dash?'dash':''}" style="border-color:${c}"></i>${lab}</span>`;
+    if(s.ref!=null) return `<button class="lg" data-i="${si}" aria-pressed="true" title="Clique para esconder ou mostrar"><i class="dash" style="border-color:var(--ref)"></i>${s.label}${dir}</button>`;
+    return `<button class="lg" data-i="${si}" aria-pressed="true" title="Clique para esconder ou mostrar">${legendMark(s,opt)}${(s.label||ds.series[s.i].label)+dir}</button>`;
   }).join('');
 }
+function legendMark(s,opt){
+    const c=s.c==='ref'?'var(--ref)':s.c==='ink'?'var(--ink)':`var(--${s.c})`;
+    if(s.type==='bar'||opt.area) return `<i class="bar" style="background:${c}"></i>`;
+    if(s.type==='point') return `<i class="bar" style="background:${c};border-radius:50%"></i>`;
+    return `<i class="${s.dash?'dash':''}" style="border-color:${c}"></i>`;
+}
+// clique na legenda esconde/mostra a série (data-i = posição do dataset no gráfico)
+function wireLegend(el,ch){el.querySelectorAll('.legend .lg').forEach(b=>b.onclick=()=>{const vis=b.getAttribute('aria-pressed')!=='true';
+  ch.setDatasetVisibility(+b.dataset.i,vis);b.setAttribute('aria-pressed',vis);ch.update()})}
 function tableHTML(ds,fmt,n=12){
   const L=ds.labels.length; const idx=[];for(let i=L-1;i>=0&&idx.length<n;i--){if(ds.series.some(s=>s.data[i]!=null))idx.push(i)}
   const fs=ds.series.map((s,k)=>F[Array.isArray(fmt)?fmt[k]:fmt]||F.num);
@@ -351,13 +367,63 @@ function render(){
       const cvs=card.querySelectorAll('canvas');
       if(!fds.n){}
       else if(c.split) c.split.forEach((p,pi)=>charts.push(buildChart(cvs[pi],ds,p.s,p.fmt,{half:1})));
-      else charts.push(buildChart(cvs[0],ds,c.s,c.fmt,c));
+      else{const ch=buildChart(cvs[0],ds,c.s,c.fmt,c);charts.push(ch);wireLegend(card,ch)}
       const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
       const tf=c.fmt2?ds.series.map((_,k)=>(allS.find(s=>s.i===k&&s.ref==null)||{}).ax===2?c.fmt2:c.fmt):c.fmt||c.split.flatMap(p=>p.s.filter(s=>s.ref==null).map(()=>p.fmt));
       btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=fds.n?tableHTML(fds,tf):'<p class="note">Sem dados no período.</p>';tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
     });
     main.appendChild(el);
   });
+  const mk=document.createElement('section');mk.id='monte';
+  mk.innerHTML=`<div class="sh"><span class="tag">Comparar</span><h2>Monte seu gráfico</h2></div><div class="grid"><article class="card full" id="mk-card"></article></div>`;
+  main.appendChild(mk);renderCustom();
+}
+// ---------- Monte seu gráfico: até 3 séries de qualquer tópico, em nível, variação em 12 meses ou base 100 ----------
+const CAT=[];
+SECS.forEach(sec=>sec.charts.forEach(c=>{if(c.special)return;const ds=D[c.k];
+  const ss=c.split?c.split.flatMap(p=>p.s.map(s=>Object.assign({},s,{_fmt:p.fmt}))):c.s;
+  ss.forEach(s=>{if(s.ref!=null||CAT.some(x=>x.k===c.k&&x.i===s.i))return;const label=s.label||ds.series[s.i].label;
+    CAT.push({id:c.k+':'+s.i,k:c.k,i:s.i,sec:sec.tag,label,chart:c.t,fmt:s._fmt||(s.ax===2?c.fmt2:c.fmt)})})}));
+let MK={a:'desemprego:0',b:'renda_inad:1',c:'',mode:'nivel'};
+try{Object.assign(MK,JSON.parse(localStorage.getItem('radar-monte')||'{}'))}catch(e){}
+let mkChart=null;
+function monthOf(l){const k=kindOf(l);if(k==='d')return l.slice(0,7);if(k==='q')return l.slice(0,4)+'-'+pad(+l.slice(6)*3);const m=String(l).match(/\d{4}/);return m?m[0]+'-12':null}
+function renderCustom(){
+  const card=document.getElementById('mk-card');if(!card)return;
+  if(mkChart){const i=charts.indexOf(mkChart);if(i>=0)charts.splice(i,1);mkChart.destroy();mkChart=null}
+  const pick=[MK.a,MK.b,MK.c].map(id=>CAT.find(x=>x.id===id)).filter(Boolean);
+  const opt=(v,none)=>(none?`<option value="" ${!v?'selected':''}>— nenhuma —</option>`:'')+[...new Set(CAT.map(x=>x.sec))].map(sg=>`<optgroup label="${sg}">${CAT.filter(x=>x.sec===sg).map(x=>`<option value="${x.id}" ${x.id===v?'selected':''}>${x.chart===x.label?x.label:x.chart+': '+x.label}</option>`).join('')}</optgroup>`).join('');
+  const MODES=[['nivel','Nível'],['var','Variação em 12 meses'],['b100','Base 100']];
+  // junta as séries em uma régua mensal (diárias: último valor do mês; trimestrais: último mês do trimestre; anuais: dezembro)
+  const maps=pick.map(x=>{const ds=D[x.k],m={};ds.labels.forEach((l,j)=>{const v=ds.series[x.i].data[j];const mo=monthOf(l);if(v!=null&&mo)m[mo]=v});return m});
+  let months=[...new Set(maps.flatMap(m=>Object.keys(m)))].sort();
+  const fmts=pick.map(x=>x.fmt);
+  let series=pick.map((x,n)=>({label:x.label,data:months.map(mo=>maps[n][mo]??null)}));
+  if(MK.mode==='var'){series=series.map((s,n)=>{const f=fmts[n],rate=f==='pct'||f==='pp';
+      fmts[n]=f==='pct'?'ppd':f==='pp'?'ppx':'pct';
+      return {label:s.label,data:months.map(mo=>{const v=maps[n][mo],b=maps[n][addMonths(mo,-12)];return v==null||b==null?null:rate?v-b:(b?v/b-1:null)})}})}
+  let ds={labels:months.map(mo=>mo+'-01'),series};
+  ds=filterDS(ds);
+  if(MK.mode==='b100'){ds.series=ds.series.map(s=>{const b=s.data.find(v=>v!=null);return {label:s.label,data:s.data.map(v=>v==null||!b||b<=0?null:v/b*100)}});fmts.fill('num')}
+  // eixos: a 1ª série à esquerda; formato diferente (ou escala muito diferente) vai para a direita
+  const mag=s=>Math.max(...s.data.filter(v=>v!=null).map(Math.abs),0);
+  const ax=ds.series.map((s,n)=>n===0?1:fmts[n]!==fmts[0]||(MK.mode==='nivel'&&(mag(s)>5*mag(ds.series[0])||mag(ds.series[0])>5*mag(s)))?2:1);
+  const fmt2=fmts.find((f,n)=>ax[n]===2);
+  const sers=ds.series.map((s,n)=>S(n,{c:['s1','s2','s3'][n],ax:ax[n]}));
+  const o={fmt:fmts[0],fmt2};
+  card.innerHTML=`<div><h3>${pick.map(x=>x.label).join(' × ')||'Escolha as séries'}</h3><div class="unit">${MODES.find(m=>m[0]===MK.mode)[1]}${MK.mode==='var'?' · taxas em p.p., demais séries em %':MK.mode==='b100'?' · primeiro mês do período = 100 (melhor para índices, valores e preços que para taxas)':''} · respeita o período escolhido no topo</div></div>
+    <div class="mk"><label>Série 1 <select id="mk-a">${opt(MK.a)}</select></label><label>Série 2 <select id="mk-b">${opt(MK.b,1)}</select></label><label>Série 3 <select id="mk-c">${opt(MK.c,1)}</select></label>
+      <div class="seg" role="group" aria-label="Transformação" id="mk-mode">${MODES.map(([k,l])=>`<button data-m="${k}" aria-pressed="${k===MK.mode}">${l}</button>`).join('')}</div></div>
+    <div class="legend">${pick.length?legendHTML(ds,sers,o):''}</div>
+    ${ds.n&&pick.length?`<div class="plot"><canvas role="img" aria-label="Gráfico montado"></canvas></div>`:`<div class="empty">Sem dados para as séries escolhidas no período.</div>`}
+    <div class="tbl" id="t-mk" hidden></div>
+    <div class="foot"><span>${pick.map(x=>'Dados até '+lastDate(D[x.k].series[x.i].data,D[x.k].labels)+' ('+x.label+')').join(' · ')}</span><button class="tabbtn" aria-controls="t-mk" aria-expanded="false">Ver tabela</button></div>`;
+  if(ds.n&&pick.length){mkChart=buildChart(card.querySelector('canvas'),ds,sers,o.fmt,o);charts.push(mkChart);wireLegend(card,mkChart)}
+  const save=()=>{try{localStorage.setItem('radar-monte',JSON.stringify(MK))}catch(e){}renderCustom()};
+  ['a','b','c'].forEach(k=>card.querySelector('#mk-'+k).onchange=e=>{MK[k]=e.target.value;save()});
+  card.querySelectorAll('#mk-mode button').forEach(b=>b.onclick=()=>{MK.mode=b.dataset.m;save()});
+  const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
+  btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=ds.n?tableHTML(ds,fmts):'<p class="note">Sem dados no período.</p>';tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
 }
 // Resumo de cada tópico: último dado observado (sem projeções) e a variação no período de comparação
 const NOW=(()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)})();
@@ -378,7 +444,7 @@ function sumHTML(items){
     return `<div class="kpi"><span class="k">${it.t}</span><span class="v">${f(s[j])}</span><span class="d"><span>${d}</span> ${dl} · ${fmtLabel(L[j],true)}</span></div>`}).join('')}</div>`;
 }
 function nav(){
-  const n=document.getElementById('nav');n.innerHTML=SECS.map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.tag}</a>`).join('');
+  const n=document.getElementById('nav');n.innerHTML=[...SECS,{id:'monte',tag:'Monte seu gráfico'}].map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.tag}</a>`).join('');
   const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){n.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.id===e.target.id))}})},{rootMargin:'-30% 0px -60% 0px'});
   document.querySelectorAll('main section').forEach(s=>io.observe(s));
 }

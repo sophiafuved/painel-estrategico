@@ -110,6 +110,12 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 - **Madeira**: EBITDA calculado como receita × margem EBITDA (a aba não traz o valor absoluto).
 - **Metais**: nos blocos "Mkt Competitivo/Médio/Luxo", a participação é calculada como empresa ÷ total do segmento (as primeiras linhas desses blocos estão em R$ milhões).
 
+## Recursos interativos
+
+- **Peers**: faixa dos peers (1º–3º quartil e mediana, sem a Dexco) nos gráficos de índices; matriz de posicionamento com eixos à escolha; botões Todos/Brasil/Internacionais selecionam todas as empresas do grupo.
+- **Radar**: "Monte seu gráfico" para comparar até 3 séries de qualquer tópico, em nível, variação em 12 meses ou base 100.
+- Nos dois painéis, clicar na legenda esconde ou mostra a série.
+
 ## Formato do Radar
 
 - Sem textos de comentário: os títulos dos tópicos são neutros; comentários entram só na apresentação.
