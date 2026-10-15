@@ -73,17 +73,17 @@ section{padding-top:36px;scroll-margin-top:60px}
 .sh p{margin:0;color:var(--ink-2);max-width:80ch}
 mark{background:none;color:var(--ink);font-weight:600}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .card h3{font:600 16px/1.25 var(--body);margin:0}
 .card .unit{font-size:12.5px;color:var(--ink-3)}
 .read{font:12.5px/1.5 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
 .read b{color:var(--ink);font-weight:500}
-.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px 12px;font-size:12.5px;color:var(--ink-2);min-height:42px}
+.card .foot{margin-top:auto}
 .legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:5px}
 .legend i.dex{border-top-width:3px}
 .legend i.dash{border-top-style:dashed}
-.plot{position:relative;height:240px;flex:1 1 auto;min-height:240px}
+.plot{position:relative;height:280px;flex:none}
 .ch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .focus{flex:none;font:600 12px var(--body);color:var(--ink-2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}
 .focus:hover{border-color:var(--ink-3);color:var(--ink)}
@@ -116,8 +116,8 @@ mark{background:none;color:var(--ink);font-weight:600}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);max-width:95ch;display:flex;flex-direction:column;gap:6px}
 .empty{flex:1;display:grid;place-items:center;min-height:120px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-3);font-size:13px;text-align:center;padding:12px}
   .filters .f.wide{grid-column:1/-1}
-@media (max-width:1000px){.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr 1fr}.filters .f.wide{grid-column:1/-1}}
-@media (max-width:760px){.grid,.grid.three{grid-template-columns:minmax(0,1fr)}.filters{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1000px){.filters{grid-template-columns:1fr 1fr}.filters .f.wide{grid-column:1/-1}}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}.filters{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
@@ -315,7 +315,7 @@ function renderMain(){
   GROUPS.forEach(G=>{
     const sec=document.createElement('section');sec.id=G.id;
     const keys=Object.keys(s.metrics).filter(k=>s.metrics[k].grp===G.id);
-    sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div>${keys.length?`<div class="resumo">${sumTable(keys)}</div>`:''}<div class="grid ${G.id==='rent'||G.id==='caixa'?'three':''}"></div>`;
+    sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div>${keys.length?`<div class="resumo">${sumTable(keys)}</div>`:''}<div class="grid"></div>`;
     const g=sec.querySelector('.grid');let n=0;
     if(G.id==='setor'){
       s.sector.forEach(b=>{const idx=b.years.map((y,i)=>i).filter(i=>inPeriod(b.years[i]));const labels=idx.map(i=>b.years[i]);

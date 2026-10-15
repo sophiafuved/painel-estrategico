@@ -58,14 +58,13 @@ section{padding-top:40px;scroll-margin-top:56px}
 .sh p{grid-column:1/-1;margin:2px 0 0;color:var(--ink-2);max-width:78ch}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.card.wide{grid-column:1/-1}
 .card h3{font:600 16px/1.25 var(--body);margin:0}
 .card .unit{font-size:13px;color:var(--ink-3);margin-top:1px}
-.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px 14px;font-size:13px;color:var(--ink-2);min-height:42px}
 .legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
 .legend i.bar{height:10px;border:0;border-radius:2px;width:10px}
 .legend i.dash{border-top-style:dashed}
-.plot{position:relative;height:260px;flex:1 1 auto;min-height:260px}
+.plot{position:relative;height:280px;flex:none}
 .plot.half{flex:none}
 .plot.half{height:150px}
 .panel-lbl{font:500 12px var(--mono);color:var(--ink-3);margin-top:2px}
@@ -89,7 +88,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 @media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:480px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .legend small{font-size:11.5px;color:var(--ink-3)}
-@media (max-width:420px){.kpi .v{font-size:25px}.plot{height:230px}}
+@media (max-width:420px){.kpi .v{font-size:25px}.plot{height:240px}}
 </style>
 
 <div class="wrap">
@@ -158,7 +157,7 @@ const SECS=[
   {k:'brent',t:'Petróleo Brent',u:'US$/barril, diário',fmt:'usd',time:false,s:[S(0,{c:'s1'}),S(1,{c:'ref',dash:1}),S(2,{c:'s1',dash:1})]},
   {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial (esq.); share das importações dos EUA (dir.)',fmt:'pct',fmt2:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'}),S(1,{c:'s2',ax:2})]},
   {k:'gpr',t:'Índice de Risco Geopolítico',u:'Número índice',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'})]},
-  {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',fmt:'pct',time:false,wide:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
+  {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',fmt:'pct',time:false,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
  ]},
  {id:'brasil',tag:'Brasil',h:'Atividade, juros e expectativas',
   sum:[K('SELIC fim de 2026 (Focus)','focus_selic_ipca',0,'pp',{d:28}),K('IPCA 2026 (Focus)','focus_selic_ipca',2,'pp',{d:28}),K('Câmbio fim de 2026 (Focus)','focus_cambio',0,'fx',{d:28}),K('SELIC real (ex-ante)','neutra',1,'pct',{m:12}),K('Hiato do produto','hiato',0,'pct',{m:12})],
@@ -312,7 +311,7 @@ function render(){
     el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2></div>${sumHTML(sec.sum)}<div class="grid"></div>`;
     const g=el.querySelector('.grid');
     sec.charts.forEach((c,ci)=>{
-      const card=document.createElement('article');card.className='card'+(c.wide?' wide':'');
+      const card=document.createElement('article');card.className='card';
       const tid=`t-${c.k}`;
       if(c.special==='fiscal'){
         card.innerHTML=`<div><h3>${c.t}</h3><div class="unit">${c.u}</div></div>
@@ -332,7 +331,7 @@ function render(){
       const plots=!fds.n?`<div class="empty">Sem dados entre ${FROM?fmtLabel(FROM+'-01'):'o início'} e ${TO?fmtLabel(TO+'-01'):'o fim'}.<br>Esta série vai de ${fmtLabel(ds.labels[0])} a ${fmtLabel(ds.labels[ds.labels.length-1])}.</div>`:c.split?c.split.map((p,pi)=>`<div class="panel-lbl">${p.lbl}</div><div class="plot half"><canvas role="img" aria-label="${p.lbl}"></canvas></div>`).join(''):`<div class="plot"><canvas role="img" aria-label="${c.t}"></canvas></div>`;
       const allS=c.split?c.split.flatMap(p=>p.s):c.s;
       card.innerHTML=`<div><h3>${c.t}</h3><div class="unit">${c.u}</div></div>
-        ${ds.series.length>1||allS.some(s=>s.ref!=null)?`<div class="legend">${legendHTML(ds,allS,c)}</div>`:''}
+        <div class="legend">${ds.series.length>1||allS.some(s=>s.ref!=null)?legendHTML(ds,allS,c):''}</div>
         ${plots}${proj}
         <div class="tbl" id="${tid}" hidden></div>
         <div class="foot"><span>Dados até ${upto}</span><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela</button><span style="flex-basis:100%">${refs}</span></div>`;
