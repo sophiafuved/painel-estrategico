@@ -1,4 +1,4 @@
-# Pendências do Painel Estratégico (atualizado em 19/10/2026)
+# Pendências do Painel Estratégico (atualizado em 20/10/2026)
 
 Lista para retomar o trabalho. A planilha de conferência (`Conferencia_Peers.xlsx`) foi enviada no chat em 19/10; ela não fica no repositório porque o projeto não guarda planilhas. Se precisar, peça para gerar de novo.
 Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
@@ -40,3 +40,14 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 - [ ] Reenviar o ZIP atualizado ao colega (o anterior é antigo).
 - [ ] Definir o link oficial do time (conta de trabalho), anotar no README e deixar o acesso como
       "Qualquer pessoa com o link".
+
+## 5. Skill atualizar-deck-radar (retomar no próximo dia)
+
+Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito"; ajustes estéticos nos textos:
+- [ ] **Bullets**: alguns slides do modelo têm vários marcadores (ex.: Renda, slide 5, com 2 bullets). Hoje o
+      script junta tudo em um parágrafo só. Ajuste: aceitar `texto` como lista na leitura (um item por bullet) e
+      recriar um parágrafo por item copiando o formato (`pPr`, marcador, recuo) de cada parágrafo original.
+- [ ] **Alinhamento/centralização**: preservar o alinhamento e a ancoragem de cada parágrafo original (hoje só o
+      primeiro parágrafo é mantido), e conferir as caixas cinzas de leitura (centralizadas no modelo).
+- [ ] Títulos longos: encurtar na leitura (15–20 palavras) em vez de reduzir a fonte.
+- [ ] Depois do ajuste: gerar de novo, comparar slide a slide com o original e reempacotar a skill.
