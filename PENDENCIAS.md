@@ -1,6 +1,6 @@
 # Pendências do Painel Estratégico (atualizado em 20/10/2026)
 
-Lista para retomar o trabalho. A planilha de conferência (`Conferencia_Peers.xlsx`) foi enviada no chat em 19/10; ela não fica no repositório porque o projeto não guarda planilhas. Se precisar, peça para gerar de novo.
+Lista para retomar o trabalho. **Prioridade desta semana: o manual (seção 6).** A planilha de conferência (`Conferencia_Peers.xlsx`) foi enviada no chat em 19/10; ela não fica no repositório porque o projeto não guarda planilhas. Se precisar, peça para gerar de novo.
 Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 
 ## 1. Planilha Análise de Competidores
@@ -51,3 +51,41 @@ Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito
       primeiro parágrafo é mantido), e conferir as caixas cinzas de leitura (centralizadas no modelo).
 - [ ] Títulos longos: encurtar na leitura (15–20 palavras) em vez de reduzir a fonte.
 - [ ] Depois do ajuste: gerar de novo, comparar slide a slide com o original e reempacotar a skill.
+
+## 6. A FAZER ESTA SEMANA: manual de uso do Claude no time
+
+Objetivo: qualquer pessoa do time (e o próximo estagiário) consegue operar o sistema sem depender da Sophia.
+Formato sugerido: um documento curto e prático (`MANUAL.md` no projeto e uma versão para compartilhar com o time).
+
+Rascunho do conteúdo:
+- [ ] **Visão geral**: o que é o sistema (painel com senha, deck do Radar, conferência de peers, skills) e o
+      fluxo de cada mês/edição, em uma página.
+- [ ] **Onde estão as coisas**: planilhas no SharePoint (Grande Base, Análise de Competidores, Tendências),
+      projeto no GitHub/pasta do time, link do painel, quem é dono do link, onde fica a senha (fora de arquivos).
+- [ ] **Skills**: para que serve cada uma das 6, quando usar e o que entregam.
+- [ ] **Prompts prontos** (copiar e colar), por tarefa: atualizar o painel; conferir peers (com versão
+      anterior); incluir peer novo; escrever comentários do Radar; revisar e aprovar a leitura; gerar o deck do
+      Radar; montar slide no padrão Offsite.
+- [ ] **Calendário/rotina**: quando cada planilha atualiza (indicadores ao sair dado novo; peers na
+      demonstração anual; Tendências a cada edição) e o que fazer em cada caso.
+- [ ] **Regras e decisões do time**: comentários só com revisão; painel limpo por padrão; dados sem invenção;
+      o que fazer quando o script falha ("Falha em ...").
+- [ ] **Instalação**: Claude da empresa, pasta do projeto, Python, pacotes `.skill`.
+- [ ] **Como pedir melhorias**: onde anotar (PENDENCIAS.md), como testar uma mudança antes de publicar.
+
+## 7. Aperfeiçoar as skills (contínuo)
+
+- [ ] `atualizar-deck-radar`: ajustes estéticos da seção 5.
+- [ ] `comentarios-radar`: títulos mais curtos para o deck; coletar o retorno do gestor sobre o tom.
+- [ ] `incluir-peer-novo` e `padrao-apresentacao-dexco`: testar num caso real (ex.: release 2025 de um peer
+      faltante) e ajustar.
+- [ ] Testes com e sem skill para mostrar o ganho ao time (opcional).
+- [ ] Reempacotar as skills alteradas e manter `skills_para_empresa/` sempre atualizado.
+
+## 8. Transição (a Sophia sai do time em ~2 meses, por volta de dez/2026)
+
+Princípio: deixar o sistema adequado, documentado e atualizado para o próximo estagiário e para quem fica.
+- [ ] Mover o projeto, o link do painel e as skills para contas/pastas do time (não pessoais).
+- [ ] Definir quem fica responsável pelo painel, pela senha e pela revisão dos comentários.
+- [ ] Sessão de passagem com o novo estagiário usando o manual (seção 6) e um ciclo real de atualização.
+- [ ] Revisar `CLAUDE.md`, `README.md` e skills para que não dependam de conhecimento que só está na cabeça da Sophia.

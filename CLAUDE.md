@@ -5,6 +5,15 @@ Este projeto gera o **Painel Estratégico** do time de estratégia: um site com 
 Competidores*), e opcionalmente o PowerPoint de peers no template do Offsite. Converse com o time em
 **português**.
 
+## Como trabalhar neste projeto
+
+- Pense sempre em **melhoria contínua e bons sistemas**: cada mudança deve deixar o sistema mais simples
+  de operar e de entender para quem vem depois.
+- A responsável atual sai do time por volta de dez/2026. Tudo precisa ficar documentado (README,
+  CLAUDE.md, skills, `PENDENCIAS.md`, manual) e funcionar em contas/pastas do time, sem depender de uma
+  pessoa.
+- Pendências e prioridades ficam em `PENDENCIAS.md`; leia no início de cada sessão e atualize ao final.
+
 ## Onde estão as planilhas
 
 As duas planilhas ficam nesta mesma pasta (normalmente sincronizada com o SharePoint). Os nomes
