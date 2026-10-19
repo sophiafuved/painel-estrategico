@@ -108,6 +108,12 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   investido da Berneck, EBITDA da Floraplac). Próxima fase: conferência dos valores.
 - Docol 2022–23 (receita de R$ 1.100 e R$ 1.200 milhões, números redondos) mantida por enquanto.
 
+## Skills do projeto
+
+Em `.claude/skills/`: `atualizar-painel-estrategico`, `conferir-peers`, `incluir-peer-novo`,
+`comentarios-radar`, `padrao-apresentacao-dexco`. Os pacotes para instalar no Claude da empresa
+ficam em `skills_para_empresa/`; ao mudar uma skill, gere o pacote `.skill` de novo.
+
 ## Ao fazer alterações
 
 - Mudanças de visual, textos ou gráficos vão nos modelos (`pipeline/radar/template.html`,

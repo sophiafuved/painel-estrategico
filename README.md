@@ -6,6 +6,7 @@ do Offsite.
 
 - Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (versão da conta pessoal da Sophia; quando o time publicar pela conta de trabalho, substitua este link pelo novo)
 - Usando com o Claude: conecte esta pasta ao Claude e peça, por exemplo, "gere e publique o painel". As instruções que o Claude segue estão no `CLAUDE.md`.
+- Skills do time: `.claude/skills/` (carregadas automaticamente com a pasta do projeto) e pacotes para instalar no Claude da empresa em `skills_para_empresa/` (veja o README de lá).
 
 ## Como atualizar
 
