@@ -55,7 +55,22 @@ for seg,S in D.items():
         for k,v in M[mk]['series'].items():
             for i,a in enumerate(v):
                 if a is not None and a<0: excl(seg,mk,k,i,'erro','prazo médio negativo (impossível)')
-    # 2) outliers
+    # 2) índices sobre EBITDA em anos de EBITDA ≤ 0: sem significado (n.s.), mesmo quando a planilha traz o número
+    E=M.get('ebitda')
+    if E:
+        why='EBITDA negativo no ano: índice sobre EBITDA sem significado'
+        for mk in ('varwk','capexe','outras','fcl','alav'):
+            if mk not in M: continue
+            m=M[mk]
+            for k,ser in m['series'].items():
+                if mk=='alav' and k=='dexco' and m.get('dexCons'): continue  # consolidada: EBITDA da companhia
+                eb=dict(zip(E['years'],E['series'].get(k) or []))
+                for i,y in enumerate(m['years']):
+                    e=eb.get(y)
+                    if e is None or e>0: continue
+                    if ser[i] is not None: excl(seg,mk,k,i,'n.s.',why)
+                    else: m.setdefault('excl',{}).setdefault(k,{})[y]=dict(v=None,kind='n.s.',why=why)
+    # 3) outliers
     for mk,(f,why) in OUT.items():
         if mk not in M: continue
         for k,v in M[mk]['series'].items():

@@ -108,6 +108,9 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 - **Outliers** são retirados: |dívida líquida/EBITDA| > 10x; índices sobre EBITDA acima de 500% em módulo; prazos acima de 365 dias; giro acima de 6x; margens e ROIC abaixo de −50%; capex acima de 50% da receita.
 - Cada tópico abre com a sua tabela-resumo (não há resumo geral no topo). Valores retirados aparecem como **n.s.**; cada coluna usa o ano da receita mais recente da empresa.
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
+- **EBITDA negativo**: índices sobre EBITDA (variação do capital de giro, capex, outras, FCL e DL/EBITDA) aparecem como **n.s. (EBITDA negativo)**.
+- **Blocos sobre a receita** (opcionais, nas abas "Gráficos"): `Var. WK/ROL`, `Outras Desp./ROL` e `FCL/ROL`, no mesmo formato dos blocos sobre EBITDA (título + anos na mesma linha, país e empresa nas linhas abaixo, mesma convenção de sinal). Com eles, o Fluxo de caixa ganha a opção "Sobre receita" e a ponte do caixa funciona também nos anos de EBITDA negativo.
+- **Ponte do caixa**: EBITDA → Δ capital de giro → Capex → Outras → FCL em R$ milhões, por empresa e ano, calculada a partir dos índices da planilha.
 - **Madeira**: EBITDA calculado como receita × margem EBITDA (a aba não traz o valor absoluto).
 - **Metais**: nos blocos "Mkt Competitivo/Médio/Luxo", a participação é calculada como empresa ÷ total do segmento (as primeiras linhas desses blocos estão em R$ milhões).
 

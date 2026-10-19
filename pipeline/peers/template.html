@@ -10,19 +10,19 @@
   --bg:#f4f4f2; --panel:#ffffff; --panel-2:#f0efec; --line:#e1e0dc; --grid:#ecebe7;
   --ink:#111111; --ink-2:#4d4c48; --ink-3:#7a7974; --mark:#ffe14d; --mark-ink:#111111;
   --p1:#2a78d6; --p2:#eb6834; --p3:#1baf7a; --p4:#eda100; --p5:#e87ba4; --p6:#008300; --p7:#6250d6; --p8:#e34948; --ctx:#c4c3bd; --ref:#8d8a84;
-  --dex:#111111; --dex-bg:#ecebe7;
+  --dex:#111111; --dex-bg:#ecebe7; --pos:#1baf7a; --neg:#e34948;
   --display:"Red Hat Display",system-ui,sans-serif; --body:"Red Hat Text",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#141517; --panel:#1c1d20; --panel-2:#25272b; --line:#33353a; --grid:#2a2c30;
   --ink:#f1f0ed; --ink-2:#bdbbb5; --ink-3:#8c8a85; --mark:#e9c92f; --mark-ink:#111111;
   --p1:#3987e5; --p2:#d95926; --p3:#199e70; --p4:#c98500; --p5:#d55181; --p6:#008300; --p7:#9085e9; --p8:#e66767; --ctx:#4a4c51; --ref:#8c8a85;
-  --dex:#f1f0ed; --dex-bg:#2a2c30; color-scheme:dark}}
+  --dex:#f1f0ed; --dex-bg:#2a2c30; --pos:#199e70; --neg:#e66767; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141517; --panel:#1c1d20; --panel-2:#25272b; --line:#33353a; --grid:#2a2c30;
   --ink:#f1f0ed; --ink-2:#bdbbb5; --ink-3:#8c8a85; --mark:#e9c92f; --mark-ink:#111111;
   --p1:#3987e5; --p2:#d95926; --p3:#199e70; --p4:#c98500; --p5:#d55181; --p6:#008300; --p7:#9085e9; --p8:#e66767; --ctx:#4a4c51; --ref:#8c8a85;
-  --dex:#f1f0ed; --dex-bg:#2a2c30; color-scheme:dark}
+  --dex:#f1f0ed; --dex-bg:#2a2c30; --pos:#199e70; --neg:#e66767; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
@@ -182,7 +182,7 @@ const slotColor=i=>css(SLOTS[i%8]);const slotDash=i=>i>=8?[6,3]:[];
 const slotVar=i=>`var(${SLOTS[i%8]})`;
 
 // ---------- estado ----------
-let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false,band:true,mx:'giro',my:'me',ms:'rol'};
+let ST={seg:'loucas',ano:'2025',de:null,ate:null,esc:'all',hl:{},foco:{},focoAll:false,band:true,mx:'giro',my:'me',ms:'rol',cxBase:'ebitda',br:{}};
 try{Object.assign(ST,JSON.parse(localStorage.getItem('peers-st2')||'{}'))}catch(e){}
 ST.foco=ST.foco||{};
 const save=()=>{try{localStorage.setItem('peers-st2',JSON.stringify(ST))}catch(e){}};
@@ -324,7 +324,7 @@ function sumTable(keys){
   const colYear=k=>{const r=valAt(s.metrics.rol,k,ano);if(r.y)return r.y;const ys=Object.keys(s.metrics).map(m=>valAt(s.metrics[m],k,ano).y).filter(Boolean);return ys.sort().pop()};
   const head=`<tr><th>${s.name} · R$ milhões</th>${ents.map(k=>{const e=s.ents[k];const y=colYear(k)||'–';return `<th class="${e.dex?'dexc':''}">${e.name}<small>${e.dex?'Dexco':FLAG[e.country]||e.country} · ${y}</small></th>`}).join('')}</tr>`;
   const rows=keys.filter(m=>s.metrics[m]).map(m=>{const M=s.metrics[m],f=F[M.fmt];const ri=rankInfo(m,M,ano);
-    return `<tr><td>${M.label}${M.calc?' ¹':''}</td>${ents.map(k=>{const r0=valAt(M,k,ano);const r=r0.y&&r0.y===colYear(k)?r0:{v:null};return `<td class="${s.ents[k].dex?'dexc':''} ${r.v==null?'na':''}" ${r.ns?`title="Excluído (${r.ns.kind}): ${f(r.ns.v)} – ${r.ns.why}"`:''}>${r.ns?'n.s.':f(r.v)}</td>`}).join('')}</tr>`}).join('');
+    return `<tr><td>${M.label}${M.calc?' ¹':''}</td>${ents.map(k=>{const r0=valAt(M,k,ano);const r=r0.y&&r0.y===colYear(k)?r0:{v:null};return `<td class="${s.ents[k].dex?'dexc':''} ${r.v==null?'na':''}" ${r.ns?`title="${r.ns.kind==='n.s.'?'n.s.: '+r.ns.why:'Excluído ('+r.ns.kind+'): '+f(r.ns.v)+' – '+r.ns.why}"`:''}>${r.ns?'n.s.':f(r.v)}</td>`}).join('')}</tr>`}).join('');
   const calc=keys.some(m=>s.metrics[m]&&s.metrics[m].calc);
   return `<div class="tbl"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>
    <p class="note">Resumo ${ano}: o ano abaixo do nome de cada empresa é o da receita mais recente disponível até ${ano}; os indicadores são do mesmo ano (– quando a empresa não tem o dado naquele ano).${keys.includes('alav')?' A alavancagem da Dexco é sempre a consolidada.':''}${calc?' (1) EBITDA calculado como receita × margem EBITDA (a aba de Madeira não traz o valor absoluto).':''}</p>`}
@@ -384,13 +384,73 @@ function renderMatriz(g){
   const b=el.querySelector('.tabbtn'),t=el.querySelector('.mini');
   b.onclick=()=>{const open=t.hidden;if(open)t.innerHTML=`<div class="tbl"><table><thead><tr><th>Empresa</th><th>Ano</th><th>${OY.label}</th><th>${OX.label}</th>${OS?`<th>${OS.label}</th>`:''}</tr></thead><tbody>${pts.map(p=>`<tr><td>${p.name}</td><td>${p.yr}</td><td>${fy(p.y)}</td><td>${fx(p.x)}</td>${OS?`<td>${fs(p.z)}</td>`:''}</tr>`).join('')}<tr><td>Mediana dos peers</td><td></td><td>${fy(mY)}</td><td>${fx(mX)}</td>${OS?'<td></td>':''}</tr></tbody></table></div>`;t.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela'};
 }
+// ---------- fluxo de caixa: base EBITDA ou receita, e ponte do caixa ----------
+const CX_E=['varwk','capexe','outras','fcl','capexr'],CX_R=['varwkr','capexr','outrasr','fclr'];
+const hasRolBase=()=>['varwkr','outrasr','fclr'].some(k=>seg().metrics[k]);
+function showMetric(k){const m=seg().metrics[k];if(!m||m.grp!=='caixa')return true;
+  if(!hasRolBase())return CX_E.includes(k);return (ST.cxBase==='rol'?CX_R:CX_E).includes(k)}
+function cxToggle(){if(!hasRolBase())return '';
+  return `<div class="f" style="margin-top:8px"><span id="l-cx" style="font-size:13px;color:var(--ink-3)">Base dos índices</span><div class="seg" role="group" aria-labelledby="l-cx" id="cxbase"><button data-v="ebitda" aria-pressed="${ST.cxBase!=='rol'}">Sobre EBITDA</button><button data-v="rol" aria-pressed="${ST.cxBase==='rol'}">Sobre receita</button></div></div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('#cxbase button');if(!b)return;ST.cxBase=b.dataset.v;save();renderMain();document.getElementById('caixa').scrollIntoView({block:'start'})});
+// valor bruto da planilha (inclui o que foi retirado do gráfico como outlier/n.s.)
+function rawAt(m,k,y){if(!m)return null;const i=m.years.indexOf(y);if(i<0)return null;const v=(m.series[k]||[])[i];if(v!=null)return v;const ex=((m.excl||{})[k]||{})[y];return ex&&ex.v!=null?ex.v:null}
+// componentes em R$ mi: índice × EBITDA (EBITDA > 0) ou índice sobre receita × receita
+function bridgeData(k,y){const M=seg().metrics;const E=rawAt(M.ebitda,k,y),R=rawAt(M.rol,k,y);
+  const comp=(mkE,mkR,sgnR=1)=>{const a=rawAt(M[mkE],k,y);if(a!=null&&E!=null&&E>0)return {v:a*E,src:'EBITDA'};const b=rawAt(M[mkR],k,y);if(b!=null&&R!=null)return {v:sgnR*b*R,src:'receita'};return null};
+  const wk=comp('varwk','varwkr'),cx=comp('capexe','capexr',-1),ot=comp('outras','outrasr'),fc=comp('fcl','fclr');
+  if(E==null)return null;
+  let rest=null;const parts=[wk,cx,ot];
+  if(fc&&parts.some(p=>!p))rest=fc.v-E-parts.reduce((s,p)=>s+(p?p.v:0),0);
+  return {E,R,wk,cx,ot,fc:fc||(parts.every(Boolean)?{v:E+wk.v+cx.v+ot.v,src:'soma'}:null),rest}}
+function renderBridge(g){
+  const s=seg(),yrs0=s.metrics.rol.years;
+  // empresas com FCL em algum ano (a Dexco aparece sempre, mesmo sem dado, para mostrar o motivo)
+  const ents=Object.keys(s.ents).filter(k=>!/^dexco_/.test(k)&&(k==='dexco'||yrs0.some(y=>{const x=bridgeData(k,y);return x&&x.fc})));
+  ST.br=ST.br||{};const B=ST.br[ST.seg]=ST.br[ST.seg]||{};
+  if(!ents.includes(B.k))B.k='dexco';
+  const yrs=s.metrics.rol.years.filter(y=>bridgeData(B.k,y));
+  const yok=yrs.filter(y=>bridgeData(B.k,y).fc);
+  if(!yrs.includes(B.y))B.y=yok.includes(ST.ano)?ST.ano:yok.length?yok[yok.length-1]:yrs[yrs.length-1];
+  const d=B.y?bridgeData(B.k,B.y):null;
+  const el=document.createElement('article');el.className='card full';const tid='tbr';
+  const ok=d&&d.fc;
+  const items=ok?[['EBITDA',d.E,'tot'],['Δ Capital de giro',d.wk&&d.wk.v],['Capex',d.cx&&d.cx.v],['Outras',d.ot&&d.ot.v],...(d.rest!=null?[['Demais itens',d.rest]]:[]),['FCL',d.fc&&d.fc.v,'tot']].filter(x=>x[1]!=null):[];
+  const srcs=d?[...new Set([d.wk,d.cx,d.ot,d.fc].filter(Boolean).map(x=>x.src).filter(x=>x!=='soma'))]:[];
+  el.innerHTML=`<div class="ch"><div><h3>Ponte do caixa: ${s.ents[B.k].name}${B.y?' · '+B.y:''}</h3><div class="unit">R$ milhões · do EBITDA ao fluxo de caixa livre${srcs.length?' · calculado a partir dos índices sobre '+srcs.join(' e '):''}</div></div></div>
+    <div class="mx"><label>Empresa <select id="br-k">${ents.map(k=>`<option value="${k}" ${k===B.k?'selected':''}>${s.ents[k].name}</option>`).join('')}</select></label>
+      <label>Ano <select id="br-y">${yrs.slice().reverse().map(y=>`<option ${y===B.y?'selected':''}>${y}</option>`).join('')}</select></label></div>
+    <div class="legend"><span><i class="band" style="--band:var(--dex)"></i>EBITDA e FCL</span><span><i class="band" style="--band:var(--pos)"></i>Aumenta o caixa</span><span><i class="band" style="--band:var(--neg)"></i>Consome caixa</span></div>
+    ${items.length>1?`<div class="plot"><canvas role="img" aria-label="Ponte do caixa"></canvas></div>`:`<div class="empty">${d&&d.E<=0&&!hasRolBase()?`EBITDA negativo em ${B.y}: os índices sobre EBITDA não se aplicam. A ponte aparece quando a planilha tiver os blocos sobre a receita (FCL/ROL, Var. WK/ROL, Outras Desp./ROL).`:`Sem FCL na planilha para ${s.ents[B.k].name}${B.y?' em '+B.y:''}.`}</div>`}
+    ${d&&d.rest!=null?`<div class="exl">"Demais itens" = diferença entre o FCL e os componentes disponíveis na planilha.</div>`:''}
+    <div class="mini" id="${tid}" hidden></div>
+    <div class="foot" style="justify-content:flex-end"><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela (todos os anos)</button></div>`;
+  g.appendChild(el);
+  if(items.length>1){
+    let acc=0;const bars=items.map(([l,v,t])=>{if(t){acc=v;return [0,v]}const a=acc;acc+=v;return [a,acc]});
+    const cols=items.map(([l,v,t])=>t?css('--dex'):v>=0?css('--pos'):css('--neg'));
+    const lab={id:'brl',afterDatasetsDraw(c){const ctx=c.ctx;ctx.save();ctx.fillStyle=css('--ink');ctx.font='500 12px "IBM Plex Mono",monospace';ctx.textAlign='center';
+      c.getDatasetMeta(0).data.forEach((b,i)=>{const v=items[i][1];ctx.fillText((v>0&&!items[i][2]?'+':'')+F.mi(v),b.x,Math.min(b.y,b.base)-6)});ctx.restore()}};
+    const all=bars.flat();let lo=Math.min(0,...all),hi=Math.max(0,...all);const pad=(hi-lo)*.12;const st=niceStep(hi-lo+2*pad);
+    const ch=new Chart(el.querySelector('canvas'),{type:'bar',data:{labels:items.map(x=>x[0]),datasets:[{data:bars,backgroundColor:cols,borderRadius:3,borderSkipped:false,barPercentage:.6}]},plugins:[lab],
+      options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,
+        callbacks:{label:it=>' R$ '+F.mi(items[it.dataIndex][1])+' mi'}}},
+        scales:{x:{grid:{display:false},border:{color:css('--line')},ticks:{color:css('--ink-2'),font:{family:'Red Hat Text',size:12}}},
+          y:{min:lo<0?Math.floor((lo-pad)/st)*st:0,max:Math.ceil((hi+pad)/st)*st,grid:{color:css('--grid'),drawTicks:false},border:{display:false},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:v=>F.mi(v)}}}}});
+    charts.push(ch)}
+  el.querySelector('#br-k').onchange=e=>{B.k=e.target.value;save();renderMain();document.getElementById('caixa').scrollIntoView({block:'start'})};
+  el.querySelector('#br-y').onchange=e=>{B.y=e.target.value;save();renderMain();document.getElementById('caixa').scrollIntoView({block:'start'})};
+  const b=el.querySelector('.tabbtn'),tb=el.querySelector('.mini');
+  b.onclick=()=>{const open=tb.hidden;if(open){const rows=yrs.map(y=>[y,bridgeData(B.k,y)]);
+    tb.innerHTML=`<div class="tbl"><table><thead><tr><th>Ano</th><th>EBITDA</th><th>Δ Capital de giro</th><th>Capex</th><th>Outras</th><th>Demais itens</th><th>FCL</th></tr></thead><tbody>${rows.reverse().map(([y,x])=>`<tr><td>${y}</td><td>${F.mi(x.E)}</td><td>${F.mi(x.wk&&x.wk.v)}</td><td>${F.mi(x.cx&&x.cx.v)}</td><td>${F.mi(x.ot&&x.ot.v)}</td><td>${F.mi(x.rest)}</td><td>${F.mi(x.fc&&x.fc.v)}</td></tr>`).join('')}</tbody></table></div>`}
+    tb.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela (todos os anos)'};
+}
 function renderMain(){
   charts.forEach(c=>c.destroy());charts.length=0;
   const s=seg(),main=document.getElementById('main');main.innerHTML='';
   const ents=visibleEnts();const ano=ST.ano;
   GROUPS.forEach(G=>{
     const sec=document.createElement('section');sec.id=G.id;
-    const keys=Object.keys(s.metrics).filter(k=>s.metrics[k].grp===G.id);
+    const keys=Object.keys(s.metrics).filter(k=>s.metrics[k].grp===G.id&&showMetric(k));
     sec.innerHTML=`<div class="sh"><h2>${G.h}</h2><p>${G.p}</p></div>${keys.length?`<div class="resumo">${sumTable(keys)}</div>`:''}<div class="grid"></div>`;
     const g=sec.querySelector('.grid');let n=0;
     if(G.id==='matriz'){renderMatriz(g);main.appendChild(sec);return}
@@ -409,13 +469,14 @@ function renderMain(){
           return lineSet(nm,data,css('--ctx'),{borderWidth:1.5})}).filter(Boolean);
         card(g,{title:b.title,unit:b.unit,labels,sets,fmt:b.fmt,ref:b.ref,ax:(AX[ST.seg]||{})[b.title],fkey:sets.some(d=>d._dex)?'setor:'+b.title:null});n++});
       if(!n)return;main.appendChild(sec);return}
-    Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id).forEach(([k,m])=>{
+    if(G.id==='caixa'){const t=cxToggle();if(t)sec.querySelector('.sh').insertAdjacentHTML('beforeend',t);renderBridge(g);n++}
+    Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id&&showMetric(k)).forEach(([k,m])=>{
       const idx=m.years.map((y,i)=>i).filter(i=>inPeriod(m.years[i]));const labels=idx.map(i=>m.years[i]);
       const ax=(AX[ST.seg]||{})[k];
       const sets=[...entSets(m,idx,ents),...bandSets(m,idx,ax&&ax.bar)];
       const ri=rankInfo(k,m,ano);const f=F[m.fmt];
       const read=ri.dexNs?`${s.ents.dexco.name} ${ri.dexNs.y}: <b>n.s.</b> (valor de ${f(ri.dexNs.ns.v)} excluído como ${ri.dexNs.ns.kind}) · mediana peers: <b>${f(ri.med)}</b>`:ri.dex?`${s.ents.dexco.name} ${ri.dex.y}: <b>${f(ri.dex.v)}</b> · mediana peers: <b>${f(ri.med)}</b>`:`${s.ents.dexco.name}: sem dado até ${ano}`;
-      const exl=[];Object.entries(m.excl||{}).forEach(([ek,ys])=>{if(!ents.includes(ek))return;const it=Object.entries(ys).filter(([y])=>inPeriod(y));if(!it.length)return;const kinds=[...new Set(it.map(([,o])=>o.kind))].join('/');exl.push(it.length>2?`<b>${s.ents[ek].name}</b> ${it.length} anos (${kinds})`:`<b>${s.ents[ek].name}</b> `+it.map(([y,o])=>`${y}: ${f(o.v)}`).join(', ')+` (${kinds})`)});
+      const exl=[];Object.entries(m.excl||{}).forEach(([ek,ys])=>{if(!ents.includes(ek))return;const it=Object.entries(ys).filter(([y])=>inPeriod(y));if(!it.length)return;const kinds=[...new Set(it.map(([,o])=>o.kind==='n.s.'?'n.s.: EBITDA negativo':o.kind))].join('/');exl.push(it.length>2?`<b>${s.ents[ek].name}</b> ${it.map(([y])=>y).join(', ')} (${kinds})`:`<b>${s.ents[ek].name}</b> `+it.map(([y,o])=>o.v==null?y:`${y}: ${f(o.v)}`).join(', ')+` (${kinds})`)});
       card(g,{title:m.label,unit:UNIT[m.fmt]+(m.calc?' · calculado (ROL × margem EBITDA)':'')+(m.dexCons?' · Dexco: alavancagem consolidada':''),read,labels,sets,fmt:m.fmt,ref:m.ref,ax,bar:ax&&ax.bar,fkey:k,excl:exl});n++});
     if(n)main.appendChild(sec)});
   document.getElementById('nav').innerHTML=[...GROUPS.filter(G=>document.getElementById(G.id)).map(G=>[G.id,G.tag])].map(([i,t])=>`<a href="#${i}">${t}</a>`).join('');

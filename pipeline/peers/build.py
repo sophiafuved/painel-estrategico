@@ -33,6 +33,10 @@ M=[ # key,regex,label,fmt,group
  ('outras',r'^Outras Desp\./ ?EBITDA$','Outras despesas / EBITDA','pct','caixa'),
  ('fcl',r'^FCL/ ?EBITDA$','FCL / EBITDA','pct','caixa'),
  ('capexr',r'^Capex/ROL$','Capex / ROL','pct','caixa'),
+ # blocos sobre a receita (base alternativa quando o EBITDA é negativo); mesma convenção de sinal dos blocos sobre EBITDA
+ ('varwkr',r'^Var\.? ?WK ?/ ?ROL$','Variação do capital de giro / ROL','pct','caixa'),
+ ('outrasr',r'^Outras Desp\.? ?/ ?ROL$','Outras despesas / ROL','pct','caixa'),
+ ('fclr',r'^FCL ?/ ?ROL$','FCL / ROL','pct','caixa'),
 ]
 out={}
 for sk,cfg in SEG.items():

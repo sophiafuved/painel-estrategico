@@ -65,6 +65,17 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   médios negativos.
 - Outliers retirados: |DL/EBITDA| > 10x; índices sobre EBITDA > 500% em módulo; prazos > 365 dias;
   giro > 6x; margens e ROIC < −50%; capex > 50% da receita. Na tabela-resumo aparecem como **n.s.**
+- Índices sobre EBITDA (Var. WK, Capex, Outras, FCL e DL/EBITDA) em anos de EBITDA ≤ 0 viram
+  **n.s. (EBITDA negativo)**, mesmo quando a planilha traz o número (exceto a alavancagem
+  consolidada da Dexco).
+- Blocos opcionais sobre a receita nas abas "Gráficos", no mesmo formato dos demais e com a mesma
+  convenção de sinal dos blocos sobre EBITDA: `Var. WK/ROL`, `Outras Desp./ROL`, `FCL/ROL` (o
+  `Capex/ROL` já existe, positivo). Quando existem, a seção Fluxo de caixa ganha o botão
+  "Base dos índices: Sobre EBITDA | Sobre receita".
+- Ponte do caixa (Fluxo de caixa): EBITDA → Δ capital de giro → Capex → Outras → FCL em R$ mi,
+  com filtro de empresa e ano. Componentes = índice × EBITDA (EBITDA > 0) ou índice sobre receita ×
+  receita; usa os valores da planilha mesmo quando o índice foi retirado do gráfico; o que faltar
+  vira "Demais itens" (diferença até o FCL). Sem FCL no ano, a ponte não é exibida.
 - Tabelas-resumo: uma no início de cada tópico (não há resumo geral no topo); cada coluna usa o
   ano da receita mais recente da empresa; indicadores de outros anos aparecem como "–".
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
