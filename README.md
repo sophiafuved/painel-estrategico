@@ -73,8 +73,9 @@ específicos; veja "Onde o gerador procura os dados" abaixo.
 
 ### Onde o gerador procura os dados
 
-- **Grande Base**: as faixas de células usadas por cada gráfico estão em `pipeline/radar/extract.py`
-  (ex.: `Dados_Tendências!N155:N328`). Se uma série crescer para novas linhas, ajuste a faixa ali.
+- **Grande Base**: as faixas de células usadas por cada gráfico estão em `pipeline/radar/faixas.py`
+  (ex.: `Dados_Tendências!N155:N328`). Se uma série crescer para novas linhas, ajuste a faixa ali: o painel e o
+  PowerPoint do Radar (skill `atualizar-deck-radar`) passam a ler a faixa nova.
 - **Análise de Competidores**: os blocos das abas `Gráficos - Louças`, `Gráficos - Metais`,
   `Gráficos Madeira 1` e `Gráficos - Revestimento`, reconhecidos pelo título do bloco (ex.: "ROIC",
   "Margem EBITDA") seguido dos anos. Novas colunas de ano e novas empresas no fim de um bloco são

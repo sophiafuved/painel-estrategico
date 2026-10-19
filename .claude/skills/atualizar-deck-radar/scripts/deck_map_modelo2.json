@@ -1,0 +1,15 @@
+{
+  "_como_usar": "Mapa do PowerPoint 'Radar Estratégia - Modelo 2': para cada slide, o tópico da leitura e o id das caixas de texto (shape_id). Se o modelo mudar, rode o script com --listar para ver os ids e atualize aqui.",
+  "slides": {
+    "2":  {"topico": "global",    "titulo": 5,  "caixa_esq": 62, "caixa_dir": 61},
+    "3":  {"topico": "brasil",    "titulo": 5,  "caixa_esq": 77, "caixa_dir": 59},
+    "4":  {"topico": "incerteza", "titulo": 5,  "subtitulo": 6},
+    "5":  {"topico": "renda",     "titulo": 30, "subtitulo": 29},
+    "6":  {"topico": "credito",   "titulo": 3,  "caixa_esq": 7, "caixa_dir": 14},
+    "7":  {"topico": "incc",      "titulo": 5,  "subtitulo": 9},
+    "8":  {"topico": "imob",      "titulo": 6,  "subtitulo": 8},
+    "9":  {"topico": "imob",      "titulo": 6,  "subtitulo": 8},
+    "10": {"topico": "varejo",    "titulo": 3,  "subtitulo": 5}
+  },
+  "manter": {"1": "capa (troque a data com --capa)", "11": "Principais mensagens: revisar à mão", "12": "encerramento"}
+}

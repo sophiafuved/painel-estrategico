@@ -65,5 +65,28 @@
         "Vendas: **recuperação** em relação a 2025, ainda **abaixo do varejo ampliado** (+1,7% em 12 meses)."
       ]
     }
+  },
+  "_como_usar_deck": "Textos específicos dos slides do PowerPoint Radar Modelo 2 (skill atualizar-deck-radar). Chave = número do slide; papéis: titulo, subtitulo, caixa_esq, caixa_dir. Slides sem entrada usam o título e o texto do tópico.",
+  "deck_modelo2": {
+    "2": {
+      "caixa_esq": "Protagonismo geopolítico: o risco geopolítico (média de 12 meses) sobe para **173**, de 146 um ano antes, com o Brent em **US$ 125/barril**: cenário de **alta incerteza e volatilidade**.",
+      "caixa_dir": "Globalização 2.0: o comércio global cresce **2,2%**, abaixo da mediana de 3,9%, e a participação dos EUA nas importações cai para **10,8%**; inflação projetada **acima da média** nos EUA (3,8%) e na Europa (3,0%)."
+    },
+    "3": {
+      "caixa_esq": "O Brasil deve **desacelerar para 1,8% em 2026 e 1,0% em 2027**, com os **serviços** ainda puxando o crescimento",
+      "caixa_dir": "As **medidas de estímulo fiscal** somam impacto líquido de **R$ 106,7 bi** em 2026, compensando parte do efeito da **SELIC real em 8,8%**"
+    },
+    "6": {
+      "caixa_esq": "A elevação do **custo do crédito** (juros PF em 61,7% a.a.) com o **endividamento em 49,9% da renda**...",
+      "caixa_dir": "...já eleva a **renda comprometida (30,8%)** e a **inadimplência (8,0%)**, pesando no orçamento das famílias"
+    },
+    "8": {
+      "titulo": "O **custo de financiamento** sobe e o **preço dos imóveis** avança 14,7% em 12 meses, acima da inflação",
+      "subtitulo": "A taxa de financiamento imobiliário subiu 0,8 p.p. em 12 meses, para **11,3% a.a.**, com os juros longos em 14,2%. O IGMI-R sobe **8,1% em termos reais**. A Tendências projeta juros do financiamento de 11,1% em 2026 e **10,2% em 2027**."
+    },
+    "9": {
+      "titulo": "Os lançamentos devem **recuar em 2026** depois de dois anos fortes: o **MCMV** ainda cresce, mas o **médio/alto padrão** já cai",
+      "subtitulo": "Os lançamentos do MCMV sobem **12,7%** em 12 meses e os de médio/alto padrão caem **5,6%** (média móvel de 12 meses, jun/26). A Tendências projeta queda de 5,0% no total em 2026 (−4,0% no MCMV e **−11,2% no médio/alto padrão**), com retomada do médio/alto em 2027 (+3,2%)."
+    }
   }
 }

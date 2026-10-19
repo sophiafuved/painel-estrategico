@@ -63,6 +63,18 @@ O Radar tem o seletor "Leitura: Do time", que lê `pipeline/radar/leitura_time.j
 4. Antes de gravar, confira os números contra a leitura automática do painel (seletor
    "Automática"): os arredondamentos devem bater.
 
+## Levar para o PowerPoint (Modelo 2)
+
+A skill `atualizar-deck-radar` usa o mesmo `leitura_time.json`. Para o deck:
+
+- Títulos cabem em ~2 linhas a 20 pt: prefira 15–20 palavras (o painel aceita um pouco mais).
+- Slides com duas caixas de leitura (Global = 2, Brasil = 3, Crédito = 6) e os dois slides de
+  Imobiliário (8 = financiamento e preço; 9 = lançamentos e vendas) usam a seção
+  `deck_modelo2` do arquivo: `{"2": {"caixa_esq": "...", "caixa_dir": "..."}, "8": {"titulo": "...",
+  "subtitulo": "..."}, ...}`. Caixas: até ~30 palavras; podem ser encadeadas com "..." (como no
+  Crédito).
+- Os demais slides usam o `titulo` e o `texto` do tópico.
+
 ## Cuidados
 
 - Todo número citado precisa estar nos dados fornecidos; se faltar, escreva sem o número ou

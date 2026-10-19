@@ -1,6 +1,6 @@
 # Skills do time de estratégia
 
-Cinco skills para o Claude, criadas a partir do trabalho no Painel Estratégico. Cada arquivo
+Seis skills para o Claude, criadas a partir do trabalho no Painel Estratégico. Cada arquivo
 `.skill` é um pacote (ZIP) pronto para instalar; o código-fonte de cada uma está em
 `.claude/skills/<nome>/` neste projeto.
 
@@ -10,6 +10,7 @@ Cinco skills para o Claude, criadas a partir do trabalho no Painel Estratégico.
 | `conferir-peers` | Conferir os números da Análise de Competidores e gerar a planilha de conferência (com "o que mudou" desde a versão anterior) | Sim (usa os leitores de `pipeline/peers/`) |
 | `incluir-peer-novo` | Levar os números de um release/DFP de um concorrente para o formato da planilha, com fonte e página | Não |
 | `comentarios-radar` | Escrever títulos e textos do Radar no estilo do time, apoiados nos números | Não |
+| `atualizar-deck-radar` | Atualizar o PowerPoint do Radar (Modelo 2) com os dados do painel e a leitura do time, sem quebrar o vínculo com a Grande Base | Sim (usa as faixas de `pipeline/radar/`) |
 | `padrao-apresentacao-dexco` | Padrão visual do Radar e do template do Offsite/Peers (traz o template .pptx) | Não |
 
 ## Como instalar
