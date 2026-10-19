@@ -44,6 +44,14 @@ nav.sec{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:va
 nav.sec a{flex:none;font:600 13px var(--body);color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:6px;white-space:nowrap}
 nav.sec a:hover{background:var(--panel-2);color:var(--ink)}
 nav.sec a.on{color:var(--accent-ink);background:var(--panel)}
+.lei{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;flex-direction:column;gap:6px}
+.lei .lab{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.lei .lab .warn{color:#b3261e;background:#fbe9e7;border-radius:4px;padding:1px 6px;text-transform:none;letter-spacing:0;font-family:var(--body);font-weight:600}
+.lei h3{font:700 18px/1.3 var(--display);margin:0;max-width:80ch;text-wrap:pretty}
+.lei h3 em,.lei li em,.lei p em{font-style:normal;color:var(--accent-ink);font-weight:700}
+.lei p{margin:0;color:var(--ink-2);max-width:95ch}
+.lei ul{margin:2px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px;max-width:95ch}
+.lei ul.auto{padding-left:18px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .kpi{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .kpi .k{font-size:13px;color:var(--ink-2)}
@@ -121,6 +129,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
       <button class="tabbtn" id="d-clear" type="button">Limpar</button>
     </div>
     <span class="range-msg" id="d-msg" role="status"></span>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="eyebrow" id="lbl-lei">Leitura</span>
+      <div class="seg" role="group" aria-labelledby="lbl-lei" id="leiseg"><button data-v="off" aria-pressed="true">Desligada</button><button data-v="auto" aria-pressed="false">Automática</button><button data-v="time" aria-pressed="false">Do time</button></div></div>
     <div id="proj-ctl" hidden style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="eyebrow" id="lbl-proj">Projeções Tendências</span>
       <div class="seg" role="group" aria-labelledby="lbl-proj" id="projseg"><button data-v="1" aria-pressed="true">Mostrar</button><button data-v="0" aria-pressed="false">Ocultar</button></div></div>
   </div>
@@ -326,7 +336,7 @@ function render(){
   const main=document.getElementById('main');main.innerHTML='';
   SECS.forEach(sec=>{
     const el=document.createElement('section');el.id=sec.id;
-    el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2></div>${sumHTML(sec.sum)}<div class="grid"></div>`;
+    el.innerHTML=`<div class="sh"><span class="tag">${sec.tag}</span><h2>${sec.h}</h2></div>${leituraHTML(sec)}${sumHTML(sec.sum)}<div class="grid"></div>`;
     const g=el.querySelector('.grid');
     sec.charts.forEach((c,ci)=>{
       const card=document.createElement('article');card.className='card';
@@ -401,6 +411,56 @@ function projCard(sec,g){
   const btn=card.querySelector('.tabbtn'),tb=card.querySelector('.tbl');
   btn.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=`<table><thead><tr><th>Ano</th><th>${it.titulo}</th><th></th></tr></thead><tbody>${it.labels.map((l,i)=>[l,i]).reverse().filter(([l])=>inRange(l)).map(([l,i])=>`<tr><td>${l}</td><td>${F.pct(it.data[i])}</td><td>${+l>=des?'projeção':'realizado'}</td></tr>`).join('')}</tbody></table>`;tb.hidden=!open;btn.setAttribute('aria-expanded',open);btn.textContent=open?'Ocultar tabela':'Ver tabela'};
 }
+// ---------- Leitura (desligada por padrão): automática (frases factuais geradas dos dados) ou do time (D.leitura) ----------
+let LEI='off';try{LEI=localStorage.getItem('radar-leitura')||'off'}catch(e){}
+const LT=D.leitura||null;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const mark=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<em>$1</em>');
+// último dado observado (até o mês atual) e o valor de n meses antes
+function obs(k,i,back=12){const ds=D[k];if(!ds)return null;const s=ds.series[i].data,L=ds.labels;let j=-1;
+  for(let x=s.length-1;x>=0;x--)if(s[x]!=null&&spanOf(L[x])[1]<=NOW){j=x;break}
+  if(j<0)return null;const tgt=addMonths(spanOf(L[j])[1],-back);let b=null;
+  for(let x=j-1;x>=0;x--)if(s[x]!=null&&spanOf(L[x])[1]<=tgt){b=s[x];break}
+  return {v:s[j],b,l:fmtLabel(L[j],true)}}
+const ppt=x=>nf(1).format(Math.abs(x*100))+' p.p.';
+const verbo=(d,eps)=>Math.abs(d)<eps?'ficou estável':d>0?'subiu':'caiu';
+function serieAno(k,i,ano){const ds=D[k];if(!ds)return null;const j=ds.labels.indexOf(String(ano));return j<0?null:ds.series[i].data[j]}
+// frases factuais por tópico; nenhuma opinião, só o que os dados mostram
+function autoFrases(sec){const out=[],P=F.pct,Y=+NOW.slice(0,4);const o=(k,i,b)=>obs(k,i,b);
+  const taxa=(nome,k,i,ref)=>{const x=o(k,i);if(!x)return;let s=`${nome} em ${P(x.v)} (${x.l})`;if(x.b!=null)s+=`, ${verbo(x.v-x.b,.0005)==='ficou estável'?'estável':(x.v>x.b?'+':'−')+ppt(x.v-x.b)} em 12 meses`;if(ref)s+=ref(x.v);out.push(s+'.')};
+  const nivel=(nome,k,i,fmt,ref)=>{const x=o(k,i);if(!x)return;let s=`${nome} em ${F[fmt](x.v)} (${x.l})`;if(x.b!=null&&x.b)s+=`, ${x.v>=x.b?'+':'−'}${nf(1).format(Math.abs(x.v/x.b-1)*100)}% em 12 meses`;if(ref)s+=ref(x.v);out.push(s+'.')};
+  if(sec.id==='global'){const b=o('brent',0),m=o('brent',1);if(b&&m)out.push(`Brent em US$ ${nf(1).format(b.v)}/barril (${b.l}), ${nf(0).format((b.v/m.v-1)*100)}% acima da média pré-conflito (US$ ${nf(1).format(m.v)}).`);
+    const e=serieAno('infl_glob',0,Y),z=serieAno('infl_glob',1,Y);if(e!=null&&z!=null)out.push(`Inflação projetada para ${Y}: ${P(e)} nos EUA e ${P(z)} na Zona do Euro (Itaú), contra médias de ${P(D.infl_glob.series[2].data[0])} e ${P(D.infl_glob.series[3].data[0])} em 2010–19.`);
+    const g=o('gpr',1);if(g&&g.b!=null)out.push(`Risco geopolítico (média de 12 meses) em ${nf(0).format(g.v)}, ante ${nf(0).format(g.b)} um ano antes.`)}
+  if(sec.id==='brasil'){const a=serieAno('pib',3,Y),b2=serieAno('pib',3,Y+1);if(a!=null)out.push(`PIB projetado: ${P(a)} em ${Y}${b2!=null?` e ${P(b2)} em ${Y+1}`:''}.`);
+    [['SELIC fim de '+Y,0],['IPCA '+Y,2]].forEach(([n,i])=>{const ds=D.focus_selic_ipca,s=ds.series[i].data;let j=s.length-1;while(j>0&&s[j]==null)j--;const p=s[Math.max(0,j-20)];out.push(`Focus ${n}: ${nf(2).format(s[j])}% (${fmtLabel(ds.labels[j],true)}), ${s[j]>p?'+':s[j]<p?'−':'±'}${nf(2).format(Math.abs(s[j]-p))} p.p. em 4 semanas.`)});
+    const r=o('neutra',1),n=o('neutra',0);if(r&&n)out.push(`SELIC real ex-ante em ${P(r.v)} (${r.l}), ${ppt(r.v-n.v)} ${r.v>n.v?'acima':'abaixo'} do juro neutro (${P(n.v)}).`);
+    taxa('Hiato do produto','hiato',0)}
+  if(sec.id==='incerteza'){const x=o('iie',0);if(x)out.push(`Incerteza econômica (IIE-Br) em ${nf(1).format(x.v)} (${x.l}), ${x.v>100?'acima':'abaixo'} do patamar de 100${x.b!=null?`, ${x.v>=x.b?'+':'−'}${nf(1).format(Math.abs(x.v-x.b))} em 12 meses`:''}.`);
+    [['Confiança do empresário',0],['Confiança do consumidor',1]].forEach(([nm,i])=>{const y=o('conf',i);if(y)out.push(`${nm} em ${nf(1).format(y.v)} (${y.l}), ${y.v<100?'abaixo':'acima'} de 100${y.b!=null?`, ${y.v>=y.b?'+':'−'}${nf(1).format(Math.abs(y.v-y.b))} em 12 meses`:''}.`)})}
+  if(sec.id==='renda'){taxa('Taxa de desocupação','desemprego',0,v=>`, ${v<.08?'abaixo':'acima'} do NAIRU (8,0%)`);nivel('Renda média real do trabalho','desemprego',1,'brl');nivel('Massa de renda do trabalho','massa',0,'bi')}
+  if(sec.id==='credito'){taxa('Juros PF','juros_endiv',0);taxa('Endividamento das famílias','juros_endiv',1);taxa('Renda comprometida com dívida','renda_inad',0);taxa('Inadimplência PF','renda_inad',1);nivel('Renda disponível do trabalho após essenciais e dívida','renda_disp',0,'bi')}
+  if(sec.id==='incc'){const a=o('incc_ipca',0),b=o('incc_ipca',1);if(a&&b)out.push(`INCC em ${P(a.v)} e IPCA em ${P(b.v)} em 12 meses (${a.l}): INCC ${ppt(a.v-b.v)} ${a.v>b.v?'acima':'abaixo'} do IPCA.`);
+    const m=o('incc_comp',0),w=o('incc_comp',1);if(m&&w&&m.b!=null&&w.b!=null)out.push(`Contribuição para o INCC: materiais ${nf(1).format(m.b*100)} → ${nf(1).format(m.v*100)} p.p. e mão de obra ${nf(1).format(w.b*100)} → ${nf(1).format(w.v*100)} p.p. em 12 meses.`)}
+  if(sec.id==='imob'){taxa('Taxa de financiamento imobiliário','financ',1);const g=o('igmi',0),r=o('igmi',1);if(g&&r)out.push(`IGMI-R (preço dos imóveis) em ${P(g.v)} nominal e ${P(r.v)} real em 12 meses (${g.l}).`);
+    nivel('Lançamentos MCMV (média 12 meses)','lanc',0,'int');nivel('Lançamentos médio/alto padrão (média 12 meses)','lanc',1,'int')}
+  if(sec.id==='varejo'){const v=o('varejo_var',0);if(v)out.push(`Vendas de material de construção: ${v.v>=0?'+':'−'}${nf(1).format(Math.abs(v.v*100))}% a/a (média 3 meses, ${v.l})${v.b!=null?`, ante ${v.b>=0?'+':'−'}${nf(1).format(Math.abs(v.b*100))}% um ano antes`:''}.`);
+    const pj=D.varejo_proj;if(pj)out.push(`Projeção anual de vendas de material de construção (Grande Base): ${pj.labels.map((l,i)=>`${pj.series[0].data[i]<0?'−':'+'}${P(Math.abs(pj.series[0].data[i]))} em ${l}`).join(' e ')}.`)}
+  if(TEND)TEND.itens.filter(it=>it.sec===sec.id).forEach(it=>{const ps=it.labels.map((l,i)=>[+l,it.data[i]]).filter(([l,v])=>l>=TEND.desde&&l<=TEND.desde+1&&v!=null);
+    if(ps.length)out.push(`${TEND.fonte} (${TEND.edicao||'última edição'}): ${it.titulo.charAt(0).toLowerCase()+it.titulo.slice(1)} ${ps.map(([l,v])=>`${it.tipo==='var'?(v>0?'+':v<0?'−':''):''}${P(it.tipo==='var'?Math.abs(v):v)} em ${l}`).join(' e ')}.`)});
+  return out}
+function leituraHTML(sec){
+  if(LEI==='auto'){const fr=autoFrases(sec);if(!fr.length)return '';
+    return `<div class="lei"><div class="lab"><span>Leitura automática · gerada dos dados em cada atualização</span></div><ul class="auto">${fr.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div>`}
+  if(LEI==='time'){const t=LT&&LT.topicos&&LT.topicos[sec.id];
+    if(!t)return `<div class="lei"><div class="lab"><span>Leitura do time</span></div><p>Sem leitura do time para este tópico nesta edição.</p></div>`;
+    const rev=LT.status==='revisado';
+    return `<div class="lei"><div class="lab"><span>Leitura do time · edição ${esc(LT.edicao||'')}</span>${rev?`<span>Revisada por ${esc(LT.revisado_por||'–')}${LT.data_revisao?' em '+esc(LT.data_revisao):''}</span>`:`<span class="warn">Rascunho gerado pelo Claude, aguardando revisão do time</span>`}${LT.dados_ate?`<span>${esc(LT.dados_ate)}</span>`:''}</div>
+      <h3>${mark(t.titulo)}</h3><p>${mark(t.texto)}</p>${t.caixas&&t.caixas.length?`<ul>${t.caixas.map(c=>`<li>${mark(c)}</li>`).join('')}</ul>`:''}</div>`}
+  return ''}
+{const c=document.getElementById('leiseg');if(!LT)c.querySelector('[data-v="time"]').remove();if(LEI==='time'&&!LT)LEI='off';
+  const sync=()=>c.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===LEI));sync();
+  c.querySelectorAll('button').forEach(b=>b.onclick=()=>{LEI=b.dataset.v;try{localStorage.setItem('radar-leitura',LEI)}catch(e){}sync();rerender()})}
 if(TEND){const c=document.getElementById('proj-ctl');c.hidden=false;
   const sync=()=>c.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.v==='1')===SHOWP));sync();
   c.querySelectorAll('button').forEach(b=>b.onclick=()=>{SHOWP=b.dataset.v==='1';try{localStorage.setItem('radar-proj',SHOWP?'1':'0')}catch(e){}sync();rerender()})}

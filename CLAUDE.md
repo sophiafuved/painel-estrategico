@@ -84,8 +84,13 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   primeiras linhas desses blocos estão em R$ milhões).
 - Escalas dos gráficos vão do menor ao maior valor; colunas começam no zero; botão "Foco Dexco"
   ajusta o eixo à Dexco.
-- Sem textos de comentário/análise nos painéis: os títulos dos tópicos são neutros. Comentários
-  só entram quando o painel vira apresentação.
+- Títulos dos tópicos neutros. Comentários ficam **ocultos por padrão** (pedido do gestor: o painel
+  limpo; comentários na apresentação). No Radar há o seletor "Leitura: Desligada | Automática | Do
+  time" (protótipo para avaliação do gestor, out/2026):
+  - Automática: frases factuais geradas pelo template a partir dos dados (sem opinião).
+  - Do time: `pipeline/radar/leitura_time.json` (gerado com a skill `comentarios-radar`). Com
+    `status: "rascunho"` o painel mostra "Rascunho gerado pelo Claude, aguardando revisão do time";
+    só troque para `"revisado"` (com `revisado_por` e `data_revisao`) quando alguém do time aprovar.
 - Radar: cada tópico abre com um resumo dos seus indicadores (último dado observado, sem
   projeções, e variação em 12 meses / 4 trimestres / 4 semanas no Focus). Os gráficos que na
   apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir.").

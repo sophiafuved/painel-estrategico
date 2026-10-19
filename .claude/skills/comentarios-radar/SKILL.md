@@ -48,6 +48,21 @@ Números usados: <indicador = valor (mês/ano, fonte)> ...
 
 A linha "Números usados" permite que o time confira cada afirmação antes de ir para o slide.
 
+## Levar para o painel
+
+O Radar tem o seletor "Leitura: Do time", que lê `pipeline/radar/leitura_time.json` no projeto
+`painel-estrategico`. Quando o usuário quiser os comentários no painel:
+
+1. Grave os textos nesse arquivo (mesma estrutura: `edicao`, `dados_ate`, `status`,
+   `revisado_por`, `data_revisao` e, em `topicos`, as chaves `global`, `brasil`, `incerteza`,
+   `renda`, `credito`, `incc`, `imob`, `varejo`, cada uma com `titulo`, `texto`, `caixas`).
+2. Deixe `status: "rascunho"` e `revisado_por` vazio: o painel mostra o aviso de rascunho. Texto
+   escrito pelo Claude não deve aparecer como "leitura do time" sem uma pessoa aprovar.
+3. Só quando o usuário disser que revisou/aprovou, troque para `"revisado"`, com nome e data, e
+   gere o painel de novo (skill `atualizar-painel-estrategico`).
+4. Antes de gravar, confira os números contra a leitura automática do painel (seletor
+   "Automática"): os arredondamentos devem bater.
+
 ## Cuidados
 
 - Todo número citado precisa estar nos dados fornecidos; se faltar, escreva sem o número ou

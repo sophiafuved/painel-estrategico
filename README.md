@@ -131,7 +131,9 @@ Indicadores novos que não estão no mapa aparecem em `projecoes.sem_topico` no 
 
 ## Formato do Radar
 
-- Sem textos de comentário: os títulos dos tópicos são neutros; comentários entram só na apresentação.
+- **Leitura** (seletor no topo, desligada por padrão): "Automática" gera frases factuais a partir dos dados a cada atualização; "Do time" mostra os comentários de `pipeline/radar/leitura_time.json`, com aviso de rascunho até a revisão do time.
+
+- Títulos dos tópicos neutros; os comentários só aparecem quando alguém liga a leitura (veja acima) e vão para a apresentação.
 - Cada tópico abre com um resumo dos seus indicadores (último dado observado, sem projeções).
 - Gráficos que têm dois eixos na apresentação mantêm os dois eixos; a legenda indica "esq." ou "dir.".
 

@@ -49,7 +49,7 @@ def sitebar(active, sair=None):
 .pe-bar a:focus-visible{{outline:2px solid #4e86da;outline-offset:2px}}
 </style><div class="pe-bar"><b>Painel Estratégico Dexco</b><nav aria-label="Seções do painel">{items}</nav></div>'''
 
-def build_radar(xlsx, work, proj=None):
+def build_radar(xlsx, work, proj=None, leitura=None):
     run('radar/extract.py', work, os.path.abspath(xlsx))
     run('radar/build_data.py', work)
     data = open(os.path.join(work, 'data.json')).read()
@@ -63,6 +63,9 @@ def build_radar(xlsx, work, proj=None):
     last = D['iie']['labels'][-1]
     if proj:  # projeções da consultoria entram como D.tend
         D['tend'] = proj
+    if leitura:  # leitura do time (comentários revisados ou rascunho), opcional no painel
+        D['leitura'] = leitura
+    if proj or leitura:
         data = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
     return t.replace('__DATA__', data.replace('</', '<\\/')), f"{MES[int(last[5:7])-1]}/{last[2:4]}"
 
@@ -154,6 +157,7 @@ def main():
     ap.add_argument('--radar', required=True); ap.add_argument('--peers', required=True); ap.add_argument('--out', required=True)
     ap.add_argument('--proj', help='planilha de projeções da consultoria (ex.: Tendências) para o Radar')
     ap.add_argument('--proj-desde', type=int, help='primeiro ano tratado como projeção (padrão: ano da edição no nome do arquivo)')
+    ap.add_argument('--leitura', default=os.path.join(HERE, 'radar', 'leitura_time.json'), help='leitura do time para o Radar (JSON); "nenhuma" para não incluir')
     ap.add_argument('--deck', help='também gera o PowerPoint de peers neste caminho (.pptx)')
     ap.add_argument('--senha', default=os.environ.get('PAINEL_SENHA'), help='protege o site com senha (ou variável PAINEL_SENHA). Nunca salve a senha no repositório.')
     a = ap.parse_args()
@@ -165,7 +169,10 @@ def main():
         if a.proj:
             from radar.projecoes import ler
             proj, sem_topico = ler(a.proj, a.proj_desde)
-        radar_html, radar_ate = build_radar(a.radar, w1, proj)
+        leitura = None
+        if a.leitura and a.leitura != 'nenhuma' and os.path.exists(a.leitura):
+            leitura = json.load(open(a.leitura, encoding='utf-8'))
+        radar_html, radar_ate = build_radar(a.radar, w1, proj, leitura)
         peers_html, peers_ate, segs, nlog = build_peers(a.peers, w2)
         if a.deck:
             root = os.path.dirname(HERE)
@@ -184,6 +191,8 @@ def main():
     for k, v in pages.items():
         open(os.path.join(a.out, k), 'w').write(v)
     res = {'radar_ate': radar_ate, 'peers_ate': peers_ate, 'ajustes_peers': nlog, 'out': os.path.abspath(a.out)}
+    if leitura:
+        res['leitura_time'] = {'edicao': leitura.get('edicao'), 'status': leitura.get('status'), 'revisado_por': leitura.get('revisado_por') or None}
     if proj:
         res['projecoes'] = {'arquivo': proj['arquivo'], 'edicao': proj['edicao'], 'projecao_desde': proj['desde'],
                             'indicadores': len(proj['itens']), 'sem_topico': sem_topico}
