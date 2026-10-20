@@ -12,7 +12,7 @@ Sete skills para o Claude, criadas a partir do trabalho no Painel Estratégico. 
 | `comentarios-radar` | Escrever títulos e textos do Radar no estilo do time, apoiados nos números | Não |
 | `atualizar-deck-radar` | Atualizar o PowerPoint do Radar (Modelo 1 ou 2) com os dados do painel e a leitura do time, sem quebrar o vínculo com a Grande Base | Sim (usa as faixas de `pipeline/radar/`) |
 | `atualizar-deck-peers` | Atualizar os decks de Análise de Peers (Louças, Metais, Madeira, Revestimento) com os números atuais da planilha de competidores, reconhecendo as séries por nome e valores | Não (usa o projeto só para os alertas de outlier/n.s.) |
-| `padrao-apresentacao-dexco` | Padrão visual do Radar e do template do Offsite/Peers (traz o template .pptx) | Não |
+| `padrao-apresentacao-dexco` | Padrão visual do Radar e do Template PPT 2026 (traz os templates e o script que leva um deck existente para o template novo) | Não |
 
 ## Como instalar
 
@@ -32,7 +32,7 @@ ao próprio Claude "como instalo uma skill a partir de um arquivo .skill".
 ## Cuidados
 
 - As skills levam o **processo**, não os dados: nenhuma planilha, número ou senha está dentro delas.
-- `padrao-apresentacao-dexco` inclui o template do Offsite (`template_offsite_peers.pptx`):
-  compartilhe só dentro da Dexco.
+- `padrao-apresentacao-dexco` inclui os templates da Dexco (`Template_PPT_2026.potx` e o antigo
+  `template_offsite_peers.pptx`): compartilhe só dentro da Dexco.
 - Ao mudar uma skill, edite a pasta em `.claude/skills/<nome>/` e gere o pacote de novo
   (peça ao Claude: "empacote a skill <nome>"), para que todos recebam a mesma versão.

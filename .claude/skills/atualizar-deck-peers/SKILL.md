@@ -57,6 +57,12 @@ Também: períodos que a planilha não tem mais (ex.: coluna 1T26) saem do gráf
    planilha do time mudou de nome ou de pasta, no PowerPoint use **Arquivo → Informações → Editar
    links para arquivos → Alterar fonte** antes de atualizar links.
 
+## Template
+
+Os decks do time usam o **Template PPT 2026**. Depois de atualizar os números, se o deck ainda estiver
+no template antigo (barra "OFFSITE 2026"), leve-o para o novo com o script `aplicar_template.py` da
+skill `padrao-apresentacao-dexco` (ordem: primeiro números, depois template).
+
 ## Cuidados
 
 - Valores revisados em massa (ex.: Madeira) costumam ser decisão de base, não erro do script: aponte

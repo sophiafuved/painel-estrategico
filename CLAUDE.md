@@ -128,7 +128,10 @@ Em `.claude/skills/`: `atualizar-painel-estrategico`, `conferir-peers`, `incluir
 `comentarios-radar`, `padrao-apresentacao-dexco`, `atualizar-deck-radar` (PowerPoint Radar Modelo 1 ou 2
 com os dados do painel e a leitura do time, sem quebrar o vínculo com a Grande Base),
 `atualizar-deck-peers` (decks de Análise de Peers de cada negócio com os números atuais da planilha de
-competidores; reconhece as séries por nome e valores, porque a planilha muda de lugar com o tempo). Os pacotes para instalar no Claude da empresa
+competidores; reconhece as séries por nome e valores, porque a planilha muda de lugar com o tempo).
+O padrão atual dos decks de peers é o **Template PPT 2026** (`padrao-apresentacao-dexco/assets/`);
+para levar um deck existente para ele, use `padrao-apresentacao-dexco/scripts/aplicar_template.py`
+(primeiro atualize os números, depois aplique o template). Os pacotes para instalar no Claude da empresa
 ficam em `skills_para_empresa/`; ao mudar uma skill, gere o pacote `.skill` de novo.
 
 ## Ao fazer alterações

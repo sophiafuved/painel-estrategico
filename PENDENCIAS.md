@@ -85,6 +85,9 @@ Rascunho do conteúdo:
       (Arauco/Eucatex, Placas do Brasil), "[WIP]"/"x"/"Lorem ipsum"; séries não reconhecidas (Louças slide 16
       participação por segmento; Madeira slide 5 bolhas; Revestimento "Portobello - Ajustado", que não existe
       mais na planilha); Madeira com 57 séries revisadas (mesma decisão "Madeira × deck de junho").
+- [x] Decks de peers no **Template PPT 2026** (20/10): script `aplicar_template.py` na skill
+      `padrao-apresentacao-dexco` (template salvo em `assets/`). Revisar à mão os slides apontados na
+      conferência de cada deck (formas na faixa do título).
 - [ ] Decks de peers: tabela-resumo do slide 2 e textos não são atualizados; avaliar uma leitura de peers
       (como a `comentarios-radar`) e a atualização da tabela.
 - [ ] `comentarios-radar`: títulos mais curtos para o deck; coletar o retorno do gestor sobre o tom.
