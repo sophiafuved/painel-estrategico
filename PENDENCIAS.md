@@ -88,6 +88,8 @@ Rascunho do conteúdo:
 - [x] Decks de peers no **Template PPT 2026** (20/10): script `aplicar_template.py` na skill
       `padrao-apresentacao-dexco` (template salvo em `assets/`). Revisar à mão os slides apontados na
       conferência de cada deck (formas na faixa do título).
+- [ ] **Voltar depois**: melhorias nos decks de peers no Template 2026 (a Sophia ainda vai pensar no que mudar;
+      fontes Roboto Light/Black já corrigidas em 20/10).
 - [ ] Decks de peers: tabela-resumo do slide 2 e textos não são atualizados; avaliar uma leitura de peers
       (como a `comentarios-radar`) e a atualização da tabela.
 - [ ] `comentarios-radar`: títulos mais curtos para o deck; coletar o retorno do gestor sobre o tom.
