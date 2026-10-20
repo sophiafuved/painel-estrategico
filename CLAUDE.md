@@ -125,8 +125,10 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
 ## Skills do projeto
 
 Em `.claude/skills/`: `atualizar-painel-estrategico`, `conferir-peers`, `incluir-peer-novo`,
-`comentarios-radar`, `padrao-apresentacao-dexco`, `atualizar-deck-radar` (PowerPoint Radar Modelo 2
-com os dados do painel e a leitura do time, sem quebrar o vínculo com a Grande Base). Os pacotes para instalar no Claude da empresa
+`comentarios-radar`, `padrao-apresentacao-dexco`, `atualizar-deck-radar` (PowerPoint Radar Modelo 1 ou 2
+com os dados do painel e a leitura do time, sem quebrar o vínculo com a Grande Base),
+`atualizar-deck-peers` (decks de Análise de Peers de cada negócio com os números atuais da planilha de
+competidores; reconhece as séries por nome e valores, porque a planilha muda de lugar com o tempo). Os pacotes para instalar no Claude da empresa
 ficam em `skills_para_empresa/`; ao mudar uma skill, gere o pacote `.skill` de novo.
 
 ## Ao fazer alterações

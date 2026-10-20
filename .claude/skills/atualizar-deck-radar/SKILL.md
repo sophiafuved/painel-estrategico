@@ -1,12 +1,12 @@
 ---
 name: atualizar-deck-radar
-description: Atualiza o PowerPoint do Radar Estratégia da Dexco (Modelo 2) com os dados atuais da Grande Base — os mesmos do painel — e com a leitura do time (títulos, textos de apoio e caixas), mantendo o vínculo dos gráficos com a Grande Base no SharePoint, a formatação dos slides e os gráficos combinados de dois eixos, e entrega uma lista de conferência. Use sempre que pedirem para atualizar, montar ou gerar a apresentação/deck/slides do Radar, levar o painel e os comentários para o PowerPoint, preparar o Radar do mês, ou "passar o dashboard para a apresentação".
+description: Atualiza o PowerPoint do Radar Estratégia da Dexco (Modelo 1 ou Modelo 2) com os dados atuais da Grande Base — os mesmos do painel — e com a leitura do time (títulos, textos de apoio e caixas), mantendo o vínculo dos gráficos com a Grande Base no SharePoint, a formatação dos slides e os gráficos combinados de dois eixos, e entrega uma lista de conferência. Use sempre que pedirem para atualizar, montar ou gerar a apresentação/deck/slides do Radar, levar o painel e os comentários para o PowerPoint, preparar o Radar do mês, ou "passar o dashboard para a apresentação".
 ---
 
-# Atualizar o deck do Radar (Modelo 2)
+# Atualizar o deck do Radar (Modelo 1 ou 2)
 
 O deck do Radar já é o formato que a liderança conhece; por isso esta skill **atualiza o deck
-existente** em vez de criar outro. Os 20 gráficos do Modelo 2 estão vinculados à Grande Base no
+existente** em vez de criar outro. Os gráficos dos dois modelos estão vinculados à Grande Base no
 SharePoint (atualização manual de links); o script grava os dados novos nos gráficos **sem
 quebrar esse vínculo** e ainda estende as faixas vinculadas quando o painel ganhou meses novos.
 
@@ -14,7 +14,7 @@ Converse em português.
 
 ## O que você precisa
 
-1. **Deck base**: a edição mais recente do "Radar Estratégia – Modelo 2" (.pptx). Use sempre a
+1. **Deck base**: a edição mais recente do "Radar Estratégia – Modelo 1" ou "– Modelo 2" (.pptx). Use sempre a
    última edição como base, para herdar os ajustes manuais do time.
 2. **Grande Base** (.xlsx) atualizada.
 3. **Pasta do projeto `painel-estrategico`**: o script usa as faixas do painel
@@ -31,6 +31,12 @@ python <pasta desta skill>/scripts/atualizar_deck.py --projeto <painel-estrategi
   --saida "Radar_Estrategia_<mes>_Modelo2.pptx" [--capa "novembro, 2026"] [--sem-textos]
 ```
 
+- O modelo é detectado pelo nome do arquivo ("Modelo 1"/"Modelo 2"); se o nome não disser, use
+  `--modelo 1` ou `--modelo 2`. Cada modelo tem seu mapa de caixas (`scripts/deck_map_modelo1.json`,
+  `deck_map_modelo2.json`) e seus textos próprios na leitura (`deck_modelo1`, `deck_modelo2`).
+- Modelo 1: slides 2, 3 e 6 têm título em caixa normal em 2 linhas e 2 ou 4 caixas de leitura
+  (`caixa_esq`, `caixa_dir`, `caixa_esq_inf`, `caixa_dir_inf`), sem bullets; os demais slides são
+  iguais ao Modelo 2.
 - Gera o .pptx e uma conferência em Markdown (`<saida>_conferencia.md`) e imprime um resumo.
 - `--listar` mostra os ids das caixas de texto e dos gráficos de um deck (use se o modelo mudar e
   for preciso atualizar `scripts/deck_map_modelo2.json`).
@@ -42,7 +48,7 @@ python <pasta desta skill>/scripts/atualizar_deck.py --projeto <painel-estrategi
 | Dados dos gráficos | Relê cada série na Grande Base; se a faixa do painel cresceu, estende a faixa vinculada do gráfico (o "Atualizar links" do PowerPoint também passa a pegar o mês novo) |
 | Gráficos combinados (colunas + linha, dois eixos) | Mantém tipo, cores e eixos; só troca os valores |
 | Rótulo do último ponto | Move para o último dado novo |
-| "Dados atualizados até mmm/aa" | Troca pela data do último dado observado (sem projeções); com duas séries, associa cada data à série certa |
+| "Dados atualizados até mmm/aa" | Troca pela data do último dado observado (sem projeções); com duas séries, associa cada data à série pelo nome entre parênteses (ex.: "(renda comprometida)") ou pela data antiga |
 | Títulos, textos e caixas | Da leitura do time, com a formatação do slide (caixa alta, destaques em negrito/laranja). Texto em lista vira um bullet por item, copiando marcador, recuo e alinhamento dos bullets do modelo; caixas de leitura ficam centralizadas como no original |
 | Ajustes de layout | Título que ocupa 2 linhas: alinha à esquerda, termina antes do marcador verde e desce os bullets só o que o título passar da caixa; com 1 linha, os bullets ficam na posição do modelo; a fonte só diminui se o texto não couber (e a conferência avisa) |
 | Leitura em rascunho | Põe o carimbo "RASCUNHO · texto aguardando revisão do time" nos slides |

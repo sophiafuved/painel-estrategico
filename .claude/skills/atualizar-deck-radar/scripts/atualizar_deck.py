@@ -1,4 +1,4 @@
-"""Atualiza o PowerPoint "Radar Estratégia – Modelo 2" com os dados do painel e a leitura do time.
+"""Atualiza o PowerPoint "Radar Estratégia" (Modelo 1 ou Modelo 2) com os dados do painel e a leitura do time.
 
 O que faz, sem quebrar o vínculo dos gráficos com a Grande Base no SharePoint:
   1. Dados: para cada série de cada gráfico, lê as células da Grande Base usando as mesmas faixas
@@ -8,7 +8,7 @@ O que faz, sem quebrar o vínculo dos gráficos com a Grande Base no SharePoint:
   2. Rótulos do último ponto: move para o último dado novo.
   3. "Dados atualizados até mmm/aa": troca pela data do último dado observado de cada gráfico.
   4. Textos: título, texto de apoio e caixas de leitura de cada slide a partir de
-     pipeline/radar/leitura_time.json (mapa de caixas em deck_map_modelo2.json), mantendo a
+     pipeline/radar/leitura_time.json (mapa de caixas em deck_map_modelo<N>.json), mantendo a
      formatação do slide (títulos em caixa alta, destaques em negrito/laranja).
   5. Se a leitura não estiver revisada, marca os slides com "RASCUNHO".
   6. Gera uma conferência em Markdown: o que mudou, revisões de dados na fonte e o que revisar à mão.
@@ -16,8 +16,10 @@ O que faz, sem quebrar o vínculo dos gráficos com a Grande Base no SharePoint:
 Uso:
   python atualizar_deck.py --projeto <painel-estrategico> --grande-base "<Grande Base>.xlsx" \
       --deck "<Radar ... Modelo 2>.pptx" --saida "Radar_Modelo2_atualizado.pptx" \
-      [--leitura <leitura_time.json>] [--capa "novembro, 2026"] [--conferencia conferencia_deck.md]
+      [--modelo 1|2] [--leitura <leitura_time.json>] [--capa "novembro, 2026"] [--conferencia conferencia_deck.md]
   python atualizar_deck.py --deck "<deck>.pptx" --listar      # lista slides, caixas de texto e gráficos
+
+O modelo (1 ou 2) é detectado pelo nome do arquivo ("Modelo 1"/"Modelo_1"); use --modelo se o nome não disser.
 """
 import argparse, copy, datetime, importlib.util, json, os, re, sys, warnings
 warnings.filterwarnings('ignore')
@@ -208,7 +210,7 @@ def atualizar_serie(ser, wb, look, ctx, log):
             if ix is not None and int(ix.get('val')) == li_old:
                 ix.set('val', str(li_new)); item['rotulo_movido'] = True
     log.append(item)
-    return (od, nd)
+    return (od, nd, (spec[3] if spec else item['serie']))
 
 
 def atualizar_graficos(prs, wb, look):
@@ -224,6 +226,11 @@ def atualizar_graficos(prs, wb, look):
 
 
 # ---------- 3. "Dados atualizados até" ----------
+def norm(t):
+    import unicodedata
+    return unicodedata.normalize('NFKD', str(t)).encode('ascii', 'ignore').decode().lower()
+
+
 def atualizar_datas(prs, datas, pend):
     feitos = []
     for sn, slide in enumerate(prs.slides, 1):
@@ -242,11 +249,22 @@ def atualizar_datas(prs, datas, pend):
             if not pares or not toks:
                 continue
             if len(toks) == 1:
-                novos = [mmmaa(max(n for _, n in pares))]
+                novos = [mmmaa(max(x[1] for x in pares))]
             else:
-                # cada data do texto corresponde à série cujo último dado (no deck antigo) era essa data
+                # 1º: pelo nome entre parênteses depois da data, ex.: "ago/26 (renda comprometida)";
+                # 2º: cada data do texto corresponde à série cujo último dado (no deck antigo) era essa data
                 novos = [None] * len(toks); livres = list(range(len(pares)))
+                rotulos = [re.match(r'\s*\(([^)]+)\)', antes[m.end():]) for m in TOKEN.finditer(antes)]
+                for k, rm in enumerate(rotulos):
+                    if not rm:
+                        continue
+                    pal = [w for w in re.findall(r'\w+', norm(rm.group(1))) if len(w) > 2]
+                    m_ = [j for j in livres if pal and all(w in norm(pares[j][2]) for w in pal)]
+                    if len(m_) == 1:
+                        novos[k] = mmmaa(pares[m_[0]][1]); livres.remove(m_[0])
                 for k, tk in enumerate(toks):
+                    if novos[k] is not None:
+                        continue
                     m_ = [j for j in livres if pares[j][0] and mmmaa(pares[j][0]) == tk]
                     if len(m_) == 1:
                         novos[k] = mmmaa(pares[m_[0]][1]); livres.remove(m_[0])
@@ -356,10 +374,14 @@ def carimbo(slide, texto):
     tb.name = 'Carimbo rascunho'
 
 
+# papéis das caixas de texto, na ordem de preenchimento (os *_inf são as caixas de baixo do Modelo 1)
+PAPEIS = ('titulo', 'subtitulo', 'caixa_esq', 'caixa_dir', 'caixa_esq_inf', 'caixa_dir_inf')
+
+
 def atualizar_textos(prs, leitura, mapa, pend):
     feitos = []
     rasc = leitura.get('status') != 'revisado'
-    top = leitura.get('topicos', {}); extra = leitura.get('deck_modelo2', {})
+    top = leitura.get('topicos', {}); extra = leitura.get(mapa.get('leitura', 'deck_modelo2'), {})
     for sn_txt, cfg in mapa['slides'].items():
         sn = int(sn_txt)
         if sn > len(prs.slides):
@@ -367,12 +389,12 @@ def atualizar_textos(prs, leitura, mapa, pend):
         slide = prs.slides[sn - 1]; t = top.get(cfg['topico'], {}); ex = extra.get(sn_txt, {})
         shapes = {s.shape_id: s for s in slide.shapes}
         mudou = False
-        for papel in ('titulo', 'subtitulo', 'caixa_esq', 'caixa_dir'):
+        for papel in PAPEIS:
             if papel not in cfg:
                 continue
             shp = shapes.get(cfg[papel])
             if shp is None or not shp.has_text_frame:
-                pend.append(f'Slide {sn}: caixa "{papel}" (id {cfg[papel]}) não encontrada; atualize deck_map_modelo2.json (rode com --listar).'); continue
+                pend.append(f'Slide {sn}: caixa "{papel}" (id {cfg[papel]}) não encontrada; atualize o deck_map do modelo (rode com --listar).'); continue
             texto = ex.get(papel) or ({'titulo': t.get('titulo'), 'subtitulo': t.get('texto')}.get(papel))
             if not texto:
                 pend.append(f'Slide {sn}: sem texto para "{papel}" na leitura; mantido o da edição anterior.'); continue
@@ -433,7 +455,7 @@ def rotulos_manuais(prs, pend):
 
 # ---------- conferência ----------
 def conferencia(path, log, datas_feitas, textos, pend, rasc, args):
-    L = [f'# Conferência do deck Radar Modelo 2 ({HOJE.strftime("%d/%m/%Y")})', '',
+    L = [f'# Conferência do deck Radar Modelo {args.modelo} ({HOJE.strftime("%d/%m/%Y")})', '',
          f'- Base: `{os.path.basename(args.deck)}` · Grande Base: `{os.path.basename(args.grande_base)}`',
          f'- Leitura: `{os.path.basename(args.leitura)}` · status **{"RASCUNHO (slides com carimbo)" if rasc else "revisada"}**', '']
     ext = [x for x in log if x['faixa_depois'] and x['faixa_antes'] != x['faixa_depois']]
@@ -467,7 +489,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--deck', required=True); ap.add_argument('--listar', action='store_true')
     ap.add_argument('--projeto', default='.'); ap.add_argument('--grande-base'); ap.add_argument('--saida')
-    ap.add_argument('--leitura'); ap.add_argument('--mapa', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deck_map_modelo2.json'))
+    ap.add_argument('--leitura'); ap.add_argument('--mapa', help='padrão: deck_map_modelo<N>.json ao lado do script')
+    ap.add_argument('--modelo', choices=['1', '2'], help='padrão: detectado pelo nome do deck; sem pista, 2')
     ap.add_argument('--capa', help='texto da data na capa, ex.: "novembro, 2026"'); ap.add_argument('--conferencia')
     ap.add_argument('--sem-textos', action='store_true', help='só atualiza os dados')
     args = ap.parse_args()
@@ -475,6 +498,10 @@ def main():
         return listar(args.deck)
     if not (args.grande_base and args.saida):
         sys.exit('Informe --grande-base e --saida.')
+    if not args.modelo:
+        m = re.search(r'modelo[\s_-]*([12])', os.path.basename(args.deck), re.I)
+        args.modelo = m.group(1) if m else '2'
+    args.mapa = args.mapa or os.path.join(os.path.dirname(os.path.abspath(__file__)), f'deck_map_modelo{args.modelo}.json')
     args.leitura = args.leitura or os.path.join(args.projeto, 'pipeline', 'radar', 'leitura_time.json')
     look = load_specs(args.projeto)
     wb = load_workbook(args.grande_base, data_only=True)
@@ -501,7 +528,7 @@ def main():
     prs.save(args.saida)
     conf = args.conferencia or os.path.splitext(args.saida)[0] + '_conferencia.md'
     conferencia(conf, log, datas_feitas, textos, pend, rasc, args)
-    print(json.dumps({'saida': os.path.abspath(args.saida), 'conferencia': os.path.abspath(conf), 'series': len(log),
+    print(json.dumps({'modelo': args.modelo, 'saida': os.path.abspath(args.saida), 'conferencia': os.path.abspath(conf), 'series': len(log),
                       'series_atualizadas': sum(1 for x in log if x['faixa_depois']),
                       'faixas_estendidas': sum(1 for x in log if x['faixa_depois'] and x['faixa_antes'] != x['faixa_depois']),
                       'series_com_revisao': sum(1 for x in log if x['revisoes']), 'rotulos_movidos': sum(1 for x in log if x['rotulo_movido']),

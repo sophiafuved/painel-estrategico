@@ -1,0 +1,16 @@
+{
+  "_como_usar": "Mapa do PowerPoint 'Radar Estratégia - Modelo 1': para cada slide, o tópico da leitura e o id das caixas de texto (shape_id). Textos específicos deste modelo ficam em leitura_time.json > deck_modelo1. Se o modelo mudar, rode o script com --listar para ver os ids e atualize aqui.",
+  "leitura": "deck_modelo1",
+  "slides": {
+    "2":  {"topico": "global",    "titulo": 5,  "caixa_esq": 62, "caixa_dir": 61},
+    "3":  {"topico": "brasil",    "titulo": 5,  "caixa_esq": 77, "caixa_dir": 58, "caixa_esq_inf": 57, "caixa_dir_inf": 59},
+    "4":  {"topico": "incerteza", "titulo": 5,  "subtitulo": 6},
+    "5":  {"topico": "renda",     "titulo": 30, "subtitulo": 29},
+    "6":  {"topico": "credito",   "titulo": 3,  "caixa_esq": 7, "caixa_dir": 14, "caixa_esq_inf": 6, "caixa_dir_inf": 9},
+    "7":  {"topico": "incc",      "titulo": 5,  "subtitulo": 9},
+    "8":  {"topico": "imob",      "titulo": 6,  "subtitulo": 8},
+    "9":  {"topico": "imob",      "titulo": 6,  "subtitulo": 8},
+    "10": {"topico": "varejo",    "titulo": 3,  "subtitulo": 5}
+  },
+  "manter": {"1": "capa (troque a data com --capa)", "11": "Principais mensagens: revisar à mão", "12": "Principais mensagens (quadro 2026): revisar à mão", "13": "encerramento", "14": "encerramento"}
+}

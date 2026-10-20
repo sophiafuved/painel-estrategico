@@ -62,7 +62,7 @@ Rascunho do conteúdo:
       fluxo de cada mês/edição, em uma página.
 - [ ] **Onde estão as coisas**: planilhas no SharePoint (Grande Base, Análise de Competidores, Tendências),
       projeto no GitHub/pasta do time, link do painel, quem é dono do link, onde fica a senha (fora de arquivos).
-- [ ] **Skills**: para que serve cada uma das 6, quando usar e o que entregam.
+- [ ] **Skills**: para que serve cada uma das 7, quando usar e o que entregam.
 - [ ] **Prompts prontos** (copiar e colar), por tarefa: atualizar o painel; conferir peers (com versão
       anterior); incluir peer novo; escrever comentários do Radar; revisar e aprovar a leitura; gerar o deck do
       Radar; montar slide no padrão Offsite.
@@ -77,6 +77,16 @@ Rascunho do conteúdo:
 
 - [x] `atualizar-deck-radar`: ajustes estéticos da seção 5 (20/10).
 - [ ] Republicar o painel com a leitura em bullets (precisa da senha).
+- [x] `atualizar-deck-radar` também para o **Modelo 1** (20/10): mapa próprio, textos em `deck_modelo1`,
+      datas associadas pelo nome entre parênteses.
+- [x] Nova skill `atualizar-deck-peers` (20/10): testada nos 4 decks do estágio (851 de 898 séries
+      vinculadas atualizadas). Ver no chat/conferências os pontos abaixo.
+- [ ] Decks de peers: revisar as conferências — textos copiados de outro negócio no deck de Louças
+      (Arauco/Eucatex, Placas do Brasil), "[WIP]"/"x"/"Lorem ipsum"; séries não reconhecidas (Louças slide 16
+      participação por segmento; Madeira slide 5 bolhas; Revestimento "Portobello - Ajustado", que não existe
+      mais na planilha); Madeira com 57 séries revisadas (mesma decisão "Madeira × deck de junho").
+- [ ] Decks de peers: tabela-resumo do slide 2 e textos não são atualizados; avaliar uma leitura de peers
+      (como a `comentarios-radar`) e a atualização da tabela.
 - [ ] `comentarios-radar`: títulos mais curtos para o deck; coletar o retorno do gestor sobre o tom.
 - [ ] `incluir-peer-novo` e `padrao-apresentacao-dexco`: testar num caso real (ex.: release 2025 de um peer
       faltante) e ajustar.

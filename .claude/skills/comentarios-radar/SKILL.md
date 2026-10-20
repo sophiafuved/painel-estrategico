@@ -63,7 +63,7 @@ O Radar tem o seletor "Leitura: Do time", que lê `pipeline/radar/leitura_time.j
 4. Antes de gravar, confira os números contra a leitura automática do painel (seletor
    "Automática"): os arredondamentos devem bater.
 
-## Levar para o PowerPoint (Modelo 2)
+## Levar para o PowerPoint (Modelos 1 e 2)
 
 A skill `atualizar-deck-radar` usa o mesmo `leitura_time.json`. Para o deck:
 
@@ -79,7 +79,13 @@ A skill `atualizar-deck-radar` usa o mesmo `leitura_time.json`. Para o deck:
   `deck_modelo2` do arquivo: `{"2": {"caixa_esq": "...", "caixa_dir": "..."}, "8": {"titulo": "...",
   "subtitulo": ["bullet 1", "bullet 2"]}, ...}`. Caixas: ~15–20 palavras (são caixas cinzas
   centralizadas de 2 linhas); podem ser encadeadas com "..." (como no Crédito).
-- Os demais slides usam o `titulo` e o `texto` do tópico.
+- **Modelo 1** usa a seção `deck_modelo1`: slide 2 com `caixa_esq`/`caixa_dir` (~25–30 palavras,
+  2 linhas, podem começar com rótulo como "Protagonismo geopolítico:"); slides 3 e 6 com quatro caixas
+  (`caixa_esq`, `caixa_dir` em cima; `caixa_esq_inf`, `caixa_dir_inf` embaixo, ~15–20 palavras). No
+  Modelo 1, o Brasil (slide 3) tem PIB, hiato/inflação, Focus (SELIC e câmbio) e SELIC real × neutro;
+  o Crédito (slide 6) tem juros × endividamento, renda comprometida × inadimplência, renda disponível
+  e poupança. Os títulos desses três slides cabem em 2 linhas (o modelo usa caixa normal, não alta).
+- Os demais slides usam o `titulo` e o `texto` do tópico (iguais nos dois modelos).
 
 ## Cuidados
 

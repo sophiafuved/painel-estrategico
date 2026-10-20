@@ -31,7 +31,7 @@ ERRTXT = {'#N/A': 'N/D (não disponível)', '#DIV/0!': 'divisão por zero', '#VA
 # ---------- 1. leitura com os scripts do painel ----------
 def pipeline(projeto, planilha):
     """Roda parse_blocks/build/clean do painel numa pasta temporária e devolve peers_clean.json."""
-    pp = os.path.join(projeto, 'pipeline', 'peers')
+    pp = os.path.abspath(os.path.join(projeto, 'pipeline', 'peers'))
     if not os.path.exists(os.path.join(pp, 'clean.py')):
         sys.exit(f'Não encontrei {pp}/clean.py: aponte --projeto para a pasta do painel-estrategico.')
     w = tempfile.mkdtemp()

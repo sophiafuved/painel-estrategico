@@ -91,7 +91,7 @@
       ]
     }
   },
-  "_como_usar_deck": "Textos específicos dos slides do PowerPoint Radar Modelo 2 (skill atualizar-deck-radar). Chave = número do slide; papéis: titulo, subtitulo, caixa_esq, caixa_dir. Slides sem entrada usam o título e o texto do tópico.",
+  "_como_usar_deck": "Textos específicos dos slides do PowerPoint Radar (skill atualizar-deck-radar): deck_modelo1 e deck_modelo2. Chave = número do slide; papéis: titulo, subtitulo, caixa_esq, caixa_dir e, no Modelo 1, caixa_esq_inf e caixa_dir_inf (caixas de baixo dos slides 3 e 6). Slides sem entrada usam o título e o texto do tópico.",
   "deck_modelo2": {
     "2": {
       "caixa_esq": "Protagonismo geopolítico: risco geopolítico em **alta** e Brent em **US$ 125/barril**, mantendo **alta incerteza e volatilidade**",
@@ -104,6 +104,38 @@
     "6": {
       "caixa_esq": "A elevação do **custo do crédito** em um momento de **endividamento recorde** das famílias...",
       "caixa_dir": "...eleva a **renda comprometida (30,8%)** e a **inadimplência (8,0%)**, pesando no orçamento familiar"
+    },
+    "8": {
+      "titulo": "**Custo de financiamento** sobe e **preço dos imóveis** avança acima da inflação",
+      "subtitulo": [
+        "A taxa de financiamento imobiliário subiu 0,8 p.p. em 12 meses, para **11,3% a.a.**, acompanhando os juros longos (14,2%)",
+        "O IGMI-R sobe 14,7% em 12 meses (**8,1% real**); a Tendências projeta juros do financiamento de 11,1% em 2026 e **10,2% em 2027**"
+      ]
+    },
+    "9": {
+      "titulo": "Lançamentos devem **recuar em 2026**: **MCMV** cresce e **médio/alto** cai",
+      "subtitulo": [
+        "Os lançamentos do MCMV sobem **12,7%** em 12 meses e os de médio/alto padrão caem **5,6%** (média móvel de 12 meses, jun/26)",
+        "A Tendências projeta queda de 5,0% no total em 2026 (−4,0% no MCMV e **−11,2% no médio/alto padrão**), com retomada do médio/alto em 2027 (+3,2%)"
+      ]
+    }
+  },
+  "deck_modelo1": {
+    "2": {
+      "caixa_esq": "Protagonismo geopolítico: o risco geopolítico segue em **alta** e o Brent está em **US$ 125/barril**. Esperamos um cenário de **alta incerteza e volatilidade**.",
+      "caixa_dir": "Globalização 2.0: o comércio global cresce **abaixo da média** (2,2%) e a inflação projetada segue **acima da média** nos EUA e na Europa"
+    },
+    "3": {
+      "caixa_esq": "O Brasil deve **desacelerar para 1,8% em 2026** e 1,0% em 2027, ainda puxado pelos **serviços** e pelas **medidas de estímulo** (R$ 106,7 bi)",
+      "caixa_dir": "A economia ainda opera **acima do potencial** (hiato de +0,4%), o que dificulta a **convergência da inflação** à meta",
+      "caixa_esq_inf": "O Focus **corta a SELIC esperada** para 13,25% no fim de 2026 e 12,00% em 2027, mas **eleva o IPCA** de 2026 para 5,22%",
+      "caixa_dir_inf": "A **SELIC real (8,8%)** segue 3,8 p.p. acima do juro neutro e deve permanecer **em patamar restritivo** até 2027"
+    },
+    "6": {
+      "caixa_esq": "A elevação do **custo do crédito** (61,7% a.a.) em um momento de **endividamento recorde** das famílias...",
+      "caixa_dir": "...eleva a **renda comprometida (30,8%)** e a **inadimplência (8,0%)**, pesando no orçamento familiar...",
+      "caixa_esq_inf": "...e **reduz a renda disponível** para bens duráveis: R$ 41,7 bi/mês, contra R$ 48,6 bi um ano antes",
+      "caixa_dir_inf": "A **poupança das famílias** estável em 14,4% não cria **colchão adicional** para a demanda do setor de construção"
     },
     "8": {
       "titulo": "**Custo de financiamento** sobe e **preço dos imóveis** avança acima da inflação",
