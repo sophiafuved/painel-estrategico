@@ -102,3 +102,22 @@ Princípio: deixar o sistema adequado, documentado e atualizado para o próximo 
       Nivaldo e Ramon com Claude (plano Team). Senha guardada na planilha "Acessos".
 - [ ] Sessão de passagem com o novo estagiário usando o manual (seção 6) e um ciclo real de atualização.
 - [ ] Revisar `CLAUDE.md`, `README.md` e skills para que não dependam de conhecimento que só está na cabeça da Sophia.
+
+## 9. Próximas frentes de IA (proposta de 20/10, para discutir com o Henrique)
+
+Premissas: sem assinatura de Capital IQ e Valor Pro (só fontes públicas); atualização automática da
+Grande Base já feita no Claude do time; o time já tem um modelo de demanda por regressão múltipla.
+
+- [ ] **A. Inteligência competitiva com fontes públicas**: DFP/ITR da CVM (Portobello, Eucatex, Dexco),
+      SEC EDGAR (Masco), relatórios anuais em PDF (Roca, Geberit, Villeroy & Boch, Lixil), releases e
+      teleconferências nos sites de RI. Extrair indicadores para a planilha (skill `incluir-peer-novo`),
+      comparar o tom e o guidance trimestre a trimestre e alertar sobre capacidade, preço e capex.
+      Candidato a piloto.
+- [ ] **B. Evoluir o modelo de demanda existente** (não refazer): teste fora da amostra, monitoramento do
+      erro, modelo desafiante para comparar ou combinar, e rodada automática com a Tendências da semana
+      → projeção própria de demanda por negócio.
+- [ ] **C. Cenários e estresse** a partir do modelo de demanda (depende de B): SELIC, MCMV, renda → receita.
+- [ ] **D. Triagem de alvos de M&A** com fontes públicas (Receita/CNPJ, notícias, sites, associações).
+- [ ] **E. Simulação de reação dos concorrentes** para o Offsite (provocação, não previsão).
+- Fora por enquanto: avaliador cético de apresentações e perguntas à base/memória do time.
+
