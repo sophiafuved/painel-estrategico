@@ -7,36 +7,52 @@
   "data_revisao": "",
   "topicos": {
     "global": {
-      "titulo": "O pano de fundo global segue de **alta incerteza e volatilidade**: petróleo pressionado e **inflação acima da média histórica** nos EUA e na Europa",
-      "texto": "O Brent está em US$ 125/barril, bem acima da média pré-conflito (US$ 69). A projeção do Itaú é de inflação de 3,8% nos EUA e 3,0% na Zona do Euro em 2026, contra médias de 1,8% e 1,3% em 2010–19. O comércio global cresce abaixo da mediana histórica (+2,2% vs 3,9%), e o peso dos EUA nas importações cai.",
+      "titulo": "Pano de fundo global segue de **alta incerteza e volatilidade**: petróleo pressionado e **inflação acima da média** nos EUA e na Europa",
+      "texto": [
+        "Protagonismo geopolítico: o risco geopolítico (média de 12 meses) subiu para 173, de 146 um ano antes, e o Brent está em **US$ 125/barril**, bem acima da média pré-conflito (US$ 69)",
+        "Globalização 2.0: o comércio global cresce **2,2%**, abaixo da mediana histórica (3,9%), e a inflação projetada pelo Itaú para 2026 é de **3,8% nos EUA** e 3,0% na Zona do Euro"
+      ],
       "caixas": [
         "Comércio global: **Globalização 2.0**. A participação dos EUA nas importações cai de 12,6% para 10,8%, com países buscando **alternativas comerciais**.",
         "Risco geopolítico: o índice (média de 12 meses) sobe para 173, de 146 um ano antes."
       ]
     },
     "brasil": {
-      "titulo": "O Brasil desacelera para **1,8% em 2026 e 1,0% em 2027**: os **estímulos fiscais** sustentam o curto prazo, mas a **SELIC real em 8,8%** segue bem acima do neutro",
-      "texto": "O Focus prevê SELIC de 13,25% no fim de 2026, 0,5 p.p. abaixo de quatro semanas atrás, mas o IPCA de 2026 subiu para 5,22%. As medidas fiscais somam impacto líquido de R$ 106,7 bi em 2026 (XP). O hiato do produto ainda positivo (+0,4%) dificulta a convergência da inflação à meta.",
+      "titulo": "Brasil desacelera para **1,8% em 2026 e 1,0% em 2027**: estímulos fiscais sustentam o curto prazo, com **SELIC real em 8,8%**",
+      "texto": [
+        "O Focus prevê SELIC de **13,25%** no fim de 2026 (−0,50 p.p. em quatro semanas), mas o IPCA de 2026 subiu para **5,22%**",
+        "As medidas fiscais somam impacto líquido de **R$ 106,7 bi** em 2026 (XP); o hiato do produto ainda positivo (+0,4%) dificulta a convergência da inflação à meta"
+      ],
       "caixas": [
         "Juros: a **SELIC real (8,8%) segue 3,8 p.p. acima do juro neutro (5,0%)**. A projeção do RPM indica queda gradual até 6,7% no 2T28.",
         "Focus: o mercado **corta a SELIC esperada**, mas **eleva a inflação**: IPCA 2026 de 4,90% para 5,22% em quatro semanas."
       ]
     },
     "incerteza": {
-      "titulo": "A incerteza volta a subir e a **confiança segue pessimista**, o que deve **inibir investimentos** em 2026",
-      "texto": "O índice de incerteza econômica (IIE-Br) está em 110,8, acima do patamar de 100 e 4,3 pontos acima de um ano atrás. A confiança de empresários (89,3) e de consumidores (84,2) segue abaixo de 100 e caiu em 12 meses, refletindo juros altos e o ano eleitoral.",
+      "titulo": "Incerteza volta a subir e **confiança segue pessimista**, o que deve **inibir investimentos**",
+      "texto": [
+        "O índice de incerteza econômica (IIE-Br) está em **110,8**, acima do patamar de baixa incerteza (<100) e 4,3 pontos acima de um ano atrás",
+        "A confiança de empresários (89,3) e consumidores (84,2) segue **abaixo de 100** e caiu em 12 meses, refletindo juros altos e o ano eleitoral",
+        "Um ambiente mais incerto e de menor confiança desestimula **investimentos e consumo**"
+      ],
       "caixas": []
     },
     "renda": {
-      "titulo": "A renda das famílias segue em **patamar elevado** em 2026, com desemprego na mínima, mas o crescimento deve **perder fôlego em 2027**",
-      "texto": "A desocupação está em 5,4%, abaixo do NAIRU de 8%, e a renda média real subiu 3,7% em 12 meses. A Tendências projeta alta de 4,7% da massa salarial em 2026 e de apenas 1,2% em 2027.",
+      "titulo": "Renda das famílias segue em **patamar elevado** em 2026, mas deve **perder fôlego em 2027**",
+      "texto": [
+        "A desocupação está em **5,4%**, abaixo do NAIRU (8%), e a renda média real subiu **3,7%** em 12 meses; a massa de renda do trabalho chega a R$ 386 bi/mês (+4,7%)",
+        "Porém, a Tendências projeta que a massa salarial cresça **4,7% em 2026 e apenas 1,2% em 2027**, com a perda de dinamismo do mercado de trabalho"
+      ],
       "caixas": [
         "Massa de renda: a massa do trabalho chega a **R$ 386 bi/mês**, +4,7% em 12 meses."
       ]
     },
     "credito": {
-      "titulo": "Porém, as famílias chegam ao **pico do endividamento**: **31% da renda vai para o serviço da dívida** e a inadimplência sobe",
-      "texto": "Com juros de 61,7% a.a. para pessoa física, a renda comprometida com dívida subiu 2,2 p.p. em 12 meses, para 30,8%, e a inadimplência foi a 8,0%. A renda disponível após itens essenciais e dívida caiu para R$ 41,7 bi/mês. A Tendências projeta alívio a partir de 2027, com o comprometimento de renda passando de 29,6% para 28,8%.",
+      "titulo": "Porém, as famílias chegam ao **pico do endividamento**, com **31% da renda comprometida** com dívidas",
+      "texto": [
+        "Com juros PF de **61,7% a.a.**, a renda comprometida com dívida subiu 2,2 p.p. em 12 meses (30,8%) e a inadimplência foi a **8,0%**",
+        "A renda disponível após itens essenciais e dívida caiu para R$ 41,7 bi/mês; a Tendências projeta alívio a partir de 2027 (comprometimento de 29,6% para **28,8%**)"
+      ],
       "caixas": [
         "Juros × endividamento: juros de 61,7% a.a. (+2,9 p.p.) e endividamento de **49,9% da renda**.",
         "Renda comprometida × inadimplência: as duas **sobem juntas**, para 30,8% e 8,0%.",
@@ -45,13 +61,19 @@
       ]
     },
     "incc": {
-      "titulo": "O INCC segue em **patamar elevado** (6,6% em 12 meses), agora puxado por **materiais**",
-      "texto": "O INCC segue 2,1 p.p. acima do IPCA (4,6%). A contribuição dos materiais subiu de 3,0 para 3,4 p.p. em 12 meses, enquanto a da mão de obra caiu de 4,3 para 3,2 p.p., em linha com o petróleo e o câmbio pressionando os insumos.",
+      "titulo": "INCC segue em **patamar elevado** (6,6% em 12 meses), agora puxado por **materiais**",
+      "texto": [
+        "O INCC segue **2,1 p.p. acima do IPCA** (4,6%), pressionado pelo petróleo e pelo câmbio",
+        "A contribuição dos **materiais** subiu de 3,0 para 3,4 p.p. em 12 meses, enquanto a da **mão de obra** caiu de 4,3 para 3,2 p.p."
+      ],
       "caixas": []
     },
     "imob": {
-      "titulo": "Com o **custo de financiamento** em alta e o **preço dos imóveis** subindo acima da inflação, os lançamentos devem **recuar em 2026** depois de dois anos fortes",
-      "texto": "A taxa de financiamento imobiliário subiu para 11,3% e o IGMI-R avança 14,7% em 12 meses (8,1% real). O MCMV ainda sustenta os lançamentos (+12,7% em 12 meses), mas a Tendências projeta queda de 5,0% no total em 2026: −4,0% no MCMV e −11,2% no médio/alto padrão, que só volta a crescer em 2027 (+3,2%).",
+      "titulo": "**Custo de financiamento** e **preço dos imóveis** em alta: lançamentos devem **recuar em 2026**",
+      "texto": [
+        "A taxa de financiamento imobiliário subiu para **11,3%** e o IGMI-R avança 14,7% em 12 meses (**8,1% real**)",
+        "O MCMV ainda sustenta os lançamentos (+12,7% em 12 meses), mas a Tendências projeta queda de **5,0%** no total em 2026 (−4,0% no MCMV e −11,2% no médio/alto padrão)"
+      ],
       "caixas": [
         "Financiamento × juros longos: taxa de **11,3% a.a.** com juros longos em **14,2%**.",
         "Lançamentos: o **MCMV segue em alta** (13,7 mil unidades/mês, média de 12 meses) e o **médio/alto padrão recua** (−5,6%).",
@@ -59,8 +81,11 @@
       ]
     },
     "varejo": {
-      "titulo": "O varejo de material de construção **volta a crescer**, mas em **ritmo moderado**: cerca de 1% ao ano em 2026–27",
-      "texto": "As vendas de material de construção crescem 2,0% a/a (média de 3 meses), revertendo a queda de 4,2% de um ano atrás, mas o índice ainda está 0,9% abaixo de 12 meses atrás. A Tendências projeta +0,95% em 2026 e +1,1% em 2027, com a produção de insumos da construção caindo 1,6% em 2026.",
+      "titulo": "Varejo de material de construção **volta a crescer**, mas em **ritmo moderado** em 2026/27",
+      "texto": [
+        "As vendas de material de construção crescem **2,0% a/a** (média de 3 meses), revertendo a queda de 4,2% de um ano atrás",
+        "O índice ainda está 0,9% abaixo de 12 meses atrás; a Tendências projeta **+0,95% em 2026 e +1,1% em 2027**, com a produção de insumos da construção caindo 1,6% em 2026"
+      ],
       "caixas": [
         "Vendas: **recuperação** em relação a 2025, ainda **abaixo do varejo ampliado** (+1,7% em 12 meses)."
       ]
@@ -69,24 +94,30 @@
   "_como_usar_deck": "Textos específicos dos slides do PowerPoint Radar Modelo 2 (skill atualizar-deck-radar). Chave = número do slide; papéis: titulo, subtitulo, caixa_esq, caixa_dir. Slides sem entrada usam o título e o texto do tópico.",
   "deck_modelo2": {
     "2": {
-      "caixa_esq": "Protagonismo geopolítico: o risco geopolítico (média de 12 meses) sobe para **173**, de 146 um ano antes, com o Brent em **US$ 125/barril**: cenário de **alta incerteza e volatilidade**.",
-      "caixa_dir": "Globalização 2.0: o comércio global cresce **2,2%**, abaixo da mediana de 3,9%, e a participação dos EUA nas importações cai para **10,8%**; inflação projetada **acima da média** nos EUA (3,8%) e na Europa (3,0%)."
+      "caixa_esq": "Protagonismo geopolítico: risco geopolítico em **alta** e Brent em **US$ 125/barril**, mantendo **alta incerteza e volatilidade**",
+      "caixa_dir": "Globalização 2.0: comércio global cresce **abaixo da média** e inflação projetada segue **acima da média** nos EUA e na Europa"
     },
     "3": {
-      "caixa_esq": "O Brasil deve **desacelerar para 1,8% em 2026 e 1,0% em 2027**, com os **serviços** ainda puxando o crescimento",
-      "caixa_dir": "As **medidas de estímulo fiscal** somam impacto líquido de **R$ 106,7 bi** em 2026, compensando parte do efeito da **SELIC real em 8,8%**"
+      "caixa_esq": "O Brasil deve **desacelerar para 1,8% em 2026** e 1,0% em 2027, ainda puxado pelos **serviços**",
+      "caixa_dir": "As **medidas de estímulo fiscal** (R$ 106,7 bi) compensam parte do efeito da **SELIC real em 8,8%**"
     },
     "6": {
-      "caixa_esq": "A elevação do **custo do crédito** (juros PF em 61,7% a.a.) com o **endividamento em 49,9% da renda**...",
-      "caixa_dir": "...já eleva a **renda comprometida (30,8%)** e a **inadimplência (8,0%)**, pesando no orçamento das famílias"
+      "caixa_esq": "A elevação do **custo do crédito** em um momento de **endividamento recorde** das famílias...",
+      "caixa_dir": "...eleva a **renda comprometida (30,8%)** e a **inadimplência (8,0%)**, pesando no orçamento familiar"
     },
     "8": {
-      "titulo": "O **custo de financiamento** sobe e o **preço dos imóveis** avança 14,7% em 12 meses, acima da inflação",
-      "subtitulo": "A taxa de financiamento imobiliário subiu 0,8 p.p. em 12 meses, para **11,3% a.a.**, com os juros longos em 14,2%. O IGMI-R sobe **8,1% em termos reais**. A Tendências projeta juros do financiamento de 11,1% em 2026 e **10,2% em 2027**."
+      "titulo": "**Custo de financiamento** sobe e **preço dos imóveis** avança acima da inflação",
+      "subtitulo": [
+        "A taxa de financiamento imobiliário subiu 0,8 p.p. em 12 meses, para **11,3% a.a.**, acompanhando os juros longos (14,2%)",
+        "O IGMI-R sobe 14,7% em 12 meses (**8,1% real**); a Tendências projeta juros do financiamento de 11,1% em 2026 e **10,2% em 2027**"
+      ]
     },
     "9": {
-      "titulo": "Os lançamentos devem **recuar em 2026** depois de dois anos fortes: o **MCMV** ainda cresce, mas o **médio/alto padrão** já cai",
-      "subtitulo": "Os lançamentos do MCMV sobem **12,7%** em 12 meses e os de médio/alto padrão caem **5,6%** (média móvel de 12 meses, jun/26). A Tendências projeta queda de 5,0% no total em 2026 (−4,0% no MCMV e **−11,2% no médio/alto padrão**), com retomada do médio/alto em 2027 (+3,2%)."
+      "titulo": "Lançamentos devem **recuar em 2026**: **MCMV** ainda cresce, mas **médio/alto padrão** já cai",
+      "subtitulo": [
+        "Os lançamentos do MCMV sobem **12,7%** em 12 meses e os de médio/alto padrão caem **5,6%** (média móvel de 12 meses, jun/26)",
+        "A Tendências projeta queda de 5,0% no total em 2026 (−4,0% no MCMV e **−11,2% no médio/alto padrão**), com retomada do médio/alto em 2027 (+3,2%)"
+      ]
     }
   }
 }

@@ -278,16 +278,26 @@ def atualizar_datas(prs, datas, pend):
 
 
 # ---------- 4–5. textos ----------
-def set_rich(shape, texto, upper=False, laranja='FFA74F', minimo=9):
-    """Troca o texto mantendo a formatação do slide; se o texto novo for mais longo que o antigo,
-    reduz a fonte na proporção (até `minimo` pt) para caber no mesmo espaço. Devolve o tamanho final."""
+def set_rich(shape, texto, upper=False, laranja='FFA74F', minimo=9, min_linhas=1):
+    """Troca o texto mantendo a formatação do slide.
+
+    `texto` pode ser uma frase ou uma lista (um item por bullet/parágrafo). Cada parágrafo novo copia o
+    formato do parágrafo original na mesma posição (marcador, recuo, alinhamento); se houver mais itens
+    que parágrafos, repete o formato do último. Destaques entre ** usam o formato dos trechos em negrito
+    do original (ou negrito + laranja). Se o texto novo for mais longo que o antigo, reduz a fonte na
+    proporção (até `minimo` pt). Devolve o tamanho final da fonte, se reduziu.
+    """
+    itens = [x for x in (texto if isinstance(texto, list) else [texto]) if x]
     tf = shape.text_frame
-    len_antigo = max(1, len(tf.text.strip()))
-    len_novo = max(1, len(texto.replace('**', '').strip()))
     paras = tf.paragraphs
+    len_antigo = max(1, len(tf.text.strip()))
+    len_novo = max(1, sum(len(x.replace('**', '').strip()) for x in itens))
     runs = [r for p in paras for r in p.runs]
-    base = next((r for r in runs if not r.font.bold), runs[0] if runs else None)
-    dest = next((r for r in runs if r.font.bold), None)
+    # formato "normal" e "destaque" = os trechos mais longos de cada tipo no original (evita copiar o
+    # formato de um rótulo curto, como "Protagonismo geopolítico:" sublinhado)
+    normais = [r for r in runs if not r.font.bold]; negritos = [r for r in runs if r.font.bold]
+    base = max(normais, key=lambda r: len(r.text)) if normais else (runs[0] if runs else None)
+    dest = max(negritos, key=lambda r: len(r.text)) if negritos else None
     nr = copy.deepcopy(base._r.find(qa('rPr'))) if base is not None and base._r.find(qa('rPr')) is not None else etree.Element(qa('rPr'))
     if dest is not None and dest._r.find(qa('rPr')) is not None:
         hr = copy.deepcopy(dest._r.find(qa('rPr')))
@@ -295,32 +305,45 @@ def set_rich(shape, texto, upper=False, laranja='FFA74F', minimo=9):
         hr = copy.deepcopy(nr); hr.set('b', '1')
         for f in hr.findall(qa('solidFill')):
             hr.remove(f)
-        sf = etree.SubElement(hr, qa('solidFill')); etree.SubElement(sf, qa('srgbClr'), val=laranja)
+        sf = etree.Element(qa('solidFill')); etree.SubElement(sf, qa('srgbClr'), val=laranja)
         hr.insert(0, sf)
     final = None
-    if len_novo > len_antigo * 1.05:
-        fator = (len_antigo / len_novo) ** 0.5
-        for rp in (nr, hr):
-            sz = rp.get('sz') or (str(int(base.font.size.pt * 100)) if base is not None and base.font.size else None)
-            if sz:
-                novo = max(minimo * 100, int(int(sz) * fator / 50) * 50)
-                rp.set('sz', str(novo)); final = novo / 100
-    p0 = paras[0]._p
-    for p in paras[1:]:
-        p._p.getparent().remove(p._p)
-    for el in list(p0):
-        if el.tag in (qa('r'), qa('br'), qa('fld')):
-            p0.remove(el)
-    end = p0.find(qa('endParaRPr'))
-    for i, seg in enumerate(texto.split('**')):
-        if not seg:
-            continue
-        r = etree.Element(qa('r')); r.append(copy.deepcopy(hr if i % 2 else nr))
-        etree.SubElement(r, qa('t')).text = seg.upper() if upper else seg
-        if end is not None:
-            end.addprevious(r)
-        else:
-            p0.append(r)
+    sz0 = nr.get('sz') or (str(int(base.font.size.pt * 100)) if base is not None and base.font.size else None)
+    if sz0:
+        # quantos caracteres cabem na caixa em cada tamanho de fonte (estimativa: largura média do caractere
+        # ~0,55 em minúsculas e ~0,65 em caixa alta; altura de linha 1,2x a fonte; ao menos o texto antigo cabe)
+        larg = shape.width / 12700 - 14; alt = shape.height / 12700 - 7
+        def cabe(pt):
+            linhas = max(min_linhas, int(alt // (pt * 1.2)))
+            por_linha = larg / (pt * (0.65 if upper else 0.55))
+            return max(len_antigo, por_linha * linhas * 0.92) - 3 * (len(itens) - 1)
+        pt = int(sz0) / 100
+        while pt > minimo and len_novo > cabe(pt):
+            pt -= 0.5
+        if pt < int(sz0) / 100:
+            for rp in (nr, hr):
+                rp.set('sz', str(int(pt * 100)))
+            final = pt
+    modelos = [copy.deepcopy(p._p) for p in paras]
+    body = tf._txBody
+    for p in paras:
+        body.remove(p._p)
+    for k, item in enumerate(itens):
+        p0 = copy.deepcopy(modelos[min(k, len(modelos) - 1)])
+        for el in list(p0):
+            if el.tag in (qa('r'), qa('br'), qa('fld')):
+                p0.remove(el)
+        end = p0.find(qa('endParaRPr'))
+        for i, seg in enumerate(item.split('**')):
+            if not seg:
+                continue
+            r = etree.Element(qa('r')); r.append(copy.deepcopy(hr if i % 2 else nr))
+            etree.SubElement(r, qa('t')).text = seg.upper() if upper else seg
+            if end is not None:
+                end.addprevious(r)
+            else:
+                p0.append(r)
+        body.append(p0)
     return final
 
 
@@ -355,8 +378,31 @@ def atualizar_textos(prs, leitura, mapa, pend):
                 pend.append(f'Slide {sn}: sem texto para "{papel}" na leitura; mantido o da edição anterior.'); continue
             antigo = shp.text_frame.text
             upper = papel == 'titulo' and antigo.strip() == antigo.strip().upper()
-            sz = set_rich(shp, texto, upper=upper, laranja='FFA74F' if papel.startswith('caixa') else 'ED7D31', minimo=14 if papel == 'titulo' else 9)
-            feitos.append((sn, papel, antigo.replace('\n', ' / ')[:90], texto.replace('**', '')[:90]))
+            if papel == 'titulo':
+                # título justificado espalha as palavras quando quebra em 2 linhas: alinha à esquerda
+                for para in shp.text_frame.paragraphs:
+                    pPr = para._p.find(qa('pPr'))
+                    if pPr is not None and pPr.get('algn') == 'just':
+                        pPr.set('algn', 'l')
+                # termina o título antes de elementos à direita na mesma faixa (ex.: marcador verde do modelo)
+                dir_ = [o for o in slide.shapes if o.shape_id != shp.shape_id and o.width < Inches(2) and o.height < Inches(1.5)
+                        and o.left > shp.left + shp.width * 0.6
+                        and o.left < shp.left + shp.width and o.top < shp.top + shp.height and o.top + o.height > shp.top]
+                if dir_:
+                    shp.width = min(o.left for o in dir_) - shp.left - 45720
+            if papel == 'subtitulo' and getattr(slide, '_desce_sub', 0):
+                d = slide._desce_sub  # título ocupou 2 linhas: desce os bullets e mantém a base da caixa
+                shp.top = shp.top + d; shp.height = max(Inches(0.5), shp.height - d)
+            sz = set_rich(shp, texto, upper=upper, laranja='FFA74F' if papel.startswith('caixa') else 'ED7D31', minimo=14 if papel == 'titulo' else 9, min_linhas=1 if papel == 'subtitulo' else 2)
+            feitos.append((sn, papel, antigo.replace('\n', ' / ')[:90], (' / '.join(texto) if isinstance(texto, list) else texto).replace('**', '')[:90]))
+            if papel == 'titulo' and 'subtitulo' in cfg:
+                sub = shapes.get(cfg['subtitulo'])
+                pt = sz or (shp.text_frame.paragraphs[0].runs[0].font.size.pt if shp.text_frame.paragraphs[0].runs and shp.text_frame.paragraphs[0].runs[0].font.size else 20)
+                por_linha = (shp.width / 12700 - 14) / (pt * (0.65 if upper else 0.55)) * 0.92
+                n_lin = -(-len(texto.replace('**', '')) // int(por_linha))
+                folga = (sub.top - (shp.top + shp.height)) if sub is not None else 0
+                if sub is not None and n_lin >= 2 and folga < Inches(0.25):
+                    slide._desce_sub = int(Inches(pt * 1.2 / 72 * (n_lin - 1)) - max(0, folga) + Inches(0.05))
             if sz:
                 pend.append(f'Slide {sn}: {papel} mais longo que o da edição anterior; fonte reduzida para {sz:g} pt. Se ficar pequeno, encurte o texto na leitura.')
             mudou = True

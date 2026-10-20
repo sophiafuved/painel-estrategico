@@ -456,7 +456,7 @@ function leituraHTML(sec){
     if(!t)return `<div class="lei"><div class="lab"><span>Leitura do time</span></div><p>Sem leitura do time para este tópico nesta edição.</p></div>`;
     const rev=LT.status==='revisado';
     return `<div class="lei"><div class="lab"><span>Leitura do time · edição ${esc(LT.edicao||'')}</span>${rev?`<span>Revisada por ${esc(LT.revisado_por||'–')}${LT.data_revisao?' em '+esc(LT.data_revisao):''}</span>`:`<span class="warn">Rascunho gerado pelo Claude, aguardando revisão do time</span>`}${LT.dados_ate?`<span>${esc(LT.dados_ate)}</span>`:''}</div>
-      <h3>${mark(t.titulo)}</h3><p>${mark(t.texto)}</p>${t.caixas&&t.caixas.length?`<ul>${t.caixas.map(c=>`<li>${mark(c)}</li>`).join('')}</ul>`:''}</div>`}
+      <h3>${mark(t.titulo)}</h3>${[].concat(t.texto||[]).map(x=>`<p>${mark(x)}</p>`).join('')}${t.caixas&&t.caixas.length?`<ul>${t.caixas.map(c=>`<li>${mark(c)}</li>`).join('')}</ul>`:''}</div>`}
   return ''}
 {const c=document.getElementById('leiseg');if(!LT)c.querySelector('[data-v="time"]').remove();if(LEI==='time'&&!LT)LEI='off';
   const sync=()=>c.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===LEI));sync();
