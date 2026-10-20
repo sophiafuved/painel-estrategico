@@ -7,6 +7,8 @@ gráficos (com o vínculo à planilha), tabelas, imagens, caixas de texto e hype
   - divisor de seção ("Capa de início" no meio do deck) → agenda do template (seção atual em destaque)
   - demais slides               → slide de conteúdo do template: etiqueta cinza no topo + título 20 pt;
     o título antigo vira o título novo e o restante é copiado na mesma posição
+  - fontes: texto em Roboto Light e negritos em Roboto Black, como no template (inclusive nos gráficos);
+    use --manter-fontes para não mexer
 Gera também uma conferência em Markdown (títulos, slides com conteúdo invadindo a faixa do título).
 
 Uso:
@@ -222,6 +224,46 @@ def textos_da_capa(slide):
     return titulo, sub, data
 
 
+# ---------- fontes do template: Roboto Light no texto, Roboto Black nos negritos ----------
+FONTE_TEXTO, FONTE_NEGRITO = 'Roboto Light', 'Roboto Black'
+NAO_MEXER = re.compile(r'math|symbol|wingdings|webdings', re.I)  # fórmulas e marcadores
+
+
+def normalizar_fontes(root, cont):
+    """Negrito vira Roboto Black (sem negrito sintético por cima); fontes explícitas de texto viram Roboto
+    Light. As referências ao tema (+mn-lt = Roboto Light, +mj-lt = Roboto Black) ficam como estão."""
+    for rpr in root.iter(qa('rPr'), qa('defRPr'), qa('endParaRPr')):
+        lat = rpr.find(qa('latin'))
+        face = lat.get('typeface') if lat is not None else None
+        if face and NAO_MEXER.search(face):
+            continue
+        if rpr.get('b') == '1':
+            rpr.set('b', '0'); cont['negrito'] += 1
+            if face != '+mj-lt':
+                definir_fonte(rpr, FONTE_NEGRITO)
+        elif face and not face.startswith('+') and face.strip() != FONTE_TEXTO and face.strip() != FONTE_NEGRITO:
+            definir_fonte(rpr, FONTE_TEXTO); cont['texto'] += 1
+
+
+def definir_fonte(rpr, face):
+    # ordem do esquema: ln, preenchimentos, efeitos, highlight, uLnTx/uLn, uFillTx/uFill, latin, ea, cs, sym...
+    for tag in ('latin', 'ea', 'cs'):
+        el = rpr.find(qa(tag))
+        if el is None:
+            el = etree.SubElement(rpr, qa(tag))
+            depois = [rpr.find(qa(t)) for t in ('ea', 'cs', 'sym', 'hlinkClick', 'hlinkMouseOver', 'rtl', 'extLst')]
+            depois = [d for d in depois if d is not None and d is not el]
+            if tag == 'latin' and depois:
+                depois[0].addprevious(el)
+            elif tag == 'ea' and rpr.find(qa('latin')) is not None:
+                rpr.find(qa('latin')).addnext(el)
+            elif tag == 'cs' and rpr.find(qa('ea')) is not None:
+                rpr.find(qa('ea')).addnext(el)
+        for att in list(el.attrib):
+            del el.attrib[att]
+        el.set('typeface', face)
+
+
 # ---------- montagem ----------
 def clonar_modelo(dst, modelo, cop, pular=()):
     s = dst.slides.add_slide(modelo.slide_layout)
@@ -239,6 +281,7 @@ def main():
     ap.add_argument('--deck', required=True); ap.add_argument('--saida', required=True)
     ap.add_argument('--template', default=PADRAO); ap.add_argument('--etiqueta', help='texto da etiqueta cinza (padrão: título da capa + subtítulo)')
     ap.add_argument('--data', help='texto da data na capa (padrão: o da capa antiga)'); ap.add_argument('--conferencia')
+    ap.add_argument('--manter-fontes', action='store_true', help='não troca as fontes para Roboto Light/Black')
     args = ap.parse_args()
 
     src = Presentation(args.deck)
@@ -335,6 +378,14 @@ def main():
         mapa[id(old.part)] = s
 
     cop.resolver_links(mapa)
+    cont = {'negrito': 0, 'texto': 0}
+    if not args.manter_fontes:
+        vistos = set()
+        for s in mapa.values():
+            normalizar_fontes(s._element, cont)
+            for rel in s.part.rels.values():
+                if not rel.is_external and rel.reltype == RT.CHART and id(rel.target_part) not in vistos:
+                    vistos.add(id(rel.target_part)); normalizar_fontes(rel.target_part._element, cont)
     # tira os slides de exemplo do template
     ids = dst.slides._sldIdLst
     for s in mod:
@@ -345,7 +396,9 @@ def main():
     path = args.conferencia or os.path.splitext(args.saida)[0] + '_template.md'
     open(path, 'w', encoding='utf-8').write(
         f'# Deck no template: {os.path.basename(args.saida)}\n\n- Original: `{os.path.basename(args.deck)}`\n'
-        f'- Template: `{os.path.basename(args.template)}`\n- Etiqueta: "{etiqueta_base}"\n\n## Slides\n' + '\n'.join(conf) + '\n')
+        f'- Template: `{os.path.basename(args.template)}`\n- Etiqueta: "{etiqueta_base}"\n'
+        f'- Fontes: {cont["negrito"]} trechos em negrito passaram para {FONTE_NEGRITO}; {cont["texto"]} trechos com outra fonte '
+        f'(Roboto, Calibri...) passaram para {FONTE_TEXTO}\n\n## Slides\n' + '\n'.join(conf) + '\n')
     print(f'{args.saida}\n{path}\n{len(src.slides)} slides')
 
 

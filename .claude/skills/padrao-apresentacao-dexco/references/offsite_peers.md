@@ -19,7 +19,8 @@ master e a posição muda, o que já trouxe o fundo preto da capa para slides de
 
 ## Identidade
 
-- **Fonte**: Roboto (títulos e corpo). Texto de eixo 8 pt `#595959`; legenda 7,5 pt.
+- **Fonte**: Roboto Light no texto e Roboto Black nos negritos e títulos (fontes do tema dos dois
+  templates; não use "Roboto" regular nem negrito sintético). Texto de eixo 8 pt `#595959`; legenda 7,5 pt.
 - **Barra lateral preta** à esquerda: o conteúdo começa em x ≈ 1,05 pol. para não ficar escondido.
 - **Navegação** (quando o deck é interativo): linha de botões no topo (y ≈ 0,64 pol.), botão ativo
   preto com texto branco, demais cinza claro com texto `#404040`; hyperlinks entre slides.

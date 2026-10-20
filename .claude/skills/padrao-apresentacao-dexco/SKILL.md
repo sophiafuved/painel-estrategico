@@ -36,6 +36,10 @@ python <pasta desta skill>/scripts/aplicar_template.py --deck "<deck>.pptx" --sa
 - Capa → capa do template (título, negócio e data tirados da capa antiga); slide vazio → encerramento;
   divisor de seção → agenda; demais → slide de conteúdo, com o título antigo (negrito preservado,
   realce amarelo retirado) e o restante copiado na mesma posição.
+- Fontes como no template: texto em **Roboto Light** e negritos em **Roboto Black** (sem negrito
+  sintético por cima), inclusive nos gráficos; títulos e etiquetas usam as fontes do tema
+  (+mn-lt = Roboto Light, +mj-lt = Roboto Black). Fórmulas e marcadores não mudam. `--manter-fontes`
+  desliga a troca.
 - Gráficos continuam vinculados à planilha (rode antes a skill `atualizar-deck-peers` para os
   números); imagens, tabelas, notas e links entre slides vêm junto.
 - A conferência (`<saida>_template.md`) lista o que foi para onde e os slides com formas na faixa do
