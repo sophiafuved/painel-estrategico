@@ -114,7 +114,9 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
     só troque para `"revisado"` (com `revisado_por` e `data_revisao`) quando alguém do time aprovar.
 - Radar: cada tópico abre com um resumo dos seus indicadores (último dado observado, sem
   projeções, e variação em 12 meses / 4 trimestres / 4 semanas no Focus). Os gráficos que na
-  apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir.").
+  apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir."). Com `alinhar:1` no modelo
+  (hoje no Hiato do Produto x IPCA), os dois eixos ganham o mesmo número de intervalos e marcas
+  redondas, para as linhas de grade coincidirem (função `alinharEixos`).
 - Peers: faixa dos peers (1º–3º quartil e mediana dos peers do filtro, sem a Dexco, com 3+ valores
   no ano) nos gráficos de índices; não aparece nos de valores absolutos (R$). Matriz de
   posicionamento no início (eixos escolhidos pelo usuário, tamanho da bolha escolhido pelo usuário, receita por padrão; linhas na mediana dos

@@ -188,7 +188,7 @@ const SECS=[
   {k:'pib',t:'PIB por componente',u:'Contribuição para o crescimento, p.p. · 2026-27 projeção',fmt:'pct',time:false,stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'}),S(3,{c:'ink',type:'point',label:'PIB total'})]},
   {k:'fiscal',t:'Impacto das medidas de estímulo fiscal em 2026',u:'R$ bilhões',special:'fiscal'},
   {k:'neutra',t:'Juros neutros vs SELIC real',u:'% a.a. · RPM 3T26 (projeção até 2028)',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
-  {k:'hiato',t:'Hiato do Produto x IPCA',u:'Hiato, % do PIB potencial (esq.); IPCA, % a/a (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1',ax:2}),{ref:0.03,ax:2,label:'Centro da meta = 3,0%'}]},
+  {k:'hiato',t:'Hiato do Produto x IPCA',u:'Hiato, % do PIB potencial (esq.); IPCA, % a/a (dir.)',fmt:'pct',fmt2:'pct',alinhar:1,s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1',ax:2}),{ref:0.03,ax:2,label:'Centro da meta = 3,0%'}]},
   {k:'focus_selic_ipca',t:'Projeções Focus: SELIC e IPCA',u:'Mediana das expectativas, % · fim de período',fmt:'pp',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1}),S(2,{c:'s2'}),S(3,{c:'s2',dash:1})]},
   {k:'focus_cambio',t:'Projeções Focus: câmbio',u:'BRL/USD, fim de período',fmt:'fx',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1})]},
  ]},
@@ -270,6 +270,21 @@ function tickCb(labels){
 const crosshair={id:'xh',afterDatasetsDraw(c){const a=c.tooltip&&c.tooltip.getActiveElements();if(!a||!a.length)return;const x=a[0].element.x,{top,bottom}=c.chartArea,ctx=c.ctx;ctx.save();ctx.strokeStyle=css('--ink-3');ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore()}};
 
 const axisTick=fmt=>v=>fmt==='ppd'?nf(1).format(v*100):fmt==='ppx'?nf(1).format(v):fmt==='pct'?nf(Math.abs(v)<0.1&&v!==0?1:0).format(v*100)+'%':fmt==='pp'?nf(0).format(v)+'%':fmt==='fx'?nf(2).format(v):nf(0).format(v);
+// Escalas alinhadas para gráficos de dois eixos: escolhe o número de intervalos (3 a 6) e passos
+// redondos (1; 2; 2,5; 4; 5 × 10^k) que cobrem os dados dos dois eixos com o menor espaço sobrando.
+// Eixo com colunas sempre inclui o zero.
+function alinharEixos(sets){
+  const faixa=id=>{let lo=Infinity,hi=-Infinity,bar=false;
+    sets.filter(d=>d.yAxisID===id).forEach(d=>{if(d.type==='bar')bar=true;d.data.forEach(v=>{if(v!=null&&isFinite(v)){lo=Math.min(lo,v);hi=Math.max(hi,v)}})});
+    if(bar){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+    return lo<=hi?[lo,hi]:[0,1]};
+  const passos=[];for(let k=-4;k<=6;k++)[1,2,2.5,4,5].forEach(m=>passos.push(m*Math.pow(10,k)));
+  const caber=([lo,hi],n)=>{for(const p of passos){const a=Math.floor(lo/p+1e-9)*p;if(a+n*p>=hi-1e-9)return{min:+a.toFixed(10),max:+(a+n*p).toFixed(10),step:p}}};
+  const r1=faixa('y'),r2=faixa('y2');let best=null;
+  for(let n=3;n<=6;n++){const a=caber(r1,n),b=caber(r2,n);if(!a||!b)continue;
+    const custo=(a.max-a.min)/((r1[1]-r1[0])||1)+(b.max-b.min)/((r2[1]-r2[0])||1);
+    if(!best||custo<best.c-1e-9)best={c:custo,y:a,y2:b}}
+  return best}
 function buildChart(canvas,ds,sers,fmt,opt){
   ds=filterDS(ds); const labels=ds.labels;
   const sets=[];
@@ -285,6 +300,8 @@ function buildChart(canvas,ds,sers,fmt,opt){
   });
   const f=F[fmt]; const grid=css('--grid'),ink3=css('--ink-3');
   const many=labels.length>40;
+  // alinhar:1 → os dois eixos com o mesmo número de intervalos e marcas redondas (grades coincidem, como no deck)
+  const AL=opt.alinhar&&opt.fmt2?alinharEixos(sets):null;
   return new Chart(canvas,{data:{labels,datasets:sets},plugins:[crosshair],options:{
     responsive:true,maintainAspectRatio:false,animation:false,
     interaction:{mode:'index',intersect:false},
@@ -294,8 +311,8 @@ function buildChart(canvas,ds,sers,fmt,opt){
       callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+(it.dataset._f||f)(it.raw)}}},
     scales:{
       x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>fmtLabel(labels[i])}},
-      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:opt.half?4:6,callback:axisTick(fmt)}},
-      ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:6,callback:axisTick(opt.fmt2)}}}:{})
+      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},...(AL?{min:AL.y.min,max:AL.y.max}:{}),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:AL?12:(opt.half?4:6),...(AL?{stepSize:AL.y.step}:{}),callback:axisTick(fmt)}},
+      ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},...(AL?{min:AL.y2.min,max:AL.y2.max}:{}),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:AL?12:6,...(AL?{stepSize:AL.y2.step}:{}),callback:axisTick(opt.fmt2)}}}:{})
     }}});
 }
 function fiscalChart(canvas){
