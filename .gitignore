@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 # arquivos temporários do pipeline
 *.json.tmp
+Manual_Claude_PE.docx

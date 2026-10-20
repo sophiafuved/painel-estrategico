@@ -13,6 +13,10 @@ Competidores*), e opcionalmente o PowerPoint de peers no template do Offsite. Co
   CLAUDE.md, skills, `PENDENCIAS.md`, manual) e funcionar em contas/pastas do time, sem depender de uma
   pessoa.
 - Pendências e prioridades ficam em `PENDENCIAS.md`; leia no início de cada sessão e atualize ao final.
+- O manual do time é o `MANUAL.md` (pessoas, pastas, rotina, prompts prontos). Ao mudar o jeito de
+  trabalhar, atualize-o e gere o Word com `python docs/gerar_manual.py`.
+- Pessoas: painel e senha com o Nivaldo; a leitura do Radar só vira "revisado" com aprovação do
+  Henrique Fantin (gerente). A senha fica na planilha "Acessos" do time (nunca a copie para arquivos).
 
 ## Onde estão as planilhas
 
@@ -24,7 +28,7 @@ podem variar; identifique cada uma pelo conteúdo:
   `Gráficos Madeira 1`, `Gráficos - Revestimento`.
 
 - **Projeções da consultoria (opcional, só Radar)**: planilha da Tendências (ex.: `102026_Dexco.xlsx`,
-  edição MMAAAA no nome), com a primeira linha "Índices" + anos e um indicador por linha. Se houver
+  edição MMAAAA no nome; chega um Excel novo toda quinta-feira), com a primeira linha "Índices" + anos e um indicador por linha. Se houver
   mais de uma edição, use a mais recente (pergunte em caso de dúvida).
 
 Se houver mais de uma versão de alguma planilha, pergunte qual usar. Nunca edite as planilhas.

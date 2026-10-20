@@ -52,26 +52,13 @@ Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito
 - [x] Títulos longos: encurtar na leitura (15–20 palavras) em vez de reduzir a fonte.
 - [x] Depois do ajuste: gerar de novo, comparar slide a slide com o original e reempacotar a skill.
 
-## 6. A FAZER ESTA SEMANA: manual de uso do Claude no time
+## 6. Manual de uso do Claude no time (FEITO em 20/10, versão 1)
 
-Objetivo: qualquer pessoa do time (e o próximo estagiário) consegue operar o sistema sem depender da Sophia.
-Formato sugerido: um documento curto e prático (`MANUAL.md` no projeto e uma versão para compartilhar com o time).
-
-Rascunho do conteúdo:
-- [ ] **Visão geral**: o que é o sistema (painel com senha, deck do Radar, conferência de peers, skills) e o
-      fluxo de cada mês/edição, em uma página.
-- [ ] **Onde estão as coisas**: planilhas no SharePoint (Grande Base, Análise de Competidores, Tendências),
-      projeto no GitHub/pasta do time, link do painel, quem é dono do link, onde fica a senha (fora de arquivos).
-- [ ] **Skills**: para que serve cada uma das 7, quando usar e o que entregam.
-- [ ] **Prompts prontos** (copiar e colar), por tarefa: atualizar o painel; conferir peers (com versão
-      anterior); incluir peer novo; escrever comentários do Radar; revisar e aprovar a leitura; gerar o deck do
-      Radar; montar slide no padrão Offsite.
-- [ ] **Calendário/rotina**: quando cada planilha atualiza (indicadores ao sair dado novo; peers na
-      demonstração anual; Tendências a cada edição) e o que fazer em cada caso.
-- [ ] **Regras e decisões do time**: comentários só com revisão; painel limpo por padrão; dados sem invenção;
-      o que fazer quando o script falha ("Falha em ...").
-- [ ] **Instalação**: Claude da empresa, pasta do projeto, Python, pacotes `.skill`.
-- [ ] **Como pedir melhorias**: onde anotar (PENDENCIAS.md), como testar uma mudança antes de publicar.
+- [x] `MANUAL.md` no projeto (fonte única) e Word gerado com `python docs/gerar_manual.py`
+      (`Manual_Claude_PE.docx`, para a pasta `Planejamento Estratégico > Claude` no SharePoint).
+- [ ] Preencher os **[a confirmar]** do manual: pastas definitivas das planilhas e decks, administrador do
+      Claude da Dexco, frequência de atualização dos peers, GitHub do time de PE.
+- [ ] Revisão do manual pelo Nivaldo (é quem vai operar) e subir o Word no SharePoint.
 
 ## 7. Aperfeiçoar as skills (contínuo)
 
@@ -102,6 +89,7 @@ Rascunho do conteúdo:
 
 Princípio: deixar o sistema adequado, documentado e atualizado para o próximo estagiário e para quem fica.
 - [ ] Mover o projeto, o link do painel e as skills para contas/pastas do time (não pessoais).
-- [ ] Definir quem fica responsável pelo painel, pela senha e pela revisão dos comentários.
+- [x] Responsáveis definidos (20/10): painel e senha com o Nivaldo; leitura aprovada pelo Henrique Fantin;
+      Nivaldo e Ramon com Claude (plano Team). Senha guardada na planilha "Acessos".
 - [ ] Sessão de passagem com o novo estagiário usando o manual (seção 6) e um ciclo real de atualização.
 - [ ] Revisar `CLAUDE.md`, `README.md` e skills para que não dependam de conhecimento que só está na cabeça da Sophia.
