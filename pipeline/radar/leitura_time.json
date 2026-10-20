@@ -29,7 +29,7 @@
       ]
     },
     "incerteza": {
-      "titulo": "Incerteza volta a subir e **confiança segue pessimista**, o que deve **inibir investimentos**",
+      "titulo": "Incerteza sobe e **confiança pessimista** deve **inibir investimentos**",
       "texto": [
         "O índice de incerteza econômica (IIE-Br) está em **110,8**, acima do patamar de baixa incerteza (<100) e 4,3 pontos acima de um ano atrás",
         "A confiança de empresários (89,3) e consumidores (84,2) segue **abaixo de 100** e caiu em 12 meses, refletindo juros altos e o ano eleitoral",
@@ -38,7 +38,7 @@
       "caixas": []
     },
     "renda": {
-      "titulo": "Renda das famílias segue em **patamar elevado** em 2026, mas deve **perder fôlego em 2027**",
+      "titulo": "Renda das famílias segue **elevada**, mas deve **perder fôlego em 2027**",
       "texto": [
         "A desocupação está em **5,4%**, abaixo do NAIRU (8%), e a renda média real subiu **3,7%** em 12 meses; a massa de renda do trabalho chega a R$ 386 bi/mês (+4,7%)",
         "Porém, a Tendências projeta que a massa salarial cresça **4,7% em 2026 e apenas 1,2% em 2027**, com a perda de dinamismo do mercado de trabalho"
@@ -61,7 +61,7 @@
       ]
     },
     "incc": {
-      "titulo": "INCC segue em **patamar elevado** (6,6% em 12 meses), agora puxado por **materiais**",
+      "titulo": "INCC segue **elevado** (6,6% em 12 meses), agora puxado por **materiais**",
       "texto": [
         "O INCC segue **2,1 p.p. acima do IPCA** (4,6%), pressionado pelo petróleo e pelo câmbio",
         "A contribuição dos **materiais** subiu de 3,0 para 3,4 p.p. em 12 meses, enquanto a da **mão de obra** caiu de 4,3 para 3,2 p.p."
@@ -81,7 +81,7 @@
       ]
     },
     "varejo": {
-      "titulo": "Varejo de material de construção **volta a crescer**, mas em **ritmo moderado** em 2026/27",
+      "titulo": "Varejo de material de construção **volta a crescer**, em **ritmo moderado**",
       "texto": [
         "As vendas de material de construção crescem **2,0% a/a** (média de 3 meses), revertendo a queda de 4,2% de um ano atrás",
         "O índice ainda está 0,9% abaixo de 12 meses atrás; a Tendências projeta **+0,95% em 2026 e +1,1% em 2027**, com a produção de insumos da construção caindo 1,6% em 2026"
@@ -113,7 +113,7 @@
       ]
     },
     "9": {
-      "titulo": "Lançamentos devem **recuar em 2026**: **MCMV** ainda cresce, mas **médio/alto padrão** já cai",
+      "titulo": "Lançamentos devem **recuar em 2026**: **MCMV** cresce e **médio/alto** cai",
       "subtitulo": [
         "Os lançamentos do MCMV sobem **12,7%** em 12 meses e os de médio/alto padrão caem **5,6%** (média móvel de 12 meses, jun/26)",
         "A Tendências projeta queda de 5,0% no total em 2026 (−4,0% no MCMV e **−11,2% no médio/alto padrão**), com retomada do médio/alto em 2027 (+3,2%)"

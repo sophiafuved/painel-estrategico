@@ -44,7 +44,7 @@ python <pasta desta skill>/scripts/atualizar_deck.py --projeto <painel-estrategi
 | Rótulo do último ponto | Move para o último dado novo |
 | "Dados atualizados até mmm/aa" | Troca pela data do último dado observado (sem projeções); com duas séries, associa cada data à série certa |
 | Títulos, textos e caixas | Da leitura do time, com a formatação do slide (caixa alta, destaques em negrito/laranja). Texto em lista vira um bullet por item, copiando marcador, recuo e alinhamento dos bullets do modelo; caixas de leitura ficam centralizadas como no original |
-| Ajustes de layout | Título que ocupa 2 linhas: alinha à esquerda, termina antes do marcador verde e desce os bullets o necessário; a fonte só diminui se o texto não couber (e a conferência avisa) |
+| Ajustes de layout | Título que ocupa 2 linhas: alinha à esquerda, termina antes do marcador verde e desce os bullets só o que o título passar da caixa; com 1 linha, os bullets ficam na posição do modelo; a fonte só diminui se o texto não couber (e a conferência avisa) |
 | Leitura em rascunho | Põe o carimbo "RASCUNHO · texto aguardando revisão do time" nos slides |
 
 O que **não** faz e fica na conferência para revisar à mão: Brent (aba "Daily", fora da Grande
@@ -66,7 +66,9 @@ slide "Principais mensagens" e capa (use `--capa`).
 
 - Nunca invente dado para preencher um gráfico; se uma aba ou faixa não existir, o script mantém
   o que estava e avisa.
-- Títulos do Modelo 2 cabem em até 2 linhas a 20 pt (cerca de 12–18 palavras). Se a conferência
+- Nos slides com bullets, o título do Modelo 2 ocupa **uma linha** (até ~70 caracteres a 20 pt) e os
+  bullets ficam logo abaixo. Se o título passar para 2 linhas, o script desce os bullets só o
+  necessário, mas o visual fica diferente do modelo: prefira encurtar o título. Se a conferência
   avisar fonte reduzida, peça para encurtar o título na leitura em vez de aceitar letra pequena.
 - Textos de apoio do modelo são 2–3 bullets; caixas de leitura têm ~15–20 palavras. Siga esse
   tamanho na leitura (skill `comentarios-radar`).

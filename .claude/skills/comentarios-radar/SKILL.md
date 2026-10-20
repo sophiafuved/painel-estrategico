@@ -67,7 +67,10 @@ O Radar tem o seletor "Leitura: Do time", que lê `pipeline/radar/leitura_time.j
 
 A skill `atualizar-deck-radar` usa o mesmo `leitura_time.json`. Para o deck:
 
-- Títulos: 12–18 palavras (cabem em até 2 linhas a 20 pt).
+- Títulos: nos slides com bullets logo abaixo (Modelo 2: incerteza, renda, INCC, lançamentos,
+  varejo), **uma linha só**, até ~70 caracteres (8–12 palavras), para os bullets ficarem colados ao
+  título como no modelo. Nos slides sem bullets (global, Brasil, crédito) e no de financiamento, até
+  2 linhas (12–18 palavras).
 - `texto`: escreva como **lista de 2–3 bullets** (`"texto": ["...", "..."]`), cada um com 1 frase de
   ~20–35 palavras, no estilo do modelo ("(i) ... (ii) ...", "Porém, ..."). O painel mostra cada item
   como um parágrafo e o deck como um bullet.

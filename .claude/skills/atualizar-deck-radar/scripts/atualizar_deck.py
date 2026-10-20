@@ -398,11 +398,16 @@ def atualizar_textos(prs, leitura, mapa, pend):
             if papel == 'titulo' and 'subtitulo' in cfg:
                 sub = shapes.get(cfg['subtitulo'])
                 pt = sz or (shp.text_frame.paragraphs[0].runs[0].font.size.pt if shp.text_frame.paragraphs[0].runs and shp.text_frame.paragraphs[0].runs[0].font.size else 20)
-                por_linha = (shp.width / 12700 - 14) / (pt * (0.65 if upper else 0.55)) * 0.92
+                # calibrado no Modelo 2: títulos de até ~77 caracteres em caixa alta cabem em 1 linha a 20 pt
+                por_linha = (shp.width / 12700 - 14) / (pt * (0.6 if upper else 0.5))
                 n_lin = -(-len(texto.replace('**', '')) // int(por_linha))
-                folga = (sub.top - (shp.top + shp.height)) if sub is not None else 0
-                if sub is not None and n_lin >= 2 and folga < Inches(0.25):
-                    slide._desce_sub = int(Inches(pt * 1.2 / 72 * (n_lin - 1)) - max(0, folga) + Inches(0.05))
+                if sub is not None and n_lin >= 2:
+                    # título ancorado no centro: desce os bullets só o que o texto passa da base da caixa,
+                    # deixando ~0,03 pol. de respiro (como no slide 8 do modelo)
+                    base_txt = shp.top + shp.height / 2 + Inches(pt * 1.2 / 72 * n_lin / 2)
+                    d = int(base_txt + Inches(0.03) - sub.top)
+                    if d > 0:
+                        slide._desce_sub = d
             if sz:
                 pend.append(f'Slide {sn}: {papel} mais longo que o da edição anterior; fonte reduzida para {sz:g} pt. Se ficar pequeno, encurte o texto na leitura.')
             mudou = True
