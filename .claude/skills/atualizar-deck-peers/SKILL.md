@@ -16,7 +16,7 @@ Converse em português.
 ## O que você precisa
 
 1. **Deck** do negócio (.pptx), a edição mais recente.
-2. **Planilha Análise de Competidores** (.xlsx) atualizada. Nunca edite a planilha.
+2. **Planilha Análise de Competidores** (.xlsx) atualizada. Esta skill só lê a planilha.
 3. **Pasta do projeto `painel-estrategico`** (opcional, recomendada): com ela, a conferência avisa
    quando o deck mostra um valor que o painel trata como erro, outlier ou n.s.
 

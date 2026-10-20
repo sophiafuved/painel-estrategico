@@ -31,7 +31,15 @@ podem variar; identifique cada uma pelo conteúdo:
   edição MMAAAA no nome; chega um Excel novo toda quinta-feira), com a primeira linha "Índices" + anos e um indicador por linha. Se houver
   mais de uma edição, use a mais recente (pergunte em caso de dúvida).
 
-Se houver mais de uma versão de alguma planilha, pergunte qual usar. Nunca edite as planilhas.
+Se houver mais de uma versão de alguma planilha, pergunte qual usar.
+
+**Edição das planilhas.** Gerar o painel, os decks e as conferências só **lê** as planilhas. No Claude do
+time, o Claude pode **editar** as planilhas da pasta `Claude` do SharePoint quando alguém pedir, com os
+dados que o time disponibilizou (ex.: lançar o Excel semanal da Tendências ou os números de um peer).
+Nesse caso: (1) antes de mexer, guarde uma cópia da versão anterior com a data no nome; (2) altere só
+o que foi pedido, sem mudar estrutura (abas, blocos, fórmulas) sem combinar; (3) liste o que mudou
+(aba, célula, antes → depois, fonte) para o time conferir; (4) nunca invente dado para preencher
+lacuna.
 
 ## Como gerar o painel
 

@@ -166,8 +166,9 @@ Os prompts abaixo podem ser copiados e colados. Ajuste o que estiver entre `< >`
 > Inclua os números de 2025 da `<empresa>` a partir deste release/demonstração `<arquivo>`, no formato
 > da Análise de Competidores, com fonte e página de cada número.
 
-- O Claude prepara os números e as fórmulas; **quem lança na planilha é o time** (o Claude nunca edita
-  as planilhas).
+- O Claude prepara os números com fonte e página. Se você pedir, ele **lança direto na Análise de
+  Competidores** da pasta `Claude`, guardando antes uma cópia da versão anterior e listando cada
+  célula alterada para conferência (veja a regra na seção 7).
 
 ## 5.6 Atualizar os decks de peers
 
@@ -183,6 +184,14 @@ Os prompts abaixo podem ser copiados e colados. Ajuste o que estiver entre `< >`
 ## 5.7 Slide avulso no padrão Dexco
 
 > Monte um slide no Template PPT 2026 com `<conteúdo>`, usando os dados de `<fonte>`.
+
+## 5.8 Lançar dados novos numa planilha
+
+> Lance os dados do arquivo `<Excel da Tendências / release>` que está na pasta `Claude` na
+> `<Grande Base | Análise de Competidores>`, na aba `<aba>`. Antes, guarde uma cópia da versão
+> anterior e, no fim, me liste cada célula alterada (antes → depois).
+
+- Confira a lista de mudanças antes de gerar o painel ou os decks.
 
 # 6. As skills
 
@@ -203,7 +212,11 @@ carregadas sozinhas quando o Claude abre a pasta.
 
 - **Dados só da fonte oficial:** Grande Base e Análise de Competidores. O Claude não inventa número;
   quando falta dado, ele avisa.
-- **O Claude nunca edita as planilhas.** Ajustes nas planilhas são feitos pelo time.
+- **Edição de planilhas com controle:** o Claude pode editar as planilhas da pasta `Claude` quando
+  alguém pede e com dados que o time disponibilizou (ex.: Excel da Tendências, demonstração de um peer).
+  Ele guarda antes uma cópia da versão anterior com a data, mexe só no que foi pedido (sem mudar abas,
+  blocos ou fórmulas sem combinar) e lista o que mudou para o time conferir. Gerar painel, decks e
+  conferências só lê as planilhas.
 - **Senha:** só na planilha "Acessos". Informe ao Claude apenas na hora de gerar o painel.
 - **Painel limpo por padrão:** comentários ficam ocultos; a leitura aparece só no seletor e só como
   "revisada" depois da aprovação do Henrique Fantin.

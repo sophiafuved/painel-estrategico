@@ -52,8 +52,10 @@ os pontos que o time precisa decidir.
 - Nunca estime nem "complete" um número que não está na fonte. Deixe vazio e liste em "o que
   faltou"; o painel trata vazio como sem dado. Números redondos (ex.: R$ 1.100 mi) chamam atenção
   na conferência justamente porque costumam ser estimativas.
-- Não edite a planilha do time diretamente; entregue os valores para alguém colar, a não ser que
-  o usuário peça explicitamente e haja uma cópia de trabalho.
+- Por padrão, entregue os valores para conferência. Se o usuário pedir para lançar na planilha (no
+  Claude do time, as planilhas da pasta `Claude` podem ser editadas): guarde antes uma cópia da
+  versão anterior com a data no nome, lance só as células combinadas (aba da empresa e blocos das abas
+  "Gráficos"), sem mudar a estrutura, e liste cada célula alterada (antes → depois, fonte e página).
 - Se a empresa reporta EBITDA ajustado e reportado, use o mesmo critério dos demais peers do bloco
   (pergunte se não souber) e anote qual foi usado.
 - Depois que o time colar os números, sugira rodar a skill `conferir-peers` com a versão anterior

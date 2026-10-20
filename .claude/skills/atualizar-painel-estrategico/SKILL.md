@@ -22,8 +22,9 @@ conteúdo, não pelo nome:
 | Análise de Competidores | abas `Gráficos - Louças`, `Gráficos - Metais`, `Gráficos Madeira 1`, `Gráficos - Revestimento` | `--peers` |
 | Projeções Tendências (opcional) | primeira linha "Índices" + anos; nome com a edição MMAAAA (ex.: `102026_Dexco.xlsx`) | `--proj` |
 
-Se houver mais de uma versão de alguma planilha, pergunte qual usar. Nunca edite as planilhas: o
-painel só mostra o que está nelas, e é isso que dá confiança ao time.
+Se houver mais de uma versão de alguma planilha, pergunte qual usar. Gerar o painel não altera as
+planilhas: o painel só mostra o que está nelas, e é isso que dá confiança ao time. (Lançar dados
+novos numa planilha é outra tarefa, feita só a pedido e com as regras de edição do `CLAUDE.md`.)
 
 Se a pasta do projeto não estiver conectada (não existe `pipeline/build_site.py`), peça ao usuário
 para conectar a pasta ou enviar o ZIP do projeto; sem os scripts esta skill não funciona.
