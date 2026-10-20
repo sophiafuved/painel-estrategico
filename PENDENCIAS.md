@@ -63,7 +63,7 @@ Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito
 ## 7. Aperfeiçoar as skills (contínuo)
 
 - [x] `atualizar-deck-radar`: ajustes estéticos da seção 5 (20/10).
-- [ ] Republicar o painel com a leitura em bullets (precisa da senha).
+- [x] Painel republicado no mesmo link com a leitura em bullets e os títulos novos (20/10; leitura ainda em rascunho).
 - [x] `atualizar-deck-radar` também para o **Modelo 1** (20/10): mapa próprio, textos em `deck_modelo1`,
       datas associadas pelo nome entre parênteses.
 - [x] Nova skill `atualizar-deck-peers` (20/10): testada nos 4 decks do estágio (850 de 898 séries
