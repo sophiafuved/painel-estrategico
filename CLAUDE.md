@@ -120,7 +120,9 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   (tolerância de 1/4 de passo; empilhados pelo total), o gráfico volta à escala automática (ou a
   `alinhar:1`, que alinha os dois eixos) em vez de cortar o dado. Exceções conscientes ao deck: massa de
   renda sem teto de 400 (os precatórios passam disso) e renda comprometida sem teto de 30%. Massa de
-  renda e renda disponível começam em 200 e 30 (R$ bi), como no deck, e não no zero.
+  renda e renda disponível começam em 200 e 30 (R$ bi), como no deck, e não no zero (decisão da
+  Sophia, 20/10). Lançamentos: o eixo direito (médio/alto padrão) fica visível no painel, diferente do
+  deck, para não sugerir que as duas linhas usam a mesma escala (decisão de 20/10).
 - Peers: faixa dos peers (1º–3º quartil e mediana dos peers do filtro, sem a Dexco, com 3+ valores
   no ano) nos gráficos de índices; não aparece nos de valores absolutos (R$). Matriz de
   posicionamento no início (eixos escolhidos pelo usuário, tamanho da bolha escolhido pelo usuário, receita por padrão; linhas na mediana dos
