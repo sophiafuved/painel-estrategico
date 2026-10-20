@@ -32,12 +32,12 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 
 ## 3. Para colocar no ar
 
-- [ ] Mandar a planilha atualizada e a senha → gerar de novo, conferir, republicar no mesmo link e
+- [ ] (A cada planilha nova) Mandar a planilha atualizada e a senha → gerar de novo, conferir, republicar no mesmo link e
       refazer a planilha de conferência.
 
 ## 4. Com o time
 
-- [ ] Reenviar o ZIP atualizado ao colega (o anterior é antigo).
+- [x] ZIP atualizado enviado à Sophia para o teste com o time (20/10), junto com o manual.
 - [ ] Definir o link oficial do time (conta de trabalho), anotar no README e deixar o acesso como
       "Qualquer pessoa com o link".
 
@@ -79,7 +79,8 @@ Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito
       fontes Roboto Light/Black já corrigidas em 20/10).
 - [ ] Decks de peers: tabela-resumo do slide 2 e textos não são atualizados; avaliar uma leitura de peers
       (como a `comentarios-radar`) e a atualização da tabela.
-- [ ] `comentarios-radar`: títulos mais curtos para o deck; coletar o retorno do gestor sobre o tom.
+- [x] `comentarios-radar`: títulos mais curtos para o deck (20/10).
+- [ ] `comentarios-radar`: coletar o retorno do Henrique Fantin sobre o tom da leitura.
 - [ ] `incluir-peer-novo` e `padrao-apresentacao-dexco`: testar num caso real (ex.: release 2025 de um peer
       faltante) e ajustar.
 - [ ] Testes com e sem skill para mostrar o ganho ao time (opcional).
