@@ -5,6 +5,14 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 
 ## 1. Planilha Análise de Competidores
 
+> Combinado em 20/10: estes itens serão feitos **direto no Claude do time** (pasta `Claude` no SharePoint),
+> seguindo a regra de edição do `CLAUDE.md` (cópia da versão anterior + lista de células alteradas).
+> Prompt pronto para os blocos sobre a receita:
+> *"Na Análise de Competidores da pasta Claude, crie nas abas Gráficos de cada negócio os blocos
+> Var. WK/ROL, Outras Desp./ROL e FCL/ROL, no mesmo formato dos blocos sobre EBITDA e com a mesma convenção
+> de sinal, calculando índice sobre EBITDA × EBITDA ÷ receita. Guarde antes uma cópia da versão anterior
+> e me liste as células criadas. Depois gere o painel sem senha para eu conferir o botão Sobre receita."*
+
 - [ ] **Criar os blocos sobre a receita** nas abas "Gráficos" de cada negócio, no mesmo formato dos
       blocos sobre EBITDA (título na coluna C com os anos ao lado; país na coluna B e empresa na C
       nas linhas abaixo; mesma convenção de sinal, consumo de caixa negativo):
