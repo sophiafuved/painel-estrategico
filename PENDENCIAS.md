@@ -79,7 +79,7 @@ Rascunho do conteúdo:
 - [ ] Republicar o painel com a leitura em bullets (precisa da senha).
 - [x] `atualizar-deck-radar` também para o **Modelo 1** (20/10): mapa próprio, textos em `deck_modelo1`,
       datas associadas pelo nome entre parênteses.
-- [x] Nova skill `atualizar-deck-peers` (20/10): testada nos 4 decks do estágio (851 de 898 séries
+- [x] Nova skill `atualizar-deck-peers` (20/10): testada nos 4 decks do estágio (850 de 898 séries
       vinculadas atualizadas). Ver no chat/conferências os pontos abaixo.
 - [ ] Decks de peers: revisar as conferências — textos copiados de outro negócio no deck de Louças
       (Arauco/Eucatex, Placas do Brasil), "[WIP]"/"x"/"Lorem ipsum"; séries não reconhecidas (Louças slide 16
