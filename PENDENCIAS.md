@@ -118,6 +118,9 @@ Grande Base já feita no Claude do time; o time já tem um modelo de demanda por
       → projeção própria de demanda por negócio.
 - [ ] **C. Cenários e estresse** a partir do modelo de demanda (depende de B): SELIC, MCMV, renda → receita.
 - [ ] **D. Triagem de alvos de M&A** com fontes públicas (Receita/CNPJ, notícias, sites, associações).
+      Teste feito em 20/10 para Madeira (planilha + 2 slides no Template 2026, entregues no chat e fora do
+      repositório por serem confidenciais), para a Sophia sugerir na reunião do time. Próximo: validar a
+      régua com o Henrique e rodar no Claude do time com os dados de CNPJ (sucessão).
 - [ ] **E. Simulação de reação dos concorrentes** para o Offsite (provocação, não previsão).
 - Fora por enquanto: avaliador cético de apresentações e perguntas à base/memória do time.
 
