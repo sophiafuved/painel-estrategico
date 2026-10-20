@@ -176,61 +176,61 @@ const SECS=[
  {id:'global',tag:'Global',h:'Cenário global',
   sum:[K('Incerteza global (WUI)','wui',0,'int',{m:12}),K('Risco geopolítico (mm12m)','gpr',1,'num',{m:12}),K('Petróleo Brent','brent',0,'usd',{m:12},1)],
   charts:[
-  {k:'wui',t:'Índice de Incerteza Global (WUI)',u:'Número índice, trimestral',fmt:'int',s:[S(0,{c:'s1'})]},
+  {k:'wui',t:'Índice de Incerteza Global (WUI)',u:'Número índice, trimestral',escala:{y:[0,110000,20000]},fmt:'int',s:[S(0,{c:'s1'})]},
   {k:'brent',t:'Petróleo Brent',u:'US$/barril, diário',fmt:'usd',time:false,s:[S(0,{c:'s1'}),S(1,{c:'ref',dash:1}),S(2,{c:'s1',dash:1})]},
-  {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial (esq.); share das importações dos EUA (dir.)',fmt:'pct',fmt2:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'}),S(1,{c:'s2',ax:2})]},
-  {k:'gpr',t:'Índice de Risco Geopolítico',u:'Número índice',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'})]},
-  {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',fmt:'pct',time:false,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
+  {k:'trade',t:'Comércio global e participação dos EUA',u:'Var. % a/a do comércio mundial (esq.); share das importações dos EUA (dir.)',escala:{y:[null,0.5,null]},fmt:'pct',fmt2:'pct',time:false,s:[S(0,{c:'s1',type:'bar'}),S(2,{c:'ref',dash:1,label:'Mediana do comércio (10-25, ex-COVID)'}),S(1,{c:'s2',ax:2})]},
+  {k:'gpr',t:'Índice de Risco Geopolítico',u:'Número índice',escala:{y:[0,515,null]},fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'})]},
+  {k:'infl_glob',t:'Inflação global',u:'CPI, % a/a · projeções Itaú',escala:{y:[null,0.1,null]},fmt:'pct',time:false,s:[S(0,{c:'s1'}),S(1,{c:'s2'}),S(2,{c:'s1',dash:1}),S(3,{c:'s2',dash:1})]},
  ]},
  {id:'brasil',tag:'Brasil',h:'Atividade, juros e expectativas',
   sum:[K('SELIC fim de 2026 (Focus)','focus_selic_ipca',0,'pp',{d:28}),K('IPCA 2026 (Focus)','focus_selic_ipca',2,'pp',{d:28}),K('Câmbio fim de 2026 (Focus)','focus_cambio',0,'fx',{d:28}),K('SELIC real (ex-ante)','neutra',1,'pct',{m:12}),K('Hiato do produto','hiato',0,'pct',{m:12})],
   charts:[
   {k:'pib',t:'PIB por componente',u:'Contribuição para o crescimento, p.p. · 2026-27 projeção',fmt:'pct',time:false,stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'}),S(3,{c:'ink',type:'point',label:'PIB total'})]},
   {k:'fiscal',t:'Impacto das medidas de estímulo fiscal em 2026',u:'R$ bilhões',special:'fiscal'},
-  {k:'neutra',t:'Juros neutros vs SELIC real',u:'% a.a. · RPM 3T26 (projeção até 2028)',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'neutra',t:'Juros neutros vs SELIC real',u:'% a.a. · RPM 3T26 (projeção até 2028)',escala:{y:[-0.02,0.1,null]},fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
   {k:'hiato',t:'Hiato do Produto x IPCA',u:'Hiato, % do PIB potencial (esq.); IPCA, % a/a (dir.)',fmt:'pct',fmt2:'pct',alinhar:1,escala:{y:[-0.08,0.04,0.04],y2:[0,0.12,0.04]},s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1',ax:2}),{ref:0.03,ax:2,label:'Centro da meta = 3,0%'}]},
-  {k:'focus_selic_ipca',t:'Projeções Focus: SELIC e IPCA',u:'Mediana das expectativas, % · fim de período',fmt:'pp',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1}),S(2,{c:'s2'}),S(3,{c:'s2',dash:1})]},
-  {k:'focus_cambio',t:'Projeções Focus: câmbio',u:'BRL/USD, fim de período',fmt:'fx',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1})]},
+  {k:'focus_selic_ipca',t:'Projeções Focus: SELIC e IPCA',u:'Mediana das expectativas, % · fim de período',escala:{y:[0,16,4]},fmt:'pp',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1}),S(2,{c:'s2'}),S(3,{c:'s2',dash:1})]},
+  {k:'focus_cambio',t:'Projeções Focus: câmbio',u:'BRL/USD, fim de período',escala:{y:[4.5,6.5,0.5]},fmt:'fx',s:[S(0,{c:'s1'}),S(1,{c:'s1',dash:1})]},
  ]},
  {id:'incerteza',tag:'Incerteza',h:'Incerteza e confiança',
   sum:[K('Incerteza econômica (IIE-Br)','iie',0,'num',{m:12}),K('Confiança do empresário','conf',0,'num',{m:12}),K('Confiança do consumidor','conf',1,'num',{m:12})],
   charts:[
-  {k:'iie',t:'Índice de Incerteza Econômica (IIE-Br)',u:'Número índice, base 100',fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
-  {k:'conf',t:'Índices de Confiança',u:'Número índice, base 100, com ajuste sazonal',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
+  {k:'iie',t:'Índice de Incerteza Econômica (IIE-Br)',u:'Número índice, base 100',escala:{y:[80,220,20]},fmt:'num',s:[S(0,{c:'s2',thin:1}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
+  {k:'conf',t:'Índices de Confiança',u:'Número índice, base 100, com ajuste sazonal',escala:{y:[40,110,null]},fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'}),{ref:100,label:'Base 100'}]},
  ]},
  {id:'renda',tag:'Renda',h:'Renda e mercado de trabalho',
   sum:[K('Taxa de desocupação','desemprego',0,'pct',{m:12}),K('Renda média do trabalho (real)','desemprego',1,'brl',{m:12},1),K('Massa de renda do trabalho','massa',0,'bi',{m:12},1)],
   charts:[
-  {k:'massa',t:'Massa de renda total (real), por componente',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
-  {k:'desemprego',t:'Taxa de desocupação vs renda média (real)',u:'Desocupação, % (esq.); renda média do trabalho, R$/mês (dir.)',fmt:'pct',fmt2:'brl',s:[S(0,{c:'s2',type:'bar'}),{ref:0.08,label:'NAIRU (8,0%)'},S(1,{c:'s1',ax:2})]},
+  {k:'massa',t:'Massa de renda total (real), por componente',u:'R$ bilhões por mês',escala:{y:[200,null,50]},fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
+  {k:'desemprego',t:'Taxa de desocupação vs renda média (real)',u:'Desocupação, % (esq.); renda média do trabalho, R$/mês (dir.)',escala:{y:[0.02,0.18,0.04],y2:[1800,4200,400]},fmt:'pct',fmt2:'brl',s:[S(0,{c:'s2',type:'bar'}),{ref:0.08,label:'NAIRU (8,0%)'},S(1,{c:'s1',ax:2})]},
  ]},
  {id:'credito',tag:'Crédito',h:'Crédito e endividamento das famílias',
   sum:[K('Taxa de juros PF²','juros_endiv',0,'pct',{m:12}),K('Endividamento das famílias','juros_endiv',1,'pct',{m:12}),K('Renda comprometida com dívida¹','renda_inad',0,'pct',{m:12}),K('Inadimplência PF³','renda_inad',1,'pct',{m:12}),K('Taxa de poupança das famílias','poupanca',0,'pct',{m:12})],
   charts:[
-  {k:'juros_endiv',t:'Taxa de juros² x endividamento das famílias',u:'Juros, % a.a. (esq.); endividamento, % da renda (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',ax:2})]},
-  {k:'renda_inad',t:'Renda comprometida com dívida¹ x inadimplência³',u:'Renda comprometida, % da renda (esq.); inadimplência, % do saldo (dir.)',fmt:'pct',fmt2:'pct',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
-  {k:'renda_disp',t:'Renda disponível após itens essenciais e dívida',u:'R$ bilhões por mês',fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
-  {k:'poupanca',t:'Taxa de poupança das famílias',u:'% do PIB, acumulado 12 meses',fmt:'pct',s:[S(0,{c:'s1'})]},
+  {k:'juros_endiv',t:'Taxa de juros² x endividamento das famílias',u:'Juros, % a.a. (esq.); endividamento, % da renda (dir.)',escala:{y:[0.3,0.8,0.1],y2:[0.3,0.55,0.05]},fmt:'pct',fmt2:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',ax:2})]},
+  {k:'renda_inad',t:'Renda comprometida com dívida¹ x inadimplência³',u:'Renda comprometida, % da renda (esq.); inadimplência, % do saldo (dir.)',escala:{y:[0.2,null,null],y2:[0.02,null,null]},fmt:'pct',fmt2:'pct',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
+  {k:'renda_disp',t:'Renda disponível após itens essenciais e dívida',u:'R$ bilhões por mês',escala:{y:[30,80,10]},fmt:'bi',stack:1,s:[S(0,{c:'s1',type:'bar'}),S(1,{c:'s2',type:'bar'}),S(2,{c:'s3',type:'bar'})]},
+  {k:'poupanca',t:'Taxa de poupança das famílias',u:'% do PIB, acumulado 12 meses',escala:{y:[0.1,0.2,0.02]},fmt:'pct',s:[S(0,{c:'s1'})]},
  ]},
  {id:'incc',tag:'Custos',h:'Custos da construção',
   sum:[K('INCC 12 meses','incc_ipca',0,'pct',{m:12}),K('IPCA 12 meses','incc_ipca',1,'pct',{m:12}),K('INCC: contribuição de materiais','incc_comp',0,'pct',{m:12}),K('INCC: contribuição de mão de obra','incc_comp',1,'pct',{m:12})],
   charts:[
-  {k:'incc_comp',t:'INCC: abertura por componente',u:'Contribuição para a variação a/a, p.p.',fmt:'pct',area:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
-  {k:'incc_ipca',t:'INCC x IPCA',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'incc_comp',t:'INCC: abertura por componente',u:'Contribuição para a variação a/a, p.p.',escala:{y:[null,0.2,0.05]},fmt:'pct',area:1,s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
+  {k:'incc_ipca',t:'INCC x IPCA',u:'% a/a',escala:{y:[0,null,0.05]},fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2'})]},
  ]},
  {id:'imob',tag:'Imobiliário',h:'Mercado imobiliário',
   sum:[K('Taxa de financiamento imobiliário','financ',1,'pct',{m:12}),K('Juros longos (10 anos)','financ',0,'pct',{m:12}),K('IGMI-R nominal','igmi',0,'pct',{m:12}),K('Lançamentos MCMV (mm12m)','lanc',0,'int',{m:12},1),K('Lançamentos médio/alto (mm12m)','lanc',1,'int',{m:12},1)],
   charts:[
-  {k:'financ',t:'Taxa de financiamento imobiliário x juros longos',u:'% a.a.',fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'})]},
-  {k:'igmi',t:'IGMI-R: variação anual do preço de venda de imóveis',u:'% a/a',fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',dash:1})]},
-  {k:'lanc',t:'Lançamentos imobiliários, por segmento',u:'Unidades, média móvel 12 meses · MCMV (esq.); médio/alto padrão (dir.)',fmt:'int',fmt2:'int',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
-  {k:'vso',t:'Velocidade de vendas (vendas/oferta), por segmento',u:'%, média móvel 12 meses',fmt:'pct',s:[S(1,{c:'s2'}),S(0,{c:'s1'})]},
+  {k:'financ',t:'Taxa de financiamento imobiliário x juros longos',u:'% a.a.',escala:{y:[null,null,0.03]},fmt:'pct',s:[S(0,{c:'s2',type:'bar'}),S(1,{c:'s1'})]},
+  {k:'igmi',t:'IGMI-R: variação anual do preço de venda de imóveis',u:'% a/a',escala:{y:[-0.1,0.2,null]},fmt:'pct',s:[S(0,{c:'s1'}),S(1,{c:'s2',dash:1})]},
+  {k:'lanc',t:'Lançamentos imobiliários, por segmento',u:'Unidades, média móvel 12 meses · MCMV (esq.); médio/alto padrão (dir.)',escala:{y:[0,null,2000]},fmt:'int',fmt2:'int',s:[S(0,{c:'s2'}),S(1,{c:'s1',ax:2})]},
+  {k:'vso',t:'Velocidade de vendas (vendas/oferta), por segmento',u:'%, média móvel 12 meses',escala:{y:[0.02,null,null]},fmt:'pct',s:[S(1,{c:'s2'}),S(0,{c:'s1'})]},
  ]},
  {id:'varejo',tag:'Varejo',h:'Varejo de material de construção',
   sum:[K('Vendas de mat. de construção (a/a, mm3m)','varejo_var',0,'pct',{m:12}),K('Índice de mat. de construção','varejo_idx',1,'num',{m:12},1),K('Índice do varejo ampliado','varejo_idx',0,'num',{m:12},1)],
   charts:[
-  {k:'varejo_var',t:'Vendas de material de construção no varejo',u:'% a/a, média móvel 3 meses',fmt:'pct',s:[S(0,{c:'s1',type:'bar'})],proj:{k:'varejo_proj',i:0,fmt:'pct',lbl:'Projeção anual'}},
-  {k:'varejo_idx',t:'Vendas no varejo: índice',u:'Número índice, base 100, dessazonalizado',fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'})],proj:{k:'varejo_idx_proj',i:1,fmt:'num',lbl:'Projeção mat. construção',i2:0,lbl2:'Projeção ampliado'}},
+  {k:'varejo_var',t:'Vendas de material de construção no varejo',u:'% a/a, média móvel 3 meses',escala:{y:[-0.15,0.35,0.05]},fmt:'pct',s:[S(0,{c:'s1',type:'bar'})],proj:{k:'varejo_proj',i:0,fmt:'pct',lbl:'Projeção anual'}},
+  {k:'varejo_idx',t:'Vendas no varejo: índice',u:'Número índice, base 100, dessazonalizado',escala:{y:[60,130,null]},fmt:'num',s:[S(0,{c:'s2'}),S(1,{c:'s1'})],proj:{k:'varejo_idx_proj',i:1,fmt:'num',lbl:'Projeção mat. construção',i2:0,lbl2:'Projeção ampliado'}},
  ]},
 ];
 // rótulos corretos das projeções (AV = Material de construção, AW = Varejo ampliado)
@@ -285,9 +285,18 @@ function alinharEixos(sets){
     const custo=(a.max-a.min)/((r1[1]-r1[0])||1)+(b.max-b.min)/((r2[1]-r2[0])||1);
     if(!best||custo<best.c-1e-9)best={c:custo,y:a,y2:b}}
   return best}
-const escFixa=([min,max,step])=>({min,max,step});
-function escalaCabe(sets,e){return ['y','y2'].every(id=>{if(!e[id])return false;const [mn,mx,st]=e[id],t=st/4;
-  return sets.filter(d=>d.yAxisID===id&&!d._ref).every(d=>d.data.every(v=>v==null||!isFinite(v)||(v>=mn-t&&v<=mx+t)))})}
+// escala:{y:[mín,máx,passo],y2:[...]} = escala da apresentação (null = automático naquele ponto).
+// Vale enquanto os dados couberem (tolerância de 1/4 de passo; colunas empilhadas pelo total).
+function escalaCabe(sets,e,stack){return ['y','y2'].every(id=>{if(!e[id])return true;const [mn,mx,st]=e[id];
+  const t=st!=null?st/4:(mn!=null&&mx!=null?(mx-mn)/20:0);const ds=sets.filter(d=>d.yAxisID===id&&!d._ref);
+  let vals=ds.flatMap(d=>d.data);
+  // empilhado: vale o total de cada ponto (os pedaços de baixo não precisam caber sozinhos)
+  if(stack){const n=Math.max(0,...ds.map(d=>d.data.length));vals=[...Array(n)].map((_,i)=>ds.some(d=>d.data[i]!=null)?ds.reduce((a,d)=>a+(d.data[i]||0),0):null)}
+  return vals.every(v=>v==null||!isFinite(v)||((mn==null||v>=mn-t)&&(mx==null||v<=mx+t)))})}
+const escFixa=e=>e?{min:e[0],max:e[1],step:e[2]}:null;
+const limites=a=>a?{...(a.min!=null?{min:a.min}:{}),...(a.max!=null?{max:a.max}:{}),
+  // com passo definido, as marcas seguem o Excel: mínimo + k × passo (sem mínimo fixo, múltiplos do passo)
+  ...(a.step!=null?{afterBuildTicks:ax=>{const t=[],p=a.step,b0=a.min!=null?a.min:0,i0=Math.ceil((ax.min-b0)/p-1e-9);for(let i=i0;b0+i*p<=ax.max+1e-9;i++)t.push({value:+(b0+i*p).toFixed(10)});ax.ticks=t}}:{})}:{};
 function buildChart(canvas,ds,sers,fmt,opt){
   ds=filterDS(ds); const labels=ds.labels;
   const sets=[];
@@ -306,8 +315,9 @@ function buildChart(canvas,ds,sers,fmt,opt){
   // alinhar:1 → os dois eixos com o mesmo número de intervalos e marcas redondas (grades coincidem, como no deck)
   // escala:{y:[mín,máx,passo],y2:[...]} → escala fixa igual à da apresentação, enquanto os dados couberem
   // (tolerância de 1/4 de passo); se um dado novo passar, volta para as escalas alinhadas automáticas
-  const AL=(opt.escala&&escalaCabe(sets,opt.escala))?{y:escFixa(opt.escala.y),y2:escFixa(opt.escala.y2)}:(opt.alinhar&&opt.fmt2?alinharEixos(sets):null);
-  const tick=(fm,ax)=>AL&&fm==='pct'&&Math.abs(AL[ax].step*100-Math.round(AL[ax].step*100))<1e-9?(v=>nf(0).format(v*100)+'%'):axisTick(fm);
+  const AL=(opt.escala&&escalaCabe(sets,opt.escala,opt.stack||opt.area))?{y:escFixa(opt.escala.y),y2:escFixa(opt.escala.y2)}:(opt.alinhar&&opt.fmt2?alinharEixos(sets):null);
+  const passo=ax=>AL&&AL[ax]&&AL[ax].step!=null?AL[ax].step:null;
+  const tick=(fm,ax)=>passo(ax)!=null&&fm==='pct'&&Math.abs(passo(ax)*100-Math.round(passo(ax)*100))<1e-9?(v=>nf(0).format(v*100)+'%'):axisTick(fm);
   return new Chart(canvas,{data:{labels,datasets:sets},plugins:[crosshair],options:{
     responsive:true,maintainAspectRatio:false,animation:false,
     interaction:{mode:'index',intersect:false},
@@ -317,8 +327,8 @@ function buildChart(canvas,ds,sers,fmt,opt){
       callbacks:{title:it=>it.length?fmtLabel(labels[it[0].dataIndex],true):'',label:it=>' '+it.dataset.label+': '+(it.dataset._f||f)(it.raw)}}},
     scales:{
       x:{type:'category',stacked:!!(opt.stack||opt.area),grid:{display:false},border:{color:css('--line')},ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},autoSkip:!many,maxRotation:0,callback:many?tickCb(labels):(v,i)=>fmtLabel(labels[i])}},
-      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},...(AL?{min:AL.y.min,max:AL.y.max}:{}),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:AL?12:(opt.half?4:6),...(AL?{stepSize:AL.y.step}:{}),callback:tick(fmt,'y')}},
-      ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},...(AL?{min:AL.y2.min,max:AL.y2.max}:{}),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:AL?12:6,...(AL?{stepSize:AL.y2.step}:{}),callback:tick(opt.fmt2,'y2')}}}:{})
+      y:{stacked:!!(opt.stack||opt.area),grid:{color:grid,drawTicks:false},border:{display:false},...limites(AL&&AL.y),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:passo('y')!=null?14:(opt.half?4:6),...(passo('y')!=null?{stepSize:passo('y')}:{}),callback:tick(fmt,'y')}},
+      ...(opt.fmt2?{y2:{position:'right',grid:{display:false},border:{display:false},...limites(AL&&AL.y2),ticks:{color:ink3,font:{family:'IBM Plex Mono',size:11},padding:6,maxTicksLimit:passo('y2')!=null?14:6,...(passo('y2')!=null?{stepSize:passo('y2')}:{}),callback:tick(opt.fmt2,'y2')}}}:{})
     }}});
 }
 function fiscalChart(canvas){

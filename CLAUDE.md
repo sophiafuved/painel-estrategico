@@ -114,10 +114,13 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
     só troque para `"revisado"` (com `revisado_por` e `data_revisao`) quando alguém do time aprovar.
 - Radar: cada tópico abre com um resumo dos seus indicadores (último dado observado, sem
   projeções, e variação em 12 meses / 4 trimestres / 4 semanas no Focus). Os gráficos que na
-  apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir."). Escalas: `escala:{y:[mín,máx,passo],y2:[...]}`
-  no modelo fixa a escala igual à da apresentação (hoje no Hiato do Produto x IPCA: −8% a 4% e 0% a
-  12%, de 4 em 4, como no deck); se um dado novo sair da faixa, o gráfico volta para `alinhar:1`
-  (os dois eixos com o mesmo número de intervalos e marcas redondas, função `alinharEixos`).
+  apresentação têm dois eixos mantêm os dois eixos (a legenda marca "esq."/"dir."). Escalas: cada gráfico do Radar usa a
+  escala da apresentação (Modelos 1 e 2), definida em `escala:{y:[mín,máx,passo],y2:[...]}` no modelo
+  (null = automático; marcas como no Excel, mínimo + k × passo). Se um dado novo sair da faixa
+  (tolerância de 1/4 de passo; empilhados pelo total), o gráfico volta à escala automática (ou a
+  `alinhar:1`, que alinha os dois eixos) em vez de cortar o dado. Exceções conscientes ao deck: massa de
+  renda sem teto de 400 (os precatórios passam disso) e renda comprometida sem teto de 30%. Massa de
+  renda e renda disponível começam em 200 e 30 (R$ bi), como no deck, e não no zero.
 - Peers: faixa dos peers (1º–3º quartil e mediana dos peers do filtro, sem a Dexco, com 3+ valores
   no ano) nos gráficos de índices; não aparece nos de valores absolutos (R$). Matriz de
   posicionamento no início (eixos escolhidos pelo usuário, tamanho da bolha escolhido pelo usuário, receita por padrão; linhas na mediana dos
