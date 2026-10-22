@@ -99,6 +99,12 @@ python pipeline/build_site.py --radar "<Grande Base>.xlsx" --peers "<Análise de
   vira "Demais itens" (diferença até o FCL). Sem FCL no ano, a ponte não é exibida.
 - Tabelas-resumo: uma no início de cada tópico (não há resumo geral no topo); cada coluna usa o
   ano da receita mais recente da empresa; indicadores de outros anos aparecem como "–".
+- Custos: gráfico "Melhor P&L" (empresa teórica, como nos decks do Offsite), calculado no painel a partir
+  dos dados tratados, com as empresas do filtro: margem bruta caixa = 1 − menor CPV caixa/ROL; margem EBITDA
+  teórica = bruta caixa − menor soma de despesas de vendas + G&A/ROL (soma porque várias empresas lançam
+  vendas junto com G&A); só anos com 3+ empresas com dado; mostra a margem EBITDA da Dexco e quem define
+  cada linha. Não aparece em Madeira (a aba não tem CPV/despesas). Difere da planilha, que usa MIN de cada
+  linha sobre linhas escolhidas à mão (e, em Metais, margem bruta caixa digitada).
 - **Alavancagem da Dexco é sempre a consolidada**, em todos os negócios.
 - Madeira: EBITDA = receita × margem EBITDA (a aba não traz o valor absoluto).
 - Metais: nos blocos "Mkt Competitivo/Médio/Luxo", participação = empresa ÷ total do segmento (as

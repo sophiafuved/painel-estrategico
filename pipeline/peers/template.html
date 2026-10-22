@@ -444,6 +444,46 @@ function renderBridge(g){
     tb.innerHTML=`<div class="tbl"><table><thead><tr><th>Ano</th><th>EBITDA</th><th>Δ Capital de giro</th><th>Capex</th><th>Outras</th><th>Demais itens</th><th>FCL</th></tr></thead><tbody>${rows.reverse().map(([y,x])=>`<tr><td>${y}</td><td>${F.mi(x.E)}</td><td>${F.mi(x.wk&&x.wk.v)}</td><td>${F.mi(x.cx&&x.cx.v)}</td><td>${F.mi(x.ot&&x.ot.v)}</td><td>${F.mi(x.rest)}</td><td>${F.mi(x.fc&&x.fc.v)}</td></tr>`).join('')}</tbody></table></div>`}
     tb.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela (todos os anos)'};
 }
+// "Melhor P&L": empresa teórica com o menor custo entre as empresas do filtro, ano a ano (como nos decks do Offsite).
+// Margem bruta caixa = 1 − menor CPV caixa/ROL. Despesas operacionais = empresa com a menor soma desp. vendas + G&A
+// (soma, e não o menor de cada linha, porque várias empresas lançam vendas junto com G&A e teriam "vendas ≈ 0").
+// Margem EBITDA teórica = bruta caixa − essa soma. Dados tratados (zeros = sem dado; outliers fora); cada linha
+// precisa de 3+ empresas com dado no ano.
+function melhorPL(){const s=seg(),M=s.metrics;if(!M.cpv||!M.dga||!M.dv)return null;const ents=visibleEnts();
+  const at=(m,k,y)=>{const i=m.years.indexOf(y);if(i<0)return null;const v=(m.series[k]||[])[i];return v!=null&&v>0?v:null};
+  const yrs=M.cpv.years.filter(y=>inPeriod(y));
+  return yrs.map(y=>{
+    const cpvs=ents.map(k=>({k,v:at(M.cpv,k,y)})).filter(x=>x.v!=null);
+    const sga=ents.map(k=>{const d=at(M.dv,k,y),g=at(M.dga,k,y);return d!=null&&g!=null?{k,dv:d,ga:g,v:d+g}:null}).filter(Boolean);
+    if(cpvs.length<3||sga.length<3)return null;
+    const c=cpvs.reduce((a,b)=>b.v<a.v?b:a),o=sga.reduce((a,b)=>b.v<a.v?b:a);
+    const mb=1-c.v;const i=M.me?M.me.years.indexOf(y):-1;const dex=i>=0?(M.me.series.dexco||[])[i]:null;
+    return {y,mb,cpv:c,op:o,me:mb-o.v,dex,n:[cpvs.length,sga.length]}}).filter(Boolean)}
+function renderMelhorPL(g){const s=seg(),rows=melhorPL();if(!rows||rows.length<2)return false;
+  const el=document.createElement('article');el.className='card';const tid='tmpl';const nm=k=>s.ents[k]?s.ents[k].name:k;const last=rows[rows.length-1];
+  const read=`Teórica ${last.y}: <b>${F.pct(last.me)}</b>${last.dex!=null?` · ${s.ents.dexco.name}: <b>${F.pct(last.dex)}</b> (distância de ${F.pct(last.me-last.dex)})`:''}`;
+  el.innerHTML=`<div class="ch"><div><h3>Melhor P&amp;L</h3><div class="unit">% da receita · menor CPV e menores despesas operacionais entre as empresas do filtro, ano a ano</div></div></div>
+    <div class="read">${read}</div>
+    <div class="legend"><span><i class="band" style="--band:var(--p1)"></i>Margem EBITDA teórica</span><span><i class="band" style="--band:var(--p2)"></i>Desp. vendas / ROL</span><span><i class="band" style="--band:var(--p3)"></i>G&amp;A / ROL</span><span><i style="border-top:2px dashed var(--ref);width:16px;display:inline-block;vertical-align:middle"></i> Margem bruta caixa</span><span><i style="border-top:3px solid var(--dex);width:16px;display:inline-block;vertical-align:middle"></i> Margem EBITDA ${s.ents.dexco.name}</span></div>
+    <div class="plot"><canvas role="img" aria-label="Melhor P&amp;L"></canvas></div>
+    <div class="exl">Margem bruta caixa = 1 − menor CPV caixa/ROL. Margem EBITDA teórica = margem bruta caixa − menor soma de despesas de vendas + G&amp;A/ROL (soma porque várias empresas lançam vendas junto com G&amp;A). Anos com 3+ empresas com dado; zeros e outliers fora.</div>
+    <div class="mini" id="${tid}" hidden></div>
+    <div class="foot" style="justify-content:flex-end"><button class="tabbtn" aria-controls="${tid}" aria-expanded="false">Ver tabela (quem define cada linha)</button></div>`;
+  g.appendChild(el);
+  const L=rows.map(r=>r.y),area=(lab,data,col,fill)=>({type:'line',label:lab,data,borderColor:col,backgroundColor:col+'b3',borderWidth:1,pointRadius:0,pointHoverRadius:3,fill,stack:'pl',tension:0});
+  const sets=[area('Margem EBITDA teórica',rows.map(r=>r.me),css('--p1'),'origin'),area('Desp. vendas / ROL',rows.map(r=>r.op.dv),css('--p2'),'-1'),area('G&A / ROL',rows.map(r=>r.op.ga),css('--p3'),'-1'),
+    lineSet('Margem bruta caixa',rows.map(r=>r.mb),css('--ref'),{borderDash:[5,4],stack:'mb'}),
+    lineSet('Margem EBITDA '+s.ents.dexco.name,rows.map(r=>r.dex),css('--dex'),{borderWidth:3,pointRadius:3,pointBackgroundColor:css('--dex'),stack:'dx'})];
+  const quem={'Desp. vendas / ROL':'op','G&A / ROL':'op','Margem bruta caixa':'cpv'};
+  charts.push(new Chart(el.querySelector('canvas'),{type:'line',data:{labels:L,datasets:sets},options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:css('--panel'),titleColor:css('--ink'),bodyColor:css('--ink-2'),borderColor:css('--line'),borderWidth:1,padding:10,
+      callbacks:{label:it=>{const r=rows[it.dataIndex],q=quem[it.dataset.label];return ' '+it.dataset.label+': '+F.pct(it.raw)+(q?' ('+(q==='cpv'?'CPV de '+nm(r.cpv.k):nm(r.op.k))+')':'')}}}},
+    scales:{x:{grid:{display:false},border:{color:css('--line')},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11}}},
+      y:{stacked:true,min:Math.min(0,Math.floor(Math.min(...rows.map(r=>r.dex==null?0:r.dex))*10)/10),max:1,grid:{color:css('--grid'),drawTicks:false},border:{display:false},ticks:{color:css('--ink-3'),font:{family:'IBM Plex Mono',size:11},callback:v=>F.pct(v)}}}}}));
+  const b=el.querySelector('.tabbtn'),tb=el.querySelector('.mini');
+  b.onclick=()=>{const open=tb.hidden;if(open)tb.innerHTML=`<div class="tbl"><table><thead><tr><th>Ano</th><th>Margem bruta caixa (menor CPV)</th><th>Menor desp. vendas + G&amp;A</th><th>Margem EBITDA teórica</th><th>${s.ents.dexco.name}</th></tr></thead><tbody>${rows.slice().reverse().map(r=>`<tr><td>${r.y}</td><td>${F.pct(r.mb)} · ${nm(r.cpv.k)}</td><td>${F.pct(r.op.v)} (${F.pct(r.op.dv)} + ${F.pct(r.op.ga)}) · ${nm(r.op.k)}</td><td>${F.pct(r.me)}</td><td>${r.dex!=null?F.pct(r.dex):'–'}</td></tr>`).join('')}</tbody></table></div>`;
+    tb.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Ocultar tabela':'Ver tabela (quem define cada linha)'};
+  return true}
 function renderMain(){
   charts.forEach(c=>c.destroy());charts.length=0;
   const s=seg(),main=document.getElementById('main');main.innerHTML='';
@@ -470,6 +510,7 @@ function renderMain(){
         card(g,{title:b.title,unit:b.unit,labels,sets,fmt:b.fmt,ref:b.ref,ax:(AX[ST.seg]||{})[b.title],fkey:sets.some(d=>d._dex)?'setor:'+b.title:null});n++});
       if(!n)return;main.appendChild(sec);return}
     if(G.id==='caixa'){const t=cxToggle();if(t)sec.querySelector('.sh').insertAdjacentHTML('beforeend',t);renderBridge(g);n++}
+    if(G.id==='custos'&&renderMelhorPL(g))n++;
     Object.entries(s.metrics).filter(([k,m])=>m.grp===G.id&&showMetric(k)).forEach(([k,m])=>{
       const idx=m.years.map((y,i)=>i).filter(i=>inPeriod(m.years[i]));const labels=idx.map(i=>m.years[i]);
       const ax=(AX[ST.seg]||{})[k];

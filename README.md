@@ -114,6 +114,7 @@ As regras ficam em `pipeline/peers/build.py` e `pipeline/peers/clean.py`, e são
 - **EBITDA negativo**: índices sobre EBITDA (variação do capital de giro, capex, outras, FCL e DL/EBITDA) aparecem como **n.s. (EBITDA negativo)**.
 - **Blocos sobre a receita** (opcionais, nas abas "Gráficos"): `Var. WK/ROL`, `Outras Desp./ROL` e `FCL/ROL`, no mesmo formato dos blocos sobre EBITDA (título + anos na mesma linha, país e empresa nas linhas abaixo, mesma convenção de sinal). Com eles, o Fluxo de caixa ganha a opção "Sobre receita" e a ponte do caixa funciona também nos anos de EBITDA negativo.
 - **Ponte do caixa**: EBITDA → Δ capital de giro → Capex → Outras → FCL em R$ milhões, por empresa e ano, calculada a partir dos índices da planilha.
+- **Melhor P&L** (Custos): empresa teórica com o menor CPV caixa/ROL e a menor soma de despesas de vendas + G&A/ROL entre as empresas do filtro, comparada com a margem EBITDA da Dexco; a tabela mostra quem define cada linha em cada ano.
 - **Madeira**: EBITDA calculado como receita × margem EBITDA (a aba não traz o valor absoluto).
 - **Metais**: nos blocos "Mkt Competitivo/Médio/Luxo", a participação é calculada como empresa ÷ total do segmento (as primeiras linhas desses blocos estão em R$ milhões).
 
