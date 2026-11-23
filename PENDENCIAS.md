@@ -1,7 +1,7 @@
 # Pendências do Painel Estratégico (atualizado em 20/10/2026)
 
 Lista para retomar o trabalho. **Prioridade desta semana: o manual (seção 6).** A planilha de conferência (`Conferencia_Peers.xlsx`) foi enviada no chat em 19/10; ela não fica no repositório porque o projeto não guarda planilhas. Se precisar, peça para gerar de novo.
-Painel do time: SharePoint: Duratex SA > Controladoria Dexco - General > Planejamento Estratégico > Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard > `Radar Estratégia.html` (versão antiga na conta pessoal da Sophia: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb)
+Painel do time (SharePoint: Duratex SA > Controladoria Dexco - General > Planejamento Estratégico): Radar em Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard > `Radar Estratégia.html`; Peers em Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard > `Análise de Peers.html` (versão antiga na conta pessoal da Sophia: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb)
 
 ## 1. Planilha Análise de Competidores
 
@@ -49,7 +49,7 @@ Painel do time: SharePoint: Duratex SA > Controladoria Dexco - General > Planeja
 - [x] Painel já publicado na conta do time e atualizado por uma rotina (tarefa agendada) no Claude do Nivaldo; primeira atualização feita (informado pela Sophia em 23/11).
 - [x] Rotina semanal; conferência de cada atualização pelo(a) estagiário(a) do time (hoje a Sophia; depois, o próximo estagiário). Registrado no manual.
 - [ ] Registrar no manual o prompt da rotina semanal do Nivaldo.
-- [x] Painel do time anotado no README (arquivo no SharePoint, pasta Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard).
+- [x] Painel do time anotado no README: dois arquivos no SharePoint (Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard e Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard).
 - [ ] Decidir o que fazer com o link antigo da conta pessoal da Sophia (desativar antes da saída?).
 
 ## 5. Skill atualizar-deck-radar: ajustes estéticos (FEITO em 20/10)
