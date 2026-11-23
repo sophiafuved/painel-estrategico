@@ -51,6 +51,10 @@ Painel do time: SharePoint: Duratex SA > Controladoria Dexco - General > Planeja
 - [ ] Registrar no manual o prompt da rotina semanal do Nivaldo.
 - [x] Painel do time anotado no README (arquivo no SharePoint, pasta Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard).
 - [ ] Decidir o que fazer com o link antigo da conta pessoal da Sophia (desativar antes da saída?).
+
+## 5. Skill atualizar-deck-radar: ajustes estéticos (FEITO em 20/10)
+
+Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito"; ajustes estéticos nos textos:
 - [x] **Bullets**: alguns slides do modelo têm vários marcadores (ex.: Renda, slide 5, com 2 bullets). Hoje o
       script junta tudo em um parágrafo só. Ajuste: aceitar `texto` como lista na leitura (um item por bullet) e
       recriar um parágrafo por item copiando o formato (`pPr`, marcador, recuo) de cada parágrafo original.
