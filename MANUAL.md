@@ -52,6 +52,7 @@ leitura e conferem os pontos que o Claude aponta.
 | Papel | Pessoa |
 |---|---|
 | Responsável pelo painel (gera, publica, guarda o link) | Nivaldo |
+| Confere a atualização semanal automática do painel | Estagiário(a) do time |
 | Aprova a leitura do Radar antes de ela aparecer como "revisada" | Henrique Fantin (gerente) |
 | Atualiza a Grande Base e a Análise de Competidores | Time de Planejamento Estratégico |
 | Acesso ao Claude (plano Team, Claude Code e Claude Desktop) | Nivaldo e Ramon |
@@ -101,7 +102,7 @@ estrutura mudar, atualize esta seção.
 
 | Quando | O quê | Skill |
 |---|---|---|
-| Automático | O painel é atualizado por uma rotina agendada no Claude do Nivaldo **[a confirmar: frequência e prompt]**; conferir o resumo de cada atualização (até quando vão os dados, valores retirados) | `atualizar-painel-estrategico` |
+| Toda semana (automático) | O painel é atualizado por uma rotina semanal agendada no Claude do Nivaldo **[a registrar: o prompt da rotina]**. O(a) estagiário(a) do time confere o resumo de cada atualização: até quando vão os dados, valores retirados como erro/outlier e se o link abre com a senha | `atualizar-painel-estrategico` |
 | Toda quinta-feira | Chega o Excel de projeções da Tendências: guardar na pasta e usar a versão mais recente na próxima geração do painel | `atualizar-painel-estrategico` |
 | A cada dois meses ou sob demanda | Edição do Radar: leitura, aprovação, painel e deck | `comentarios-radar`, `atualizar-painel-estrategico`, `atualizar-deck-radar` |
 | Sob demanda | Escolha entre Radar Modelo 1 e Modelo 2, conforme quem pediu | `atualizar-deck-radar` |
