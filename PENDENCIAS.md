@@ -56,6 +56,10 @@ Painel do time (SharePoint: Duratex SA > Controladoria Dexco - General > Planeja
 - [x] Painel do time anotado no README: dois arquivos no SharePoint (Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard e Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard).
 - [ ] Decidir o que fazer com o link antigo da conta pessoal da Sophia (desativar antes da saída?).
 
+- [ ] Versão do painel em **Power BI**, iniciada pela Sophia com apoio do time de Analytics (em desenvolvimento,
+      ainda não publicada, nov/26). Definir antes da saída: quem continua, se substitui ou complementa os painéis HTML,
+      e onde fica o arquivo .pbix.
+
 ## 5. Skill atualizar-deck-radar: ajustes estéticos (FEITO em 20/10)
 
 Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito"; ajustes estéticos nos textos:
