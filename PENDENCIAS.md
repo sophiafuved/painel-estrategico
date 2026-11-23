@@ -49,6 +49,7 @@ Painel do time (SharePoint: Duratex SA > Controladoria Dexco - General > Planeja
 - [x] Painel já publicado na conta do time e atualizado por uma rotina (tarefa agendada) no Claude do Nivaldo; primeira atualização feita (informado pela Sophia em 23/11).
 - [x] Rotina semanal; conferência de cada atualização pelo(a) estagiário(a) do time (hoje a Sophia; depois, o próximo estagiário). Registrado no manual.
 - [ ] Registrar no manual o prompt da rotina semanal do Nivaldo.
+- [ ] Os painéis do time usam login e senha (o projeto aqui tem só senha, em `pipeline/protect.py`): trazer para o GitHub a versão do Claude do time, para o código do projeto ser o mesmo que está rodando.
 - [x] Painel do time anotado no README: dois arquivos no SharePoint (Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard e Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard).
 - [ ] Decidir o que fazer com o link antigo da conta pessoal da Sophia (desativar antes da saída?).
 

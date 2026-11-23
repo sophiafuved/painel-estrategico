@@ -93,6 +93,7 @@ estrutura mudar, atualize esta seção.
 | Decks de peers por negócio | **[a confirmar]** (sugestão: `Claude > 3. Análise de Peers`) |
 | Projeto `painel-estrategico` (scripts, skills, manual) | GitHub do time de PE **[a criar]**; cópia de trabalho no computador do Nivaldo |
 | Painel: Radar | Arquivo `Radar Estratégia.html` em `Planejamento Estratégico > Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard` (SharePoint); abrir no navegador |
+| Acesso aos painéis | Login e senha na planilha **"Acessos"** do time |
 | Painel: Peers | Arquivo `Análise de Peers.html` em `Planejamento Estratégico > Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard` (SharePoint); abrir no navegador |
 | Senha do painel | Planilha **"Acessos"** do time. Nunca escreva a senha em e-mails, arquivos do projeto ou no chat do Claude fora do momento de gerar o painel |
 | Pendências e próximos passos | `PENDENCIAS.md` no projeto |

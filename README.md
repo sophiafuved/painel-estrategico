@@ -4,7 +4,7 @@ Gera o site do time de estratégia, que junta o **Radar macro** (planilha *Grand
 **Análise de Peers** (planilha *Análise de Competidores*), e o PowerPoint de peers no template
 do Offsite.
 
-- Painel do time (oficial desde nov/26), em dois arquivos HTML no SharePoint (Duratex SA > Controladoria Dexco - General > Planejamento Estratégico), atualizados toda semana por uma rotina no Claude do time:
+- Painel do time (oficial desde nov/26), em dois arquivos HTML no SharePoint (Duratex SA > Controladoria Dexco - General > Planejamento Estratégico), atualizados toda semana por uma rotina no Claude do time e protegidos por login e senha (planilha "Acessos"):
   - Radar: Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard > `Radar Estratégia.html`
   - Peers: Mercado > 2. Análise Peers > Análise de Peers - Claude > Dashboard > `Análise de Peers.html`
 - Versão antiga: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (conta pessoal da Sophia; não é mais atualizada).
