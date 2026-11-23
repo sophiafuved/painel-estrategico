@@ -46,7 +46,8 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 ## 4. Com o time
 
 - [x] ZIP atualizado enviado à Sophia para o teste com o time (20/10), junto com o manual.
-- [ ] Definir o link oficial do time (conta de trabalho), anotar no README e deixar o acesso como
+- [x] Painel já publicado na conta do time e atualizado uma vez por lá (informado pela Sophia em 23/11).
+- [ ] Anotar no README o link novo do painel (conta do time) e deixar o acesso como
       "Qualquer pessoa com o link".
 
 ## 5. Skill atualizar-deck-radar: ajustes estéticos (FEITO em 20/10)

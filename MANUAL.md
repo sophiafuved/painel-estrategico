@@ -268,7 +268,8 @@ da pasta `skills_para_empresa/`. Para o time todo, o administrador do Claude da 
 # 11. Transição (até dez/2026)
 
 - [ ] Criar o GitHub do time de PE e mover o projeto para lá.
-- [ ] Publicar o painel pela conta do Nivaldo e anotar o link novo no `README.md`.
+- [x] Publicar o painel pela conta do time (feito; primeira atualização pela conta do time já realizada).
+- [ ] Anotar o link novo do painel no `README.md`.
 - [ ] Definir as pastas definitivas das planilhas e dos decks (seção 3).
 - [ ] Descobrir o administrador do Claude da Dexco e publicar as skills para o time.
 - [ ] Confirmar a frequência de atualização dos peers.
