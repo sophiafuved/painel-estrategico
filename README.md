@@ -4,7 +4,8 @@ Gera o site do time de estratégia, que junta o **Radar macro** (planilha *Grand
 **Análise de Peers** (planilha *Análise de Competidores*), e o PowerPoint de peers no template
 do Offsite.
 
-- Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (versão da conta pessoal da Sophia; quando o time publicar pela conta de trabalho, substitua este link pelo novo)
+- Painel do time (oficial desde nov/26): arquivo no SharePoint: Duratex SA > Controladoria Dexco - General > Planejamento Estratégico > Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard > `Radar Estratégia.html`, atualizado toda semana por uma rotina no Claude do time.
+- Versão antiga: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb (conta pessoal da Sophia; não é mais atualizada).
 - Usando com o Claude: conecte esta pasta ao Claude e peça, por exemplo, "gere e publique o painel". As instruções que o Claude segue estão no `CLAUDE.md`.
 - Manual do time: `MANUAL.md` (gere o Word com `python docs/gerar_manual.py`).
 - Skills do time: `.claude/skills/` (carregadas automaticamente com a pasta do projeto) e pacotes para instalar no Claude da empresa em `skills_para_empresa/` (veja o README de lá).

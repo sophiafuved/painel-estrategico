@@ -92,7 +92,7 @@ estrutura mudar, atualize esta seção.
 | Análise de Competidores | **[a confirmar]** (sugestão: `Claude > 3. Análise de Peers`) |
 | Decks de peers por negócio | **[a confirmar]** (sugestão: `Claude > 3. Análise de Peers`) |
 | Projeto `painel-estrategico` (scripts, skills, manual) | GitHub do time de PE **[a criar]**; cópia de trabalho no computador do Nivaldo |
-| Link do painel | Na linha "Site publicado" do `README.md` do projeto |
+| Painel (dashboard) | Arquivo `Radar Estratégia.html` em `Planejamento Estratégico > Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard` (SharePoint); abrir no navegador |
 | Senha do painel | Planilha **"Acessos"** do time. Nunca escreva a senha em e-mails, arquivos do projeto ou no chat do Claude fora do momento de gerar o painel |
 | Pendências e próximos passos | `PENDENCIAS.md` no projeto |
 | Regras de dados e instruções para o Claude | `CLAUDE.md` e `README.md` no projeto |
@@ -271,7 +271,7 @@ da pasta `skills_para_empresa/`. Para o time todo, o administrador do Claude da 
 
 - [ ] Criar o GitHub do time de PE e mover o projeto para lá.
 - [x] Publicar o painel pela conta do time (feito; primeira atualização pela conta do time já realizada).
-- [ ] Anotar o link novo do painel no `README.md`.
+- [x] Painel do time no SharePoint, anotado no `README.md`.
 - [ ] Definir as pastas definitivas das planilhas e dos decks (seção 3).
 - [ ] Descobrir o administrador do Claude da Dexco e publicar as skills para o time.
 - [ ] Confirmar a frequência de atualização dos peers.

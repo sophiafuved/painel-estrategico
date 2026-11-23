@@ -1,7 +1,7 @@
 # Pendências do Painel Estratégico (atualizado em 20/10/2026)
 
 Lista para retomar o trabalho. **Prioridade desta semana: o manual (seção 6).** A planilha de conferência (`Conferencia_Peers.xlsx`) foi enviada no chat em 19/10; ela não fica no repositório porque o projeto não guarda planilhas. Se precisar, peça para gerar de novo.
-Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
+Painel do time: SharePoint: Duratex SA > Controladoria Dexco - General > Planejamento Estratégico > Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard > `Radar Estratégia.html` (versão antiga na conta pessoal da Sophia: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb)
 
 ## 1. Planilha Análise de Competidores
 
@@ -49,12 +49,8 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 - [x] Painel já publicado na conta do time e atualizado por uma rotina (tarefa agendada) no Claude do Nivaldo; primeira atualização feita (informado pela Sophia em 23/11).
 - [x] Rotina semanal; conferência de cada atualização pelo(a) estagiário(a) do time (hoje a Sophia; depois, o próximo estagiário). Registrado no manual.
 - [ ] Registrar no manual o prompt da rotina semanal do Nivaldo.
-- [ ] Anotar no README o link novo do painel (conta do time) e deixar o acesso como
-      "Qualquer pessoa com o link".
-
-## 5. Skill atualizar-deck-radar: ajustes estéticos (FEITO em 20/10)
-
-Retorno da Sophia sobre o deck de teste (Radar Modelo 2, 20/10): "quase perfeito"; ajustes estéticos nos textos:
+- [x] Painel do time anotado no README (arquivo no SharePoint, pasta Mercado > 1. Radar de Estratégia > Radar Estratégia - Claude > Dashboard).
+- [ ] Decidir o que fazer com o link antigo da conta pessoal da Sophia (desativar antes da saída?).
 - [x] **Bullets**: alguns slides do modelo têm vários marcadores (ex.: Renda, slide 5, com 2 bullets). Hoje o
       script junta tudo em um parágrafo só. Ajuste: aceitar `texto` como lista na leitura (um item por bullet) e
       recriar um parágrafo por item copiando o formato (`pPr`, marcador, recuo) de cada parágrafo original.
