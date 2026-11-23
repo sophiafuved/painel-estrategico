@@ -46,7 +46,8 @@ Site publicado: https://claude.ai/artifact/N8CHHxXKwp8fjJsHYg15bb
 ## 4. Com o time
 
 - [x] ZIP atualizado enviado à Sophia para o teste com o time (20/10), junto com o manual.
-- [x] Painel já publicado na conta do time e atualizado uma vez por lá (informado pela Sophia em 23/11).
+- [x] Painel já publicado na conta do time e atualizado por uma rotina (tarefa agendada) no Claude do Nivaldo; primeira atualização feita (informado pela Sophia em 23/11).
+- [ ] Registrar no manual a frequência e o prompt da rotina do Nivaldo, e quem confere o resultado de cada atualização.
 - [ ] Anotar no README o link novo do painel (conta do time) e deixar o acesso como
       "Qualquer pessoa com o link".
 

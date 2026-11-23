@@ -101,6 +101,7 @@ estrutura mudar, atualize esta seção.
 
 | Quando | O quê | Skill |
 |---|---|---|
+| Automático | O painel é atualizado por uma rotina agendada no Claude do Nivaldo **[a confirmar: frequência e prompt]**; conferir o resumo de cada atualização (até quando vão os dados, valores retirados) | `atualizar-painel-estrategico` |
 | Toda quinta-feira | Chega o Excel de projeções da Tendências: guardar na pasta e usar a versão mais recente na próxima geração do painel | `atualizar-painel-estrategico` |
 | A cada dois meses ou sob demanda | Edição do Radar: leitura, aprovação, painel e deck | `comentarios-radar`, `atualizar-painel-estrategico`, `atualizar-deck-radar` |
 | Sob demanda | Escolha entre Radar Modelo 1 e Modelo 2, conforme quem pediu | `atualizar-deck-radar` |
